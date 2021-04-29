@@ -4,6 +4,7 @@
 	"repository": "https://github.com/fabiocmarques/cloud-backend-test.git",
 	"author": "Fabio Costa Farias Marques <fabio.cfmarques@gmail.com>",
 	"devDependencies": {
+		"prettier": "^2.2.1",
 		"typescript": "^4.2.4"
 	}
 }
