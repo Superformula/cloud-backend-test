@@ -8,7 +8,8 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-explicit-any': ['off'],
     '@typescript-eslint/no-inferrable-types': ['off'],
-    semi: ['error'],
+    '@typescript-eslint/no-unused-vars': ['warn', {'argsIgnorePattern': '^_'}],
+    'semi': ['error'],
   },
   settings: {},
 };
