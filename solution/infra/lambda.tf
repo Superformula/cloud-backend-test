@@ -14,6 +14,12 @@ resource "aws_lambda_function" "gql_lambda_function" {
 
   filename = local.file_name
   source_code_hash = filebase64sha256(local.file_name)
+
+  environment {
+    variables = {
+      USERS_TABLE_NAME = "${aws_dynamodb_table.users_dynamodb_table.name}"
+    }
+  }
 }
 
 # Add IAM role to the created Lambda
