@@ -2,7 +2,7 @@
 
 Be sure to read **all** of this document carefully, and follow the guidelines within.
 
-## Backend Context
+## What you will be building
 
 Build a GraphQL API that can `create/read/update/delete` user data from a persistence store.
 
@@ -86,7 +86,7 @@ These may be used for further challenges. You can freely skip these; feel free t
 
 ## Client context
 
-Assume the GraphQL API you are developing will be used by a front-end team to build the following screens:
+Assume the GraphQL API you are developing will be used by a hypothetical front-end team to build the following screens:
 
 ![Superformula-front-end-test-mockup](./mockup1.png)
 
