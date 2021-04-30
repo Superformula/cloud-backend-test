@@ -3,7 +3,16 @@
 	"version": "1.0.0",
 	"repository": "https://github.com/fabiocmarques/cloud-backend-test.git",
 	"author": "Fabio Costa Farias Marques <fabio.cfmarques@gmail.com>",
+	"license": "MIT",
+	"scripts": {
+		"lint": "eslint src/**/*.{js,ts} --quiet --fix"
+	},
 	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^4.22.0",
+		"@typescript-eslint/parser": "^4.22.0",
+		"eslint": "^7.25.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-prettier": "^3.4.0",
 		"prettier": "^2.2.1",
 		"typescript": "^4.2.4"
 	}
