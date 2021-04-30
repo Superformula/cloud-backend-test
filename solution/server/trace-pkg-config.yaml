@@ -45,11 +45,9 @@ packages:
         trace:
             - lambda-server.js # Trace individual file `./lambda-server.js`
 
-
         # Absolute or CWD-relative file paths to straight include without tracing or introspection
         #
         # - May be any type of file on disk.
         # - May be glob patterns.
-        # include:
-        #     - <FILE_OR_PATTERN_ONE>.js
-        #     - <FILE_TWO>.js
+        include:
+            - 'schemas/*.graphql'
