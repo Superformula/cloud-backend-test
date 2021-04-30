@@ -5,6 +5,8 @@
 	"author": "Fabio Costa Farias Marques <fabio.cfmarques@gmail.com>",
 	"license": "MIT",
 	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"build-package": "yarn build && trace-pkg -c trace-pkg-config.yaml",
 		"lint": "eslint src/**/*.{js,ts} --quiet --fix"
 	},
 	"devDependencies": {
@@ -14,6 +16,7 @@
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^3.4.0",
 		"prettier": "^2.2.1",
+		"trace-pkg": "^0.3.4",
 		"typescript": "^4.2.4"
 	},
 	"dependencies": {
