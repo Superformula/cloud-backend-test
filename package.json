@@ -6,7 +6,8 @@
   "scripts": {
     "start": "ts-node-dev src/dev-server.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "graphql": "graphql-codegen --config codegen.yml"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,10 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "1.21.4",
+    "@graphql-codegen/introspection": "^1.18.2",
+    "@graphql-codegen/typescript": "1.22.0",
+    "@graphql-codegen/typescript-resolvers": "^1.19.1",
     "@types/lodash": "^4.14.168",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",

@@ -6,6 +6,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    '@typescript-eslint/ban-types': ['error', {'types': {'{}': false}}], // graphql-codegen generates a file with a bunch of {}
     '@typescript-eslint/no-explicit-any': ['off'],
     '@typescript-eslint/no-inferrable-types': ['off'],
     '@typescript-eslint/no-unused-vars': ['warn', {'argsIgnorePattern': '^_'}],
