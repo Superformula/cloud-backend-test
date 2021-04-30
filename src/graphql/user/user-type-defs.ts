@@ -20,9 +20,9 @@ export default gql`
 		dob: String!
 		address: String
 		description: String
+		imageUrl: String
 		createdAt: String!
 		updatedAt: String!
-		imageUrl: String
 	}
 
 	"""
