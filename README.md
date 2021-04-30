@@ -1,4 +1,4 @@
-# Superformula Full Stack Developer Test
+# Superformula Cloud Backend Test
 
 Be sure to read **all** of this document carefully, and follow the guidelines within.
 
@@ -21,15 +21,15 @@ Build a GraphQL API that can `create/read/update/delete` user data from a persis
 }
 ```
 
-### Functionality
+### Requirements
+
+#### Functionality
 
 - The API should follow typical GraphQL API design pattern
 - The data should be saved in the DB
 - Proper error handling should be used
 - Paginating and filtering (by name) users list
 - The API must have a Query to fetch geolocation information based off an address
-
-### Requirements
 
 #### Tech Stack
   - **Use Typescript**
@@ -84,7 +84,7 @@ These may be used for further challenges. You can freely skip these; feel free t
 1. Client API generation
 
 
-## Consumer context
+## Client context
 
 Assume the GraphQL API you are developing will be used by a front-end team to build the following screens:
 
@@ -94,16 +94,8 @@ Assume the GraphQL API you are developing will be used by a front-end team to bu
 
 > [Source Figma file](https://www.figma.com/file/hd7EgdTxJs2fpTzzSKlNxo/Superformula-full-stack-test)
 
-#### Functionality
-
-- The search functionality should perform real time filtering on client side data and API side data
+- Client will be performing real-time search against this API
 - List of users should be updated automatically after single user is updated
-
-#### Tech stack
-
-- Typescript
-- React
-
 
 ## What We Care About
 
