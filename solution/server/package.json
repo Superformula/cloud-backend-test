@@ -15,5 +15,9 @@
 		"eslint-plugin-prettier": "^3.4.0",
 		"prettier": "^2.2.1",
 		"typescript": "^4.2.4"
+	},
+	"dependencies": {
+		"apollo-server-lambda": "^2.23.0",
+		"graphql": "^15.5.0"
 	}
 }
