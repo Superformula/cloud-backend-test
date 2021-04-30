@@ -12,11 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@graphql-tools/load": "^6.2.8",
     "apollo-server-lambda": "^2.23.0",
+    "bufferutil": "^4.0.3",
+    "encoding": "^0.1.13",
     "graphql": "^15.5.0",
-    "graphql-tools": "^7.0.4",
     "moment": "^2.29.1",
+    "utf-8-validate": "^5.0.4",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

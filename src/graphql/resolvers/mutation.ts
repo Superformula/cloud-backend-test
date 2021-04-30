@@ -7,6 +7,7 @@ export const Mutation: MutationResolvers = {
 			createdAt: moment().toISOString(),
 			location: 'test location',
 			name: 'Test user',
+			id: '123456',
 		};
 	},
 };

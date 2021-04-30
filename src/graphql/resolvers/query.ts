@@ -7,6 +7,7 @@ export const Query: QueryResolvers = {
 			createdAt: moment().toISOString(),
 			location: 'test location',
 			name: 'Test user',
+			id: '123456',
 		};
 	},
 };
