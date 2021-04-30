@@ -1,6 +1,6 @@
 import { gql, makeExecutableSchema } from 'apollo-server';
 import { merge } from 'lodash';
-import UserTypeDefs from './user/typeDefs';
+import UserTypeDefs from './user/type-defs';
 import UserResolvers from './user/resolvers';
 
 // These type definitions are meant to expose everything that is not specific to some entity, and also
