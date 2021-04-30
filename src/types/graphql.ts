@@ -14,15 +14,6 @@ export type Scalars = {
 	Float: number;
 };
 
-/** Create user input type */
-export type CreateUserInput = {
-	name: Scalars['String'];
-	dob: Scalars['String'];
-	address?: Maybe<Scalars['String']>;
-	description?: Maybe<Scalars['String']>;
-	imageUrl?: Maybe<Scalars['String']>;
-};
-
 /** Mutation is meant to expose all the APIs whose purpose is to manipulate the database somehow, be it creating, updating, or deleting data */
 export type Mutation = {
 	__typename?: 'Mutation';
@@ -34,12 +25,12 @@ export type Mutation = {
 
 /** Mutation is meant to expose all the APIs whose purpose is to manipulate the database somehow, be it creating, updating, or deleting data */
 export type MutationCreateUserArgs = {
-	input: CreateUserInput;
+	input: UserCreationInput;
 };
 
 /** Mutation is meant to expose all the APIs whose purpose is to manipulate the database somehow, be it creating, updating, or deleting data */
 export type MutationUpdateUserArgs = {
-	input: UpdateUserInput;
+	input: UserUpdateInput;
 };
 
 /** Mutation is meant to expose all the APIs whose purpose is to manipulate the database somehow, be it creating, updating, or deleting data */
@@ -59,15 +50,6 @@ export type QueryUserArgs = {
 	id: Scalars['ID'];
 };
 
-/** Update user input type */
-export type UpdateUserInput = {
-	name?: Maybe<Scalars['String']>;
-	dob?: Maybe<Scalars['String']>;
-	address?: Maybe<Scalars['String']>;
-	description?: Maybe<Scalars['String']>;
-	imageUrl?: Maybe<Scalars['String']>;
-};
-
 /** User type */
 export type User = {
 	__typename?: 'User';
@@ -79,6 +61,24 @@ export type User = {
 	imageUrl?: Maybe<Scalars['String']>;
 	createdAt: Scalars['String'];
 	updatedAt: Scalars['String'];
+};
+
+/** Create user input type */
+export type UserCreationInput = {
+	name: Scalars['String'];
+	dob: Scalars['String'];
+	address?: Maybe<Scalars['String']>;
+	description?: Maybe<Scalars['String']>;
+	imageUrl?: Maybe<Scalars['String']>;
+};
+
+/** Update user input type */
+export type UserUpdateInput = {
+	name?: Maybe<Scalars['String']>;
+	dob?: Maybe<Scalars['String']>;
+	address?: Maybe<Scalars['String']>;
+	description?: Maybe<Scalars['String']>;
+	imageUrl?: Maybe<Scalars['String']>;
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -162,25 +162,25 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-	CreateUserInput: CreateUserInput;
-	String: ResolverTypeWrapper<Scalars['String']>;
 	Mutation: ResolverTypeWrapper<{}>;
+	String: ResolverTypeWrapper<Scalars['String']>;
 	ID: ResolverTypeWrapper<Scalars['ID']>;
 	Query: ResolverTypeWrapper<{}>;
-	UpdateUserInput: UpdateUserInput;
 	User: ResolverTypeWrapper<User>;
+	UserCreationInput: UserCreationInput;
+	UserUpdateInput: UserUpdateInput;
 	Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-	CreateUserInput: CreateUserInput;
-	String: Scalars['String'];
 	Mutation: {};
+	String: Scalars['String'];
 	ID: Scalars['ID'];
 	Query: {};
-	UpdateUserInput: UpdateUserInput;
 	User: User;
+	UserCreationInput: UserCreationInput;
+	UserUpdateInput: UserUpdateInput;
 	Boolean: Scalars['Boolean'];
 };
 
