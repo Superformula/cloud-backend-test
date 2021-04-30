@@ -51,3 +51,7 @@ packages:
         # - May be glob patterns.
         include:
             - 'schemas/*.graphql'
+
+        ignores:
+            - 'import-from'
+            - 'value-or-promise'
