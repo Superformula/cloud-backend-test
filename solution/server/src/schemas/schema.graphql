@@ -1,22 +1,3 @@
 type Query {
 	hello: String
 }
-
-type User {
-	id: ID!
-	name: String!
-	dob: String
-	address: String
-	description: String
-	createdAt: String
-	updatedAt: String
-	imageUrl: String
-}
-
-input UserInput {
-	name: String!
-	dob: String
-	address: String
-	description: String
-	imageUrl: String
-}
