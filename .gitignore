@@ -7,6 +7,6 @@ node_modules
 dist
 
 # terraform output files from "init" and state files
-infrastructure/.terraform
+infra/.terraform
 terraform.tfstate
 terraform.tfstate.backup
