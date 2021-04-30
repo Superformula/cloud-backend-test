@@ -6,8 +6,8 @@ export default gql`
 	}
 
 	extend type Mutation {
-		createUser(input: CreateUserInput!): User!
-		updateUser(input: UpdateUserInput!): User!
+		createUser(input: UserCreationInput!): User!
+		updateUser(input: UserUpdateInput!): User!
 		deleteUser(id: ID!): User!
 	}
 
@@ -28,7 +28,7 @@ export default gql`
 	"""
 	Create user input type
 	"""
-	input CreateUserInput {
+	input UserCreationInput {
 		name: String!
 		dob: String!
 		address: String
@@ -39,7 +39,7 @@ export default gql`
 	"""
 	Update user input type
 	"""
-	input UpdateUserInput {
+	input UserUpdateInput {
 		name: String
 		dob: String
 		address: String
