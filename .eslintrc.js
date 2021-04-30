@@ -9,6 +9,7 @@ module.exports = {
 		semi: [2, 'always'],
 		'@typescript-eslint/no-var-requires': [0],
 		'@typescript-eslint/no-explicit-any': [0],
+		'@typescript-eslint/ban-types': [0],
 	},
 	settings: {},
 };
