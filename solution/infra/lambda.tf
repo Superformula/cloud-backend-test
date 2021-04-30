@@ -8,7 +8,7 @@ resource "aws_lambda_function" "gql_lambda_function" {
     aws_dynamodb_table.users_dynamodb_table
   ]
   function_name = "cloud-backend-test-lambda"
-  handler = "lambda.graphqlHandler"
+  handler = "lambda-server.graphqlHandler"
   role = aws_iam_role.gql_lambda_role.arn
   runtime = "nodejs14.x"
 
