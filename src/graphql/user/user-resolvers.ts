@@ -1,12 +1,12 @@
+import { MutationResolvers, QueryResolvers } from '../../types/graphql';
+
 export default {
 	Query: {
-		user: async (_parent: any, args: any, context: any): Promise<any> => {
-			return context.dataSources.userRepo.getItem(args.id);
-		},
-	},
+		user: async (_parent, args, context) => await context.dataSources.userRepo.getItem(args.id),
+	} as QueryResolvers,
 	Mutation: {
-		createUser: async (_parent: any, _args: any, _context: any): Promise<any> => ({}),
-		updateUser: async (_parent: any, _args: any, _context: any): Promise<any> => ({}),
-		deleteUser: async (_parent: any, _args: any, _context: any): Promise<any> => ({}),
-	},
+		createUser: async (_, args, context) => await context.dataSources.userRepo.putItem(args.input),
+		updateUser: async (_, args, context) => await context.dataSources.userRepo.updateItem(args.id, args.input),
+		deleteUser: async (_, args, context) => await context.dataSources.userRepo.deleteItem(args.id),
+	} as MutationResolvers,
 };
