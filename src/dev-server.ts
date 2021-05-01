@@ -1,5 +1,5 @@
 import { ApolloServer } from 'apollo-server';
-import schema from './graphql/schema';
+import { schema } from './graphql/schema';
 import { UserRepo } from './repositories/user-repo';
 
 const PORT = process.env.PORT || 4000;

@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server';
 
-export default gql`
+export const userTypeDefs = gql`
 	extend type Query {
 		user(id: ID!): User!
 	}
@@ -47,3 +47,5 @@ export default gql`
 		imageUrl: String
 	}
 `;
+
+export default userTypeDefs;

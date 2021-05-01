@@ -4,3 +4,5 @@ export interface IRepo<TModel, TCreationModel, TUpdateModel> {
 	updateItem(id: string, input: TUpdateModel): Promise<TModel>;
 	deleteItem(id: string): Promise<TModel>;
 }
+
+export default IRepo;

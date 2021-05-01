@@ -129,3 +129,5 @@ export class UserRepo extends DataSource implements IRepo<UserModel, UserCreatio
 		}
 	}
 }
+
+export default UserRepo;
