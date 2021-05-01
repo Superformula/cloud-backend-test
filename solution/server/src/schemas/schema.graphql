@@ -1,3 +1,40 @@
 type Query {
-	hello: String
+	getUser(id: String!): User!
+	listUsers(params: UserListParams!): UserPaginatedResponse!
+}
+
+type Mutation {
+	addUser(userInput: UserInput!): User!
+	updateUser(id: String!, userInput: UserInput!): User!
+	deleteUser(id: String!): Boolean!
+}
+
+type User {
+	id: ID!
+	name: String!
+	dob: String
+	address: String
+	description: String
+	createdAt: String
+	updatedAt: String
+	imageUrl: String
+}
+
+type UserPaginatedResponse {
+	users: [User!]
+	lastEvaluatedKey: String
+}
+
+input UserInput {
+	name: String
+	dob: String
+	address: String
+	description: String
+	imageUrl: String
+}
+
+input UserListParams {
+	lastEvaluatedKey: String
+	limit: Int
+	filter: String
 }

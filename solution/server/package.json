@@ -9,10 +9,15 @@
 		"copy-graphql-files": "cpy src/schemas/*.graphql dist/schemas/",
 		"build-package": "yarn lint && yarn build && yarn copy-graphql-files && trace-pkg -c trace-pkg-config.yaml",
 		"lint": "eslint **/*.{js,ts} --quiet --fix",
-		"test": "jest"
+		"test": "jest --coverage",
+		"gql-codegen": "graphql-codegen --config codegen.yml"
 	},
 	"devDependencies": {
+		"@graphql-codegen/cli": "1.21.4",
+		"@graphql-codegen/typescript": "^1.22.0",
+		"@graphql-codegen/typescript-resolvers": "1.19.1",
 		"@types/jest": "^26.0.23",
+		"@types/uuid": "^8.3.0",
 		"@typescript-eslint/eslint-plugin": "^4.22.0",
 		"@typescript-eslint/parser": "^4.22.0",
 		"aws-sdk": "^2.897.0",
@@ -31,6 +36,10 @@
 		"@graphql-tools/graphql-file-loader": "^6.2.7",
 		"@graphql-tools/load": "^6.2.8",
 		"apollo-server-lambda": "^2.23.0",
-		"graphql": "^15.5.0"
+		"dotenv": "^8.2.0",
+		"graphql": "^15.5.0",
+		"import-from": "^3.0.0",
+		"moment": "^2.29.1",
+		"uuid": "^8.3.2"
 	}
 }

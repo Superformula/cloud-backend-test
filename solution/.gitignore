@@ -2,5 +2,6 @@ artifacts
 
 server/node_modules
 server/dist
+server/coverage
 
 infra/.terraform
