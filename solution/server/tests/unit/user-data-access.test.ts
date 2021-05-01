@@ -9,11 +9,13 @@ import {
 	GetItemOutput,
 	PutItemInput,
 	PutItemOutput,
+	ScanInput,
+	ScanOutput,
 } from 'aws-sdk/clients/dynamodb'
 import * as uuid from 'uuid'
 
-import { AddUserAsync, DeleteUserAsync, GetUserByIdAsync, UpdateUserAsync } from '../../src/user-data-access'
-import { UserInput } from '../../src/types'
+import { AddUserAsync, DeleteUserAsync, GetUserByIdAsync, ListUsersAsync, UpdateUserAsync } from '../../src/user-data-access'
+import { UserInput, UserListParams, UserPaginatedResponse } from '../../src/types'
 
 beforeAll(() => {
 	AWSMock.setSDKInstance(AWS)
@@ -257,6 +259,193 @@ describe('Data access - DeleteUserAsync tests', () => {
 			await DeleteUserAsync(ddb, userId)
 		} catch (error) {
 			expect(error.message).toMatch('Error on User delete')
+		}
+	})
+})
+
+describe('Data access - ListUsersAsync tests', () => {
+	it('should ListUsersAsync work as expected with no filter and no pagination', async () => {
+		const userId = 'userId'
+
+		const userResponse: AttributeMap = {
+			id: userId as AttributeValue,
+			name: 'name' as AttributeValue,
+			address: 'address' as AttributeValue,
+			createdAt: 'updatedAt' as AttributeValue,
+			updatedAt: 'updatedAt' as AttributeValue,
+			description: 'description' as AttributeValue,
+			dob: 'dob' as AttributeValue,
+			imageUrl: 'imageUrl' as AttributeValue,
+		}
+
+		AWSMock.mock('DynamoDB.DocumentClient', 'scan', (_params: ScanInput, callback: (err: AWSError | null, data: ScanOutput) => void) => {
+			callback(null, { Items: [userResponse] })
+		})
+
+		const ddb = new AWS.DynamoDB.DocumentClient()
+
+		const expected: UserPaginatedResponse = {
+			lastEvaluatedKey: undefined,
+			users: [
+				{
+					id: userId,
+					name: 'name',
+					address: 'address',
+					createdAt: 'updatedAt',
+					updatedAt: 'updatedAt',
+					description: 'description',
+					dob: 'dob',
+					imageUrl: 'imageUrl',
+				},
+			],
+		}
+
+		expect(await ListUsersAsync(ddb, {})).toEqual(expected)
+	})
+
+	it('should ListUsersAsync work as expected with filter and no pagination', async () => {
+		const userId = 'userId'
+
+		const userResponse: AttributeMap = {
+			id: userId as AttributeValue,
+			name: 'name' as AttributeValue,
+			address: 'address' as AttributeValue,
+			createdAt: 'updatedAt' as AttributeValue,
+			updatedAt: 'updatedAt' as AttributeValue,
+			description: 'description' as AttributeValue,
+			dob: 'dob' as AttributeValue,
+			imageUrl: 'imageUrl' as AttributeValue,
+		}
+
+		const listingParams: UserListParams = {
+			filter: 'Filter',
+		}
+
+		AWSMock.mock('DynamoDB.DocumentClient', 'scan', (_params: ScanInput, callback: (err: AWSError | null, data: ScanOutput) => void) => {
+			callback(null, { Items: [userResponse] })
+		})
+
+		const ddb = new AWS.DynamoDB.DocumentClient()
+
+		const expected: UserPaginatedResponse = {
+			lastEvaluatedKey: undefined,
+			users: [
+				{
+					id: userId,
+					name: 'name',
+					address: 'address',
+					createdAt: 'updatedAt',
+					updatedAt: 'updatedAt',
+					description: 'description',
+					dob: 'dob',
+					imageUrl: 'imageUrl',
+				},
+			],
+		}
+
+		expect(await ListUsersAsync(ddb, listingParams)).toEqual(expected)
+	})
+
+	it('should ListUsersAsync work as expected with pagination and no filter', async () => {
+		const userId = 'userId'
+
+		const userResponse: AttributeMap = {
+			id: userId as AttributeValue,
+			name: 'name' as AttributeValue,
+			address: 'address' as AttributeValue,
+			createdAt: 'updatedAt' as AttributeValue,
+			updatedAt: 'updatedAt' as AttributeValue,
+			description: 'description' as AttributeValue,
+			dob: 'dob' as AttributeValue,
+			imageUrl: 'imageUrl' as AttributeValue,
+		}
+
+		const listingParams: UserListParams = {
+			lastEvaluatedKey: 'Key',
+		}
+
+		AWSMock.mock('DynamoDB.DocumentClient', 'scan', (_params: ScanInput, callback: (err: AWSError | null, data: ScanOutput) => void) => {
+			callback(null, { Items: [userResponse] })
+		})
+
+		const ddb = new AWS.DynamoDB.DocumentClient()
+
+		const expected: UserPaginatedResponse = {
+			lastEvaluatedKey: undefined,
+			users: [
+				{
+					id: userId,
+					name: 'name',
+					address: 'address',
+					createdAt: 'updatedAt',
+					updatedAt: 'updatedAt',
+					description: 'description',
+					dob: 'dob',
+					imageUrl: 'imageUrl',
+				},
+			],
+		}
+
+		expect(await ListUsersAsync(ddb, listingParams)).toEqual(expected)
+	})
+
+	it('should ListUsersAsync work as expected with pagination and filter', async () => {
+		const userListResponse: AttributeMap[] = []
+
+		for (let i = 0; i < 2; ++i) {
+			userListResponse.push({
+				id: `${i}` as AttributeValue,
+				name: 'name' as AttributeValue,
+				address: 'address' as AttributeValue,
+				createdAt: 'updatedAt' as AttributeValue,
+				updatedAt: 'updatedAt' as AttributeValue,
+				description: 'description' as AttributeValue,
+				dob: 'dob' as AttributeValue,
+				imageUrl: 'imageUrl' as AttributeValue,
+			})
+		}
+
+		const listingParams: UserListParams = {
+			lastEvaluatedKey: 'Key',
+			limit: 1,
+		}
+
+		AWSMock.mock('DynamoDB.DocumentClient', 'scan', (_params: ScanInput, callback: (err: AWSError | null, data: ScanOutput) => void) => {
+			callback(null, { Items: userListResponse })
+		})
+
+		const ddb = new AWS.DynamoDB.DocumentClient()
+
+		const expected: UserPaginatedResponse = {
+			lastEvaluatedKey: '0',
+			users: [
+				{
+					id: '0',
+					name: 'name',
+					address: 'address',
+					createdAt: 'updatedAt',
+					updatedAt: 'updatedAt',
+					description: 'description',
+					dob: 'dob',
+					imageUrl: 'imageUrl',
+				},
+			],
+		}
+
+		expect(await ListUsersAsync(ddb, listingParams)).toEqual(expected)
+	})
+
+	it('should ListUsersAsync throw when receiving an error from server', async () => {
+		AWSMock.mock('DynamoDB.DocumentClient', 'scan', (_params: ScanInput, callback: (err: AWSError | null, data: ScanOutput) => void) => {
+			callback({ code: '', message: '', name: '', time: new Date() }, {})
+		})
+
+		const ddb = new AWS.DynamoDB.DocumentClient()
+
+		try {
+			await ListUsersAsync(ddb, {})
+		} catch (error) {
+			expect(error.message).toMatch('Error on User list')
 		}
 	})
 })
