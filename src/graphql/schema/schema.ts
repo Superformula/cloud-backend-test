@@ -12,15 +12,18 @@ export const typeDefs = gql`
 	type User {
 		id: ID!
 		name: String!
-		location: String!
+		address: String!
+		dob: String!
 		description: String
 		createdAt: String!
-		pictureUrl: String
+		updatedAt: String!
+		imageUrl: String
 	}
 
 	input UserInput {
-		name: String!
-		location: String!
+		name: String
+		address: String
 		description: String
+		dob: String
 	}
 `;

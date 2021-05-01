@@ -1,13 +1,8 @@
-import moment from 'moment';
-import { MutationResolvers } from '../types';
+import { Context } from '../types/context';
+import { MutationResolvers } from '../types/schema-types';
 
-export const Mutation: MutationResolvers = {
-	createUser: async () => {
-		return {
-			createdAt: moment().toISOString(),
-			location: 'test location',
-			name: 'Test user',
-			id: '123456',
-		};
+export const Mutation: MutationResolvers<Context> = {
+	createUser: async (_parent, args, context) => {
+		return await context.userRepository.createUser(args.data);
 	},
 };
