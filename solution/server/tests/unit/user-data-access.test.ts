@@ -231,7 +231,7 @@ describe('Data access - DeleteUserAsync tests', () => {
 			'DynamoDB.DocumentClient',
 			'delete',
 			(_params: DeleteItemInput, callback: (err: AWSError | null, data: DeleteItemOutput) => void) => {
-				callback({ code: '', message: '', name: '', time: new Date() }, {})
+				callback(null, {})
 			}
 		)
 
