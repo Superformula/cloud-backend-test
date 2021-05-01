@@ -87,7 +87,7 @@ export class UserRepo extends DataSource implements IRepo<UserModel, UserCreatio
 		// If context is not fulfilled, it means that DataSource was not correctly initialized, then throw excecion.
 		if (!this.context) {
 			throw new ApolloError(
-				'Operation to create user failed: Apollo did not initialize DataSource correctly.',
+				'Operation to update user failed: Apollo did not initialize DataSource correctly.',
 				ErrorCodes.DATASOURCE_NOT_INITIALIZED,
 			);
 		}
