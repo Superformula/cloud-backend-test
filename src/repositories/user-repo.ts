@@ -1,6 +1,6 @@
 import { AWSError } from 'aws-sdk';
 import { DeleteItemOutput, DocumentClient, GetItemOutput, UpdateItemOutput } from 'aws-sdk/clients/dynamodb';
-import { DataSource } from 'apollo-datasource';
+import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import { v4 as uuidv4 } from 'uuid';
 import { IRepo } from './irepo';
 import { ApolloError } from 'apollo-server-errors';
@@ -8,15 +8,22 @@ import { UserCreationInput, UserUpdateInput } from '../graphql/types';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { ErrorCodes } from '../enums/error-codes';
 import { buildSimpleUpdateItemInput } from '../misc/utils';
-import { UserModel } from '../db-models/user-model';
+import { UserModel } from '../db-models/user-models';
+import { Context } from '../misc/context-type';
 
 export class UserRepo extends DataSource implements IRepo<UserModel, UserCreationInput, UserUpdateInput> {
 	private readonly tableName = 'Users';
 	private docCient: DocumentClient;
+	private context: Context | null = null;
 
 	constructor() {
 		super();
 		this.docCient = new DocumentClient();
+	}
+
+	// This method is called by Apollo Server
+	initialize({ context }: DataSourceConfig<Context>): void {
+		this.context = context;
 	}
 
 	async getItem(id: string): Promise<UserModel> {
@@ -43,17 +50,21 @@ export class UserRepo extends DataSource implements IRepo<UserModel, UserCreatio
 	}
 
 	async putItem(input: UserCreationInput): Promise<UserModel> {
+		// If context is not fulfilled, it means that DataSource was not correctly initialized, then throw excecion.
+		if (!this.context) {
+			throw new ApolloError(
+				'Operation to create user failed: Apollo did not initialize DataSource correctly.',
+				ErrorCodes.DATASOURCE_NOT_INITIALIZED,
+			);
+		}
+
 		// get current date as UTC to fulfill fields createdAt and updatedAt
 		const currentDate = new Date().toUTCString();
 
-		// map the user creation input to a user model to be passed to DynamoDB
+		// map the given UserCreationInput to what will be actually sent to DynamoDB
 		const item: UserModel = {
+			...this.context.userModelConverter.fromCreationInputToDbModel(input),
 			id: uuidv4(),
-			name: input.name,
-			dob: input.dob,
-			address: input.address,
-			description: input.description,
-			imageUrl: input.imageUrl,
 			createdAt: currentDate,
 			updatedAt: currentDate,
 		};
@@ -73,21 +84,44 @@ export class UserRepo extends DataSource implements IRepo<UserModel, UserCreatio
 	}
 
 	async updateItem(id: string, input: UserUpdateInput): Promise<UserModel> {
+		// If context is not fulfilled, it means that DataSource was not correctly initialized, then throw excecion.
+		if (!this.context) {
+			throw new ApolloError(
+				'Operation to create user failed: Apollo did not initialize DataSource correctly.',
+				ErrorCodes.DATASOURCE_NOT_INITIALIZED,
+			);
+		}
+
 		let res: PromiseResult<UpdateItemOutput, AWSError>;
 
 		// get current date as UTC to update the field updatedAt
 		const currentDate = new Date().toUTCString();
-		const updateItemInput = buildSimpleUpdateItemInput(this.tableName, id, { ...input, updatedAt: currentDate });
+
+		// map the given UserUpdateInput to what will be actually sent to DynamoDB
+		const updateModel = this.context.userModelConverter.fromUpdateInputToDbModel(input);
+
+		// generate the update object that will be passed to docCient.update
+		const updateItemInput = buildSimpleUpdateItemInput(this.tableName, id, { ...updateModel, updatedAt: currentDate });
 
 		// try to update user; if everything goes well, return the user; if the "update" command fails, catch, format and throw exception
 		try {
 			res = await this.docCient.update({ ...updateItemInput, ReturnValues: 'ALL_NEW' }).promise();
 		} catch (err) {
-			throw new ApolloError('An error occurred while trying to update user.', ErrorCodes.UPDATE_USER_FAILED, err);
+			// since the condition for the update to happen is that the user with the given ID exists (see usage of "ConditionExpression" inside
+			// "buildSimpleUpdateItemInput"), if it is not found, an exception with code 'ConditionalCheckFailedException' will be thrown
+			if (err.code === 'ConditionalCheckFailedException') {
+				throw new ApolloError(
+					`User with ID '${id}' not found; hence, update operation failed.`,
+					ErrorCodes.USER_NOT_FOUND,
+					err,
+				);
+			} else {
+				throw new ApolloError('An error occurred while trying to update user.', ErrorCodes.UPDATE_USER_FAILED, err);
+			}
 		}
 
 		// just return the user (inside res.Attributes), since, when set to ALL_NEW, "update" command will either fulfill property "Attributes"
-		// and succeed or fail and throw the exception above.
+		// and succeed or fail and throw the exceptions above.
 		return res.Attributes as UserModel;
 	}
 
