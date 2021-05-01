@@ -1,5 +1,5 @@
-import Context from '../../types/context';
-import { Resolvers } from '../../types/graphql';
+import Context from '../../misc/context';
+import { Resolvers } from '../types';
 
 export const userResolvers: Resolvers<Context> = {
 	Query: {

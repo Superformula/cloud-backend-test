@@ -4,7 +4,7 @@ import { DataSource } from 'apollo-datasource';
 import { v4 as uuidv4 } from 'uuid';
 import { IRepo } from './irepo';
 import { ApolloError } from 'apollo-server-errors';
-import { Maybe, UserCreationInput, UserUpdateInput } from '../types/graphql';
+import { UserCreationInput, UserUpdateInput } from '../graphql/types';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { ErrorCodes } from '../enums/error-codes';
 import { buildSimpleUpdateItemInput } from '../misc/utils';

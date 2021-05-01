@@ -1,5 +1,5 @@
 import { UserModel } from '../db-models/user-model';
-import { User } from '../types/graphql';
+import { User } from '../graphql/types';
 
 export class UserModelConverter {
 	fromDbModelToGraphQLModel(dbModel: UserModel): User {
