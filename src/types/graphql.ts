@@ -30,6 +30,7 @@ export type MutationCreateUserArgs = {
 
 /** Mutation is meant to expose all the APIs whose purpose is to manipulate the database somehow, be it creating, updating, or deleting data */
 export type MutationUpdateUserArgs = {
+	id: Scalars['ID'];
 	input: UserUpdateInput;
 };
 
@@ -199,7 +200,7 @@ export type MutationResolvers<
 		ResolversTypes['User'],
 		ParentType,
 		ContextType,
-		RequireFields<MutationUpdateUserArgs, 'input'>
+		RequireFields<MutationUpdateUserArgs, 'id' | 'input'>
 	>;
 	deleteUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
 };
