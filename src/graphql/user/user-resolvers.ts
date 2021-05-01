@@ -5,21 +5,21 @@ export const userResolvers: Resolvers<Context> = {
 	Query: {
 		user: async (_parent, args, context) => {
 			const userModel = await context.dataSources.userRepo.getItem(args.id);
-			return context.userModelConverter.fromDbModelToGraphQLModel(userModel);
+			return context.userModelConverter.fromDbModelToGqlModel(userModel);
 		},
 	},
 	Mutation: {
 		createUser: async (_, args, context) => {
 			const userModel = await context.dataSources.userRepo.putItem(args.input);
-			return context.userModelConverter.fromDbModelToGraphQLModel(userModel);
+			return context.userModelConverter.fromDbModelToGqlModel(userModel);
 		},
 		updateUser: async (_, args, context) => {
 			const userModel = await context.dataSources.userRepo.updateItem(args.id, args.input);
-			return context.userModelConverter.fromDbModelToGraphQLModel(userModel);
+			return context.userModelConverter.fromDbModelToGqlModel(userModel);
 		},
 		deleteUser: async (_, args, context) => {
 			const userModel = await context.dataSources.userRepo.deleteItem(args.id);
-			return context.userModelConverter.fromDbModelToGraphQLModel(userModel);
+			return context.userModelConverter.fromDbModelToGqlModel(userModel);
 		},
 	},
 };

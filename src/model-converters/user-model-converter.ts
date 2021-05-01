@@ -4,7 +4,7 @@ import { User, UserCreationInput, UserUpdateInput } from '../graphql/types';
 // This class is meant to decouple the models from graphQL API from the models that are used with our database tables.
 // With UserModelConverter, we stopped using graphQL input models directly when creating or updating a user, for example.
 export class UserModelConverter {
-	fromDbModelToGraphQLModel(dbModel: UserModel): User {
+	fromDbModelToGqlModel(dbModel: UserModel): User {
 		return {
 			_id: dbModel.id,
 			name: dbModel.name,
@@ -17,7 +17,7 @@ export class UserModelConverter {
 		};
 	}
 
-	fromCreationInputToDbModel(input: UserCreationInput): UserCreationModel {
+	fromGqlCreationInputToDbCreationModel(input: UserCreationInput): UserCreationModel {
 		return {
 			name: input.name,
 			dob: input.dob,
@@ -27,7 +27,7 @@ export class UserModelConverter {
 		};
 	}
 
-	fromUpdateInputToDbModel(input: UserUpdateInput): UserUpdateModel {
+	fromGqlUpdateInputToDbUpdateModel(input: UserUpdateInput): UserUpdateModel {
 		// no undefined properties will be sent to DynamoDB "update" command,
 		// since method buildSimpleUpdateItemInput from utils.ts won't include them
 		const userModel = {

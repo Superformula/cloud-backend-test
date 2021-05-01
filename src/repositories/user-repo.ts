@@ -61,9 +61,9 @@ export class UserRepo extends DataSource implements IRepo<UserModel, UserCreatio
 		// get current date as UTC to fulfill fields createdAt and updatedAt
 		const currentDate = new Date().toUTCString();
 
-		// map the given UserCreationInput to what will be actually sent to DynamoDB
+		// map the given UserCreationInput to what will be actually sent to DynamoDB, and fulfill some more props
 		const item: UserModel = {
-			...this.context.userModelConverter.fromCreationInputToDbModel(input),
+			...this.context.userModelConverter.fromGqlCreationInputToDbCreationModel(input),
 			id: uuidv4(),
 			createdAt: currentDate,
 			updatedAt: currentDate,
@@ -98,7 +98,7 @@ export class UserRepo extends DataSource implements IRepo<UserModel, UserCreatio
 		const currentDate = new Date().toUTCString();
 
 		// map the given UserUpdateInput to what will be actually sent to DynamoDB
-		const updateModel = this.context.userModelConverter.fromUpdateInputToDbModel(input);
+		const updateModel = this.context.userModelConverter.fromGqlUpdateInputToDbUpdateModel(input);
 
 		// generate the update object that will be passed to docCient.update
 		const updateItemInput = buildSimpleUpdateItemInput(this.tableName, id, { ...updateModel, updatedAt: currentDate });
