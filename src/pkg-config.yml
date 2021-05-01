@@ -1,0 +1,32 @@
+# Global options
+options:
+  # Number of parallel processes to use for bundling.
+  #
+  # - Defaults to `1` process, which serially runs each bundle.
+  # - `1`/serial mode is run in the same process as `trace-pkg`.
+  # - Setting to `0` will use number of CPUs detected on machine.
+  # - Can be overridden by `--concurrency=<NUMBER>` command line option.
+  concurrency: 0
+
+  # Current working directory - OPTIONAL (default: `process.cwd()`)
+  #
+  # Directory from which to read input files as well as output zip bundles.
+  cwd: ./dist
+
+  # Package path prefixes up to a directory level to skip tracing on.
+  ignores:
+    - 'aws-sdk'
+
+  collapsed:
+    # Error if any collapsed files in zip are found (default: `true`)
+    bail: true
+
+# Each "package" corresponds to an outputted zip file. It can contain an number
+# of traced or straight included files.
+packages:
+  users_gql_lambda:
+    output: ../../packages/user-lambda.zip
+    trace:
+      - lambda.js
+    include:
+      - ./graphql/schema/schema.graphql

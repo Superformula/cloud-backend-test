@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "gen-types": "graphql-codegen --config codegen.yml"
+    "gen-types": "graphql-codegen --config codegen.yml",
+    "pack": "npm run build && trace-pkg -c pkg-config.yml"
   },
   "keywords": [],
   "author": "",
