@@ -1,6 +1,7 @@
 import * as AWSMock from 'jest-aws-sdk-mock'
 import AWS, { AWSError } from 'aws-sdk'
 import { GetItemInput, AttributeValue, GetItemOutput } from 'aws-sdk/clients/dynamodb'
+import { it, expect } from '@jest/globals'
 
 it('should sum work', async () => {
 	expect(4 + 3).toEqual(7)
