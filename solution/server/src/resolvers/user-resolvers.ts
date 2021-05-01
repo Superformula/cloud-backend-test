@@ -4,7 +4,6 @@ import { DeleteUserAsync, GetUserByIdAsync, UpdateUserAsync, AddUserAsync, ListU
 
 export const UserResolvers: Resolvers<CloudBackEndTestContext> = {
 	Query: {
-		hello: (): string => 'Hello world!',
 		getUser: async (_parent, { id }, { dynamo }) => {
 			return await GetUserByIdAsync(dynamo, id)
 		},

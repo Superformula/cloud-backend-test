@@ -1,5 +1,4 @@
 type Query {
-	hello: String
 	getUser(id: String!): User!
 	listUsers(params: UserListParams!): UserPaginatedResponse!
 }
