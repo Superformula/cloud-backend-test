@@ -10,6 +10,36 @@ resource "aws_lambda_function" "gql_lambda" {
 
   filename         = local.file_name
   source_code_hash = filebase64sha256(local.file_name)
+
+  environment {
+    variables = {
+      "USERS_TABLE_NAME" = var.users_table_name
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "lambda_policy" {
+  name = "lambda_policy"
+  role = aws_iam_role.gql_lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "dynamodb:BatchGetItem",
+          "dynamodb:GetItem",
+          "dynamodb:Query",
+          "dynamodb:Scan",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem"
+        ],
+        Resource = aws_dynamodb_table.users_table.arn
+      }
+    ]
+  })
 }
 
 resource "aws_iam_role" "gql_lambda_role" {
