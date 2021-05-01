@@ -8,17 +8,7 @@ import { Maybe, UserCreationInput, UserUpdateInput } from '../types/graphql';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { ErrorCodes } from '../enums/error-codes';
 import { buildSimpleUpdateItemInput } from '../misc/utils';
-
-export type UserModel = {
-	id: string;
-	name: string;
-	dob: string;
-	address?: Maybe<string>;
-	description?: Maybe<string>;
-	imageUrl?: Maybe<string>;
-	createdAt: string;
-	updatedAt: string;
-};
+import { UserModel } from '../db-models/user-model';
 
 export class UserRepo extends DataSource implements IRepo<UserModel, UserCreationInput, UserUpdateInput> {
 	private readonly tableName = 'Users';
