@@ -176,7 +176,7 @@ const AddOrUpdateUserAsync = async (db: DocumentClient, data: PutItemInputAttrib
 			})
 		return await GetUserByIdAsync(db, data['id'] as string)
 	} catch (error) {
-		throw new ApolloError('Error on User add', error)
+		throw new ApolloError('Error on User add/update', error)
 	}
 }
 
