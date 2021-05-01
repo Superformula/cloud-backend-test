@@ -1,4 +1,4 @@
-import Context from '../../misc/context';
+import Context from '../../misc/context-type';
 import { Resolvers } from '../types';
 
 export const userResolvers: Resolvers<Context> = {
