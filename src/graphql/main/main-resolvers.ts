@@ -1,7 +1,8 @@
+import { Context } from '../../types/context';
 import { Resolvers } from '../../types/graphql';
 
 // Resolvers for common fields and types declared in Query and Mutation
-export const mainResolvers: Resolvers = {
+export const mainResolvers: Resolvers<Context> = {
 	Query: {
 		hello: (): string => 'Hello world!', // dummy
 	},
