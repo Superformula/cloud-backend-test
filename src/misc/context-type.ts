@@ -1,4 +1,4 @@
-import { UserModel } from '../db-models/user-model';
+import { UserModel } from '../db-models/user-models';
 import { UserModelConverter } from '../model-converters/user-model-converter';
 import { IRepo } from '../repositories/irepo';
 import { UserCreationInput, UserUpdateInput } from '../graphql/types';
