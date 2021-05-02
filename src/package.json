@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "build:prod": "tsc -p tsconfig.prod.json",
     "test": "jest",
     "gen-types": "graphql-codegen --config codegen.yml",
-    "dev": "npm run gen-types -- --watch",
     "pack": "npm run build && trace-pkg -c pkg-config.yml"
   },
   "keywords": [],

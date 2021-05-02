@@ -1,0 +1,5 @@
+{
+	"extends": "./tsconfig",
+	// Remove test related files from production build
+	"exclude": ["**/*.test.ts", "**/__mocks__/*"]
+}

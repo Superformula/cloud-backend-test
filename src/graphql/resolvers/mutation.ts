@@ -6,4 +6,10 @@ export const Mutation: MutationResolvers<Context> = {
 	createUser: async (_parent, args, context) => {
 		return await context.userRepository.createUser(args.data);
 	},
+	updateUser: async (_parent, args, context) => {
+		return await context.userRepository.updateUser(args.id, args.data);
+	},
+	deleteUser: async (_parent, args, context) => {
+		return await context.userRepository.deleteUser(args.id);
+	},
 };

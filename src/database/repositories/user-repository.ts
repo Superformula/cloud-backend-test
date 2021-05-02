@@ -9,6 +9,8 @@ import { ApolloError } from 'apollo-server-lambda';
 
 export interface UserRepository {
 	createUser(data: UserInput): Promise<UserModel>;
+	updateUser(id: string, data: UserInput): Promise<UserModel>;
+	deleteUser(id: string): Promise<UserModel>;
 	getUser(id: string): Promise<UserModel>;
 }
 
@@ -62,6 +64,29 @@ export class DynamoDBUserRepository implements UserRepository {
 		return user;
 	}
 
+	async updateUser(id: string, data: UserInput): Promise<UserModel> {
+		const validatedInput = this.validateInput(data);
+		const user = await this.getUser(id);
+
+		user.name = data.name || user.name;
+		user.address = data.address || user.address;
+		user.dob = validatedInput.formattedDateOfBirth || user.dob;
+		user.description = data.description || user.description;
+		user.updatedAt = moment().toISOString();
+
+		// TODO: assess if it is worth to change this code to a update operation.
+		// It might be faster but will require a more complex code for building the queries.
+		// From a cost perspective, with an update I can cut out the previous read operation.
+		await this.database
+			.put({
+				TableName: this.tableName,
+				Item: user,
+			})
+			.promise();
+
+		return user;
+	}
+
 	async getUser(id: string): Promise<UserModel> {
 		const response = await this.database
 			.get({
@@ -75,6 +100,17 @@ export class DynamoDBUserRepository implements UserRepository {
 		}
 
 		return response.Item as UserModel;
+	}
+
+	async deleteUser(id: string): Promise<UserModel> {
+		const result = await this.database
+			.delete({
+				TableName: this.tableName,
+				Key: { id },
+			})
+			.promise();
+
+		return result.Attributes as UserModel;
 	}
 
 	private validateInput(data: UserInput): ValidatedInput {

@@ -7,6 +7,8 @@ export const typeDefs = gql`
 
 	type Mutation {
 		createUser(data: UserInput!): User!
+		updateUser(id: ID!, data: UserInput!): User!
+		deleteUser(id: ID!): User
 	}
 
 	type User {

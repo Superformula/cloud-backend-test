@@ -203,6 +203,128 @@ describe('Test user creation', () => {
 	});
 });
 
+describe('Test user update', () => {
+	const mockInput = {
+		address: 'Rio de Janeiro, Brazil',
+		dob: '1995-09-04',
+		name: 'Test user updated',
+		description: 'Test description updated',
+	} as UserInput;
+
+	const existingUser: UserModel = {
+		id: uuid(),
+		address: 'Brasilia, Brazil',
+		dob: '1995-09-03T00:00:00.000Z',
+		name: 'Test user',
+		description: 'Test description',
+		createdAt: '2021-05-01T17:52:48.299Z',
+	};
+
+	const setup = () => {
+		const database = new DocumentClient();
+		const now = moment();
+		Date.now = jest.fn().mockReturnValue(now);
+		return {
+			database,
+			repository: new DynamoDBUserRepository(database),
+			now,
+		};
+	};
+
+	beforeEach(() => {
+		process.env['USERS_TABLE_NAME'] = testTableName;
+	});
+
+	it('Should be updated with valid inputs', async () => {
+		const { database, repository, now } = setup();
+		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Item: { ...existingUser } }));
+
+		const user = await repository.updateUser(existingUser.id, mockInput);
+		expect(database.put).toHaveBeenCalledWith({
+			TableName: testTableName,
+			Item: user,
+		});
+
+		expect(user.address).toBe(mockInput.address);
+		expect(user.description).toBe(mockInput.description);
+		expect(user.name).toBe(mockInput.name);
+		expect(user.dob).toBe(moment(mockInput.dob).toISOString());
+		expect(user.updatedAt).toBe(now.toISOString());
+		expect(user.id).toBe(uuid());
+	});
+
+	it('Should remain the same if no field was specified', async () => {
+		const { database, repository } = setup();
+		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Item: { ...existingUser } }));
+
+		const user = await repository.updateUser(existingUser.id, {});
+		expect(database.put).toHaveBeenCalledWith({
+			TableName: testTableName,
+			Item: user,
+		});
+
+		expect(user.address).toBe(existingUser.address);
+		expect(user.description).toBe(existingUser.description);
+		expect(user.name).toBe(existingUser.name);
+		expect(user.dob).toBe(existingUser.dob);
+	});
+});
+
+describe('Test user delete', () => {
+	const existingUser: UserModel = {
+		id: uuid(),
+		address: 'Brasilia, Brazil',
+		dob: '1995-09-03T00:00:00.000Z',
+		name: 'Test user',
+		description: 'Test description',
+		createdAt: '2021-05-01T17:52:48.299Z',
+	};
+
+	const setup = () => {
+		const database = new DocumentClient();
+		const now = moment();
+		Date.now = jest.fn().mockReturnValue(now);
+		return {
+			database,
+			repository: new DynamoDBUserRepository(database),
+			now,
+		};
+	};
+
+	beforeEach(() => {
+		process.env['USERS_TABLE_NAME'] = testTableName;
+	});
+
+	it('Should be deleted if user exisits', async () => {
+		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Attributes: { ...existingUser } }));
+		const { database, repository } = setup();
+
+		const user = await repository.deleteUser(existingUser.id);
+		expect(database.delete).toHaveBeenCalledWith({
+			TableName: testTableName,
+			Key: { id: existingUser.id },
+		});
+
+		expect(user.address).toBe(existingUser.address);
+		expect(user.description).toBe(existingUser.description);
+		expect(user.name).toBe(existingUser.name);
+		expect(user.dob).toBe(existingUser.dob);
+	});
+
+	it('Should return null if not found', async () => {
+		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Attributes: null }));
+		const { database, repository } = setup();
+
+		const user = await repository.deleteUser(uuid());
+		expect(database.delete).toHaveBeenCalledWith({
+			TableName: testTableName,
+			Key: { id: uuid() },
+		});
+
+		expect(user).toBeNull();
+	});
+});
+
 const assertInvalidInputError = async (repository: UserRepository, input: UserInput, errorMessage: string) => {
 	let user: UserModel | null = null;
 	try {

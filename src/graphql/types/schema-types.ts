@@ -16,11 +16,24 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: User;
+  updateUser: User;
+  deleteUser?: Maybe<User>;
 };
 
 
 export type MutationCreateUserArgs = {
   data: UserInput;
+};
+
+
+export type MutationUpdateUserArgs = {
+  id: Scalars['ID'];
+  data: UserInput;
+};
+
+
+export type MutationDeleteUserArgs = {
+  id: Scalars['ID'];
 };
 
 export type Query = {
@@ -131,8 +144,8 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
-  Query: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  Query: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
   String: ResolverTypeWrapper<Scalars['String']>;
   UserInput: UserInput;
@@ -142,8 +155,8 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Mutation: {};
-  Query: {};
   ID: Scalars['ID'];
+  Query: {};
   User: User;
   String: Scalars['String'];
   UserInput: UserInput;
@@ -152,6 +165,8 @@ export type ResolversParentTypes = {
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'data'>>;
+  updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id' | 'data'>>;
+  deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
