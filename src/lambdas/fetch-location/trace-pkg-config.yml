@@ -1,0 +1,18 @@
+# Global options
+options:
+  # Number of parallel processes to use for bundling.
+  # (Setting to `0` will use number of CPUs detected on machine)
+  concurrency: 0
+
+  # Directory from which to read input files as well as output zip bundles.
+  cwd: ./dist
+
+# Each "package" corresponds to an outputted zip file. It can contain a number of traced or straight included files.
+packages:
+  location_lambda:
+    # File path (absolute or relative to `cwd` option) for output bundle.
+    output: ../../../../lambda-zips/fetch-location-lambda.zip
+
+    # entry point file
+    trace:
+      - fetch-location-handler.js

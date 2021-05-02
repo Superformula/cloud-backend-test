@@ -10,3 +10,6 @@ dist
 infra/.terraform
 terraform.tfstate
 terraform.tfstate.backup
+
+# lambda .zip files
+lambda-zips 
