@@ -30,7 +30,9 @@ Using Terraform (version 3.30 because it's being already 2 months of testing), t
 
 The [Mapbox](https://www.mapbox.com/) API Key must be provided on '[infra/lambda.tf](./solution/infra/lambda.tf)' file, on AWS Lambda environment variables, to authenticate.
 
-The Lambda is connected to the REST API Gateway, to serve the GraphQL server the incoming requests. The [Insomnia](https://insomnia.rest/) was used for testing, the collection can be found [here](./assets/Insomnia_GraphQL_Fabio.json), import it to your Insomnia instance to simplify testing.
+### Insomnia testing setup
+
+The Lambda is connected to the REST API Gateway, to serve the GraphQL server the incoming requests. [Insomnia](https://insomnia.rest/) was used for testing, the collection can be found [here](./assets/Insomnia_GraphQL_Fabio.json), import it to your Insomnia instance to simplify testing.
 
 ## Server
 
