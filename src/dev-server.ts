@@ -1,17 +1,9 @@
 import { ApolloServer } from 'apollo-server';
-import { schema } from './graphql/schema';
-import { UserModelConverter } from './model-converters/user-model-converter';
-import { UserRepo } from './repositories/user-repo';
+import { apolloServerConfig } from './misc/apollo-server-config';
 
 const PORT = process.env.PORT || 4000;
 
-const server = new ApolloServer({
-	schema,
-	dataSources: () => ({
-		userRepo: new UserRepo(),
-	}),
-	context: { userModelConverter: new UserModelConverter() },
-});
+const server = new ApolloServer(apolloServerConfig);
 
 server.listen(PORT, () => {
 	console.log(`Server running at http://localhost:${PORT}...`);
