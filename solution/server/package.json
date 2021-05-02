@@ -36,6 +36,7 @@
 	"dependencies": {
 		"@graphql-tools/graphql-file-loader": "^6.2.7",
 		"@graphql-tools/load": "^6.2.8",
+		"@graphql-tools/load-files": "^6.3.2",
 		"@mapbox/mapbox-sdk": "^0.12.1",
 		"apollo-server-lambda": "^2.23.0",
 		"dotenv": "^8.2.0",

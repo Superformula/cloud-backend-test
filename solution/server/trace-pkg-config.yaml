@@ -8,9 +8,6 @@ options:
     # - Can be overridden by `--concurrency=<NUMBER>` command line option.
     concurrency: 0
 
-    # Include reference source maps from traced files? (default: `false`)
-    includeSourceMaps: true
-
     # Package path prefixes up to a directory level to skip tracing on.
     ignores:
         - 'aws-sdk' # According to https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html, it is not necessary to add
