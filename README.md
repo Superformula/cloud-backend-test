@@ -1,145 +1,145 @@
-# Superformula Full Stack Developer Test
+# Superformula Full Stack Developer Test - Fabio's Solution
 
-Be sure to read **all** of this document carefully, and follow the guidelines within.
+This repository's project is a GraphQL AWS Lambda server that supports CRUD operations for a User schema, including listing with filtering and pagination, and also supports string address queries to obtain its geolocation. It also includes the [Terraform](https://www.terraform.io/) files used for resource creation and Lambda deployment in AWS environment. The solution is inside '[solution](./solution)' folder.
 
-## Backend Context
+## Features
 
-Build a GraphQL API that can `create/read/update/delete` user data from a persistence store.
+This solution supports the following features:
 
-### User Model
+-   Create AWS resources
+-   CRUD operations for the User
+-   Listing Users with pagination and filtering by name
+-   Obtain a list of possible geolocations from a string address
 
-```
-{
-  "id": "xxx",                  // user ID (must be unique)
-  "name": "backend test",       // user name
-  "dob": "",                    // date of birth
-  "address": "",                // user address
-  "description": "",            // user description
-  "createdAt": "",              // user created date
-  "updatedAt": "",              // user updated date
-  "imageUrl": ""                // user avatar image url
+## Overview
+
+The repository is composed of two main directories:
+
+-   "infra": Terraform files to create resources on AWS
+-   "server": The GraphQL server
+
+A GitHub action was configured to run all unit tests on commits and only allow merge requests if all tests are passing.
+
+## Infrasctructure
+
+Using Terraform (version 3.30 because it's being already 2 months of testing), the following resources are created on AWS:
+
+-   AWS Lambda: The GraphQL server is deployed as a Lambda function
+-   API Gateway: REST API to serve requests to the GraphQL server
+-   DynamoDB: The server's database
+
+The [Mapbox](https://www.mapbox.com/) API Key must be provided on '[infra/lambda.tf](./solution/infra/lambda.tf)' file, on AWS Lambda environment variables, to authenticate.
+
+### Insomnia testing setup
+
+The Lambda is connected to the REST API Gateway, to serve the GraphQL server the incoming requests. [Insomnia](https://insomnia.rest/) was used for testing, the collection can be found [here](./assets/Insomnia_GraphQL_Fabio.json), import it to your Insomnia instance to simplify testing.
+
+## Server
+
+The starting setup was made using [Prettier](https://prettier.io/) and [ESLint](https://eslint.org/), they were configured to find and fix code problems according to the rules defined. I configured these tools using my personal preferences.
+
+The GraphQL server was created using [TypeScript](https://www.typescriptlang.org/), it was one of the solution's requirement, and [Apollo Server Lambda](https://www.apollographql.com/docs/apollo-server/deployment/lambda/) because, after some time studying how to create a GraphQL API, I agree with Apollo Server creators that "It's the best way to build a production-ready, self-documenting GraphQL API that can use data from any source", and using the "[apollo-server-lambda](https://www.npmjs.com/package/apollo-server-lambda)" package makes it easy to deploy in the AWS environment. The library [GraphQL Code Generator](https://www.graphql-code-generator.com/) was used to generate types from schemas for TypeScript.
+
+Here is the architecture:
+
+![Superformula-fabio-solution-architecture](./assets/SuperformulaFabio1.png)
+
+[Mapbox](https://www.mapbox.com/) was the Geolocation API chosen for address queries, integrated with the solution using the [@mapbox/mapbox-sdk](https://www.npmjs.com/package/@mapbox/mapbox-sdk) package.
+
+To create the artifact to be deployed on AWS, the [trace-pkg](https://github.com/FormidableLabs/trace-pkg) package was chosen and configured. It generates a .zip file that will be used by Terraform to create the Lambda.
+
+The main schemas for this project are:
+
+```graphql
+type User {
+    id: ID!
+    name: String!
+    dob: String
+    address: Address
+    description: String
+    createdAt: String
+    updatedAt: String
+    imageUrl: String
+}
+
+type Address {
+    place: String!
+    latitude: Float!
+    longitude: Float!
 }
 ```
 
-### Functionality
+The User schema is composed of the required files on the test specs, just the address is a little bit different, it became an object with the address name and its geolocation info (latitude and longitude).
 
-- The API should follow typical GraphQL API design pattern
-- The data should be saved in the DB
-- Proper error handling should be used
-- Paginating and filtering (by name) users list
-- The API must have a Query to fetch geolocation information based off an address
+Dates are supported on DynamoDB, but I chose to store them as ISO strings using the [moment.js](https://momentjs.com/) library. The front end can easily parse these strings and manipulate the Date objects.
 
-### Requirements
+Since I chose to use DynamoDB for listing users and support filetering on pagination on it, I tried to use native functions to achieve it. I searched a lot on how to do it directly with DynamoDB and tried to bring the best practices found, even though I know there is a huge space for improvement.
 
-#### Tech Stack
-  - **Use Typescript**
-  - **Use Infrastructure-as-code tooling** that can be used to deploy all resources to an AWS account. Examples:
-    - **Terraform (preferred)**
-    - CloudFormation / SAM
-    - Serverless Framework
-    - Feel free to use other IaC tooling if you prefer
-  - Use **AWS Lambda + API Gateway (preferred)** or AWS AppSync
-  - Use any AWS Database-as-a-Service persistence store. **DynamoDB is preferred.**
-  - Location query must use [NASA](https://api.nasa.gov/api.html) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs to resolve the coordinate based on the address; use AWS Lambda.
+### Unit tests
 
-#### Developer Experience 
-- Write unit tests for business logic
-- Write concise and clear commit messages
-- Document and diagram the architecture of your solution
-- Write clear documentation:
-    - Repository structure
-    - Environment variables and any defaults.
-    - How to build/run/test the solution
-    - Deployment guide
-    
-#### API Consumer Experience
-- GraphQL API documentation
-- Ensure your API is able to support all requirements passed to the consumer team
+All unit tests for the server business logic were made using [Jest](https://jestjs.io/) with the "ts-jest" package. To mock DynamoDB, "[jest-aws-sdk-mock](https://www.npmjs.com/package/jest-aws-sdk-mock)" was also used since it made it much simpler to deal with DynamoDB in the testing environment.
 
-### Bonus
+### GraphQL API Documentation
 
-These may be used for further challenges. You can freely skip these; feel free to try out if you feel up to it.
+You can find the GraphQL Documentation [here](http://graphql-doc.s3-website-us-east-1.amazonaws.com).
 
-#### Developer Experience (in order)
+## Requirements
 
-1. E2E Testing
-1. Integration testing
-1. Code-coverage report generation
-1. Describe your strategy for Lambda error handling, retries, and DLQs
-1. Describe your cloud-native logging, monitoring, and alarming strategy across all queries/mutations
-1. Online interactive demo with a publicly accessible link to your API
-1. Brief description of the frameworks/tools used in the solution
-1. Optimized lambda build.
-1. Commit linting
-1. Semantic release
+In order to build, deploy and/or test the project you need to install:
 
+-   [Node.js](https://nodejs.org/en/)
+-   [AWS CLI](https://aws.amazon.com/pt/cli/)
+-   [Yarn](https://yarnpkg.com/getting-started/install)
+-   [Terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli?in=terraform/aws-get-started)
 
-#### API Consumer Experience (in order)
+## Testing
 
-1. Document how consumers can quickly prototype against your APIs
-    - GraphQL Playground setup
-    - Insomnia setup
-    - Feel free to use any other tool/client you might know that enable consumers to prototype against your API
-1. GraphQL Documentation Generation
-1. Client API generation
+To run the project tests, navigate to the "server" folder and execute the following commands
 
+```
+yarn install
+yarn test
+```
 
-## Consumer context
+All tests will be executed and a coverage report will be shown.
 
-Assume the GraphQL API you are developing will be used by a front-end team to build the following screens:
+## Deploying
 
-![Superformula-front-end-test-mockup](./mockup1.png)
+To deploy the server, a [configured AWS account](https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html) and a Mapbox API Key are needed. Replace the value of "MAPBOX_API_KEY" entry on Lambda AWS environment variables on [infra/lambda.tf](./solution/infra/lambda.tf) file.
 
-![Superformula-front-end-test-mockup-2](./mockup2.png)
+First, it is necessary to build the project and create the artifact for deployment. Terraform is currently configured to deploy resources on region 'us-east-1', you may change it on file '[infra/main.tf](./solution/infra/main.tf)'.
 
-> [Source Figma file](https://www.figma.com/file/hd7EgdTxJs2fpTzzSKlNxo/Superformula-full-stack-test)
+Navigate to the server folder and execute on the command line:
 
-#### Functionality
+```
+yarn install
+yarn build-package
+```
 
-- The search functionality should perform real time filtering on client side data and API side data
-- List of users should be updated automatically after single user is updated
+The .zip file will be created in the artifacts folder (same level of the server folder). Now navigate to the infra folder and execute:
 
-#### Tech stack
+```
+terraform init
+terraform apply
+```
 
-- Typescript
-- React
+Check if the resources listed are the ones you want and confirm the creation on Terraform.
 
+The API Gateway outputs the URL of the API, append the path "/graphql" to it in order to make requests to the server.
 
-## What We Care About
+## Further improvements
 
-Use any libraries that you would normally use if this were a real production App. Please note: we're interested in your code & the way you solve the problem, not how well you can use a particular library or feature.
-
-_We're interested in your method and how you approach the problem just as much as we're interested in the end result._
-
-Here's what you should strive for:
-
-- Good use of current Typescript, Node.js, GraphQL & performance best practices.
-- Solid testing approach.
-- Extensible code and architecture.
-- Delightful experience for other backend engineers working in this repository
-- Delightful experience for engineers consuming your APIs
-
-## Q&A
-> Where should I send back the result when I'm done?
-
-Fork this repo and send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
-
-> What if I have a question?
-
-Create a new issue in this repo and we will respond and get back to you quickly.
-
-> Should I validate inputs?
-
-Please assume a hard requirement has not been set by the product owner. We welcome any input validations and your reasoning for why they add value.
-
-> What is the location format?
-
-Examples:
-- Seattle, Washington
-- Digital Nomad
-- New Jersey
-- Northern Bergen County, NJ
-
-> I almost finished, but I don't have time to create everything what is required
-
-Please provide a plan for the rest of the things that you would do.
+-   E2E testing
+-   Integration tests
+-   Strategy for Lambda error handling, retries, and DLQs
+-   Describe cloud-native logging, monitoring, and alarming strategy across all queries/mutations
+-   Online interactive demo with a publicly accessible link to API
+-   Optimized lambda build
+-   Commit linting
+-   Semantic release
+-   Improve logging
+-   Add more test cases with different flows
+-   Add authentication and authorization for requests
+-   Add [schema checks](https://www.apollographql.com/docs/studio/schema-checks/) and connect to GitHub
+-   Improve listing with filtering and pagination, maybe integrate DynamoDB with ElasticSearch
+-   Fix warnings on package generation with trace-pkg
