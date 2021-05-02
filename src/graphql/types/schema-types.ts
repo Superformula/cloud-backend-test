@@ -41,7 +41,7 @@ export type User = {
   dob: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
+  updatedAt?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['String']>;
 };
 
@@ -165,7 +165,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   dob?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   imageUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

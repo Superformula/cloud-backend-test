@@ -16,7 +16,7 @@ export const typeDefs = gql`
 		dob: String!
 		description: String
 		createdAt: String!
-		updatedAt: String!
+		updatedAt: String
 		imageUrl: String
 	}
 

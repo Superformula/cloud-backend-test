@@ -5,5 +5,5 @@ export interface UserModel {
 	address: string;
 	description?: string;
 	createdAt: string;
-	updatedAt: string;
+	updatedAt?: string;
 }

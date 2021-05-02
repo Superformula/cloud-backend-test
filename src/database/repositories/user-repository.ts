@@ -9,6 +9,7 @@ import { ApolloError } from 'apollo-server-lambda';
 
 export interface UserRepository {
 	createUser(data: UserInput): Promise<UserModel>;
+	getUser(id: string): Promise<UserModel>;
 }
 
 interface ValidatedInput extends UserInput {
@@ -60,6 +61,21 @@ export class DynamoDBUserRepository implements UserRepository {
 			.promise();
 
 		return user;
+	}
+
+	async getUser(id: string): Promise<UserModel> {
+		const response = await this.database
+			.get({
+				TableName: this.tableName,
+				Key: { id },
+			})
+			.promise();
+
+		if (!response.Item) {
+			throw new ApolloError(`Could not find user with id ${id}`);
+		}
+
+		return response.Item as UserModel;
 	}
 
 	updateUser(id: String, data: UserInput): UserModel {
