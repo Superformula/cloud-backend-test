@@ -1,1 +1,0 @@
-# this file holds all the variables of this Terraform setup
