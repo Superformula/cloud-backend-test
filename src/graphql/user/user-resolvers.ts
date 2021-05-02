@@ -1,4 +1,4 @@
-import Context from '../../misc/context-type';
+import { Context } from '../../misc/context-type';
 import { Resolvers } from '../types';
 
 export const userResolvers: Resolvers<Context> = {
@@ -6,6 +6,10 @@ export const userResolvers: Resolvers<Context> = {
 		user: async (_parent, args, context) => {
 			const userModel = await context.dataSources.userRepo.getItem(args.id);
 			return context.userModelConverter.fromDbModelToGqlModel(userModel);
+		},
+		listUsers: async (_parent, args, context) => {
+			const pagOutput = await context.dataSources.userRepo.listItems(args.paginationParams, args.nameFilter);
+			return context.userModelConverter.fromPaginationOutputModelToUserPaginationResult(pagOutput);
 		},
 	},
 	Mutation: {

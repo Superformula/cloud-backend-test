@@ -1,10 +1,16 @@
 import { AWSError } from 'aws-sdk';
-import { DeleteItemOutput, DocumentClient, GetItemOutput, UpdateItemOutput } from 'aws-sdk/clients/dynamodb';
+import {
+	DeleteItemOutput,
+	DocumentClient,
+	GetItemOutput,
+	ScanOutput,
+	UpdateItemOutput,
+} from 'aws-sdk/clients/dynamodb';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import { v4 as uuidv4 } from 'uuid';
-import { IRepo } from './irepo';
+import { IRepo, PaginationOutputModel } from './irepo';
 import { ApolloError } from 'apollo-server-errors';
-import { UserCreationInput, UserUpdateInput } from '../graphql/types';
+import { Maybe, PaginationInput, UserCreationInput, UserUpdateInput } from '../graphql/types';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { ErrorCodes } from '../enums/error-codes';
 import { buildSimpleUpdateItemInput } from '../misc/utils';
@@ -47,6 +53,62 @@ export class UserRepo extends DataSource implements IRepo<UserModel, UserCreatio
 		} else {
 			throw new ApolloError(`User with ID '${id}' not found.`, ErrorCodes.USER_NOT_FOUND);
 		}
+	}
+
+	async listItems(
+		paginationInput?: Maybe<PaginationInput>,
+		filterValue?: Maybe<string>,
+	): Promise<PaginationOutputModel<UserModel>> {
+		// If context is not fulfilled, it means that DataSource was not correctly initialized, then throw excecion.
+		if (!this.context) {
+			throw new ApolloError(
+				'Operation to update user failed: Apollo did not initialize DataSource correctly.',
+				ErrorCodes.DATASOURCE_NOT_INITIALIZED,
+			);
+		}
+
+		let res: PromiseResult<ScanOutput, AWSError>;
+
+		paginationInput ||= {};
+
+		// if the ID of the last element of the previous pagination was passed, build the exclusiveStartKey to be passed to "scan" command; otherwise, leave it undefined
+		const exclusiveStartKey = paginationInput.exclusiveStartId ? { id: paginationInput.exclusiveStartId } : undefined;
+
+		// if filterValue was passed, build the FilterExpression string to be used by DynamoDB during the "scan" command to filter the elements that will be returned, and
+		// also build other properties that will be useful in the "scan" command (expressionAttributeValues and expressionAttributeNames); otherwise, leave it undefined.
+		const filterExpression = filterValue ? 'contains (#n, :filterValue)' : undefined;
+		const expressionAttributeValues = filterValue ? { ':filterValue': filterValue } : undefined;
+		const expressionAttributeNames = filterValue ? { '#n': 'name' } : undefined;
+
+		// try to list users; if everything goes well, return the the result of the pagination; if the "scan" command fails, catch, format and throw exception
+		try {
+			res = await this.docCient
+				.scan({
+					TableName: this.tableName,
+					Limit: paginationInput.limit || undefined,
+					ExclusiveStartKey: exclusiveStartKey,
+					FilterExpression: filterExpression,
+					ExpressionAttributeValues: expressionAttributeValues,
+					ExpressionAttributeNames: expressionAttributeNames,
+				})
+				.promise();
+		} catch (err) {
+			throw new ApolloError('An error occurred while trying to list users.', ErrorCodes.LIST_USERS_FAILED, err);
+		}
+
+		if (res.Items === undefined || res.Count === undefined || res.ScannedCount === undefined) {
+			throw new ApolloError(
+				'Listing users failed: the result of the scan command is invalid.',
+				ErrorCodes.LIST_USERS_FAILED,
+			);
+		}
+
+		return {
+			items: res.Items as UserModel[],
+			count: res.Count,
+			scannedCount: res.ScannedCount,
+			lastEvaluatedKey: res.LastEvaluatedKey,
+		};
 	}
 
 	async putItem(input: UserCreationInput): Promise<UserModel> {
