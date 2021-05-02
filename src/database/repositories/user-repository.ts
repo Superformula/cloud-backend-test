@@ -30,6 +30,10 @@ export class DynamoDBUserRepository implements UserRepository {
 	}
 
 	async createUser(data: UserInput): Promise<UserModel> {
+		if (!data.name) {
+			throw new UserInputError('The name must be specified');
+		}
+
 		if (!data.dob) {
 			throw new UserInputError('The date of birth must be specified');
 		}
@@ -38,12 +42,7 @@ export class DynamoDBUserRepository implements UserRepository {
 			throw new UserInputError('The address must be specified');
 		}
 
-		if (!data.name) {
-			throw new UserInputError('The name must be specified');
-		}
-
 		const validatedInput = this.validateInput(data);
-
 		const user = {
 			id: uuid(),
 			name: data.name,
@@ -78,26 +77,12 @@ export class DynamoDBUserRepository implements UserRepository {
 		return response.Item as UserModel;
 	}
 
-	updateUser(id: String, data: UserInput): UserModel {
-		const validatedInput = this.validateInput(data);
-
-		const user = {
-			id: uuid(),
-			name: data.name,
-			address: data.address,
-			description: data.description,
-			dob: validatedInput.formattedDateOfBirth,
-			createdAt: moment().toISOString(),
-		} as UserModel;
-
-		return user;
-	}
-
 	private validateInput(data: UserInput): ValidatedInput {
 		let parsedBirthDate: moment.Moment | null = null;
 
 		if (data.dob) {
-			parsedBirthDate = moment(data.dob);
+			// Since we are interested only on the date part, force a strict format
+			parsedBirthDate = moment(data.dob, 'YYYY-MM-DD', true);
 			if (!parsedBirthDate.isValid()) {
 				throw new UserInputError('An invalid date of birth was provided');
 			}
