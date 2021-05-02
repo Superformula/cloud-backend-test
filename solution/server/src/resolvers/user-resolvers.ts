@@ -3,7 +3,7 @@ import { FindAddressAsync } from '../mapbox-access'
 import { Resolvers } from '../types/types'
 import { DeleteUserAsync, GetUserByIdAsync, UpdateUserAsync, AddUserAsync, ListUsersAsync } from '../user-data-access'
 
-export const UserResolvers: Resolvers<CloudBackEndTestContext> = {
+export const UserResolver: Resolvers<CloudBackEndTestContext> = {
 	Query: {
 		getUser: async (_parent, { id }, { dynamo }) => {
 			return await GetUserByIdAsync(dynamo, id)
