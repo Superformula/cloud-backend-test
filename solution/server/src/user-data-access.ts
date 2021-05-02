@@ -1,4 +1,4 @@
-import { User, UserInput, UserListParams, UserPaginatedResponse } from './types'
+import { User, UserInput, UserListParams, UserPaginatedResponse } from './types/types'
 import { ApolloError } from 'apollo-server-errors'
 import {
 	AttributeValue,
@@ -231,7 +231,12 @@ function genUserDataMap(userInput: UserInput): { [key: string]: AttributeValue }
 	}
 
 	if (userInput.address) {
-		item['address'] = userInput.address as AttributeValue
+		const addressObj: AttributeMap = {
+			place: userInput.address.place as AttributeValue,
+			latitude: userInput.address.latitude as AttributeValue,
+			longitude: userInput.address.longitude as AttributeValue,
+		}
+		item['address'] = addressObj
 	}
 
 	if (userInput.description) {
@@ -263,7 +268,11 @@ function attributeMapToUser(attMap: AttributeMap): User {
 	return {
 		id: attMap.id as string,
 		name: attMap.name as string,
-		address: attMap.address as string,
+		address: {
+			place: (attMap.address as AttributeMap).place as string,
+			latitude: (attMap.address as AttributeMap).latitude as number,
+			longitude: (attMap.address as AttributeMap).longitude as number,
+		},
 		createdAt: attMap.createdAt as string,
 		updatedAt: attMap.updatedAt as string,
 		description: attMap.description as string,

@@ -14,7 +14,7 @@ import {
 } from 'aws-sdk/clients/dynamodb'
 import * as uuid from 'uuid'
 import { AddUserAsync, DeleteUserAsync, GetUserByIdAsync, ListUsersAsync, UpdateUserAsync } from '../../src/user-data-access'
-import { UserInput, UserListParams, UserPaginatedResponse } from '../../src/types'
+import { Address, AddressInput, UserInput, UserListParams, UserPaginatedResponse } from '../../src/types/types'
 import { jest, beforeAll, describe, it, expect, beforeEach } from '@jest/globals'
 
 beforeAll(() => {
@@ -27,12 +27,38 @@ beforeAll(() => {
 
 jest.mock('uuid')
 
+const addressInput: AddressInput = {
+	latitude: -1,
+	longitude: 1,
+	place: 'place',
+}
+
+const address: Address = {
+	latitude: -1,
+	longitude: 1,
+	place: 'place',
+}
+
+const addressAttributeMap: AttributeMap = {
+	latitude: -1 as AttributeValue,
+	longitude: 1 as AttributeValue,
+	place: 'place' as AttributeValue,
+}
+
+const input: UserInput = {
+	name: 'name',
+	address: addressInput,
+	description: 'description',
+	dob: 'dob',
+	imageUrl: 'imageUrl',
+}
+
 describe('Data access - GetUserByIdAsync tests', () => {
 	it('should GetUserByIdAsync work as expected', async () => {
 		const response: AttributeMap = {
 			id: '' as AttributeValue,
 			name: '' as AttributeValue,
-			address: '' as AttributeValue,
+			address: addressAttributeMap,
 			createdAt: '' as AttributeValue,
 			updatedAt: '' as AttributeValue,
 			description: '' as AttributeValue,
@@ -109,18 +135,10 @@ describe('Data access - AddUserAsync tests', () => {
 	})
 
 	it('should AddUserAsync work as expected', async () => {
-		const input: UserInput = {
-			name: 'name',
-			address: 'address',
-			description: 'description',
-			dob: 'dob',
-			imageUrl: 'imageUrl',
-		}
-
 		const response: AttributeMap = {
 			id: 'id' as AttributeValue,
 			name: 'name' as AttributeValue,
-			address: 'address' as AttributeValue,
+			address: addressAttributeMap,
 			createdAt: 'updatedAt' as AttributeValue,
 			updatedAt: 'updatedAt' as AttributeValue,
 			description: 'description' as AttributeValue,
@@ -142,14 +160,6 @@ describe('Data access - AddUserAsync tests', () => {
 	})
 
 	it('should AddUserAsync throw when receiving an error from server', async () => {
-		const input: UserInput = {
-			name: 'name',
-			address: 'address',
-			description: 'description',
-			dob: 'dob',
-			imageUrl: 'imageUrl',
-		}
-
 		AWSMock.mock('DynamoDB.DocumentClient', 'put', (_params: PutItemInput, callback: (err: AWSError | null, data: PutItemOutput) => void) => {
 			callback({ code: '', message: '', name: '', time: new Date() }, {})
 		})
@@ -168,18 +178,10 @@ describe('Data access - UpdateUserAsync tests', () => {
 	it('should UpdateUserAsync work as expected', async () => {
 		const userId = 'userId'
 
-		const input: UserInput = {
-			name: 'name',
-			address: 'address',
-			description: 'description',
-			dob: 'dob',
-			imageUrl: 'imageUrl',
-		}
-
 		const response: AttributeMap = {
 			id: userId as AttributeValue,
 			name: 'name' as AttributeValue,
-			address: 'address' as AttributeValue,
+			address: addressAttributeMap,
 			createdAt: 'updatedAt' as AttributeValue,
 			updatedAt: 'updatedAt' as AttributeValue,
 			description: 'description' as AttributeValue,
@@ -202,14 +204,6 @@ describe('Data access - UpdateUserAsync tests', () => {
 
 	it('should UpdateUserAsync throw when receiving an error from server', async () => {
 		const userId = 'userId'
-
-		const input: UserInput = {
-			name: 'name',
-			address: 'address',
-			description: 'description',
-			dob: 'dob',
-			imageUrl: 'imageUrl',
-		}
 
 		AWSMock.mock('DynamoDB.DocumentClient', 'put', (_params: PutItemInput, callback: (err: AWSError | null, data: PutItemOutput) => void) => {
 			callback({ code: '', message: '', name: '', time: new Date() }, {})
@@ -270,7 +264,7 @@ describe('Data access - ListUsersAsync tests', () => {
 		const userResponse: AttributeMap = {
 			id: userId as AttributeValue,
 			name: 'name' as AttributeValue,
-			address: 'address' as AttributeValue,
+			address: addressAttributeMap,
 			createdAt: 'updatedAt' as AttributeValue,
 			updatedAt: 'updatedAt' as AttributeValue,
 			description: 'description' as AttributeValue,
@@ -290,7 +284,7 @@ describe('Data access - ListUsersAsync tests', () => {
 				{
 					id: userId,
 					name: 'name',
-					address: 'address',
+					address: address,
 					createdAt: 'updatedAt',
 					updatedAt: 'updatedAt',
 					description: 'description',
@@ -309,7 +303,7 @@ describe('Data access - ListUsersAsync tests', () => {
 		const userResponse: AttributeMap = {
 			id: userId as AttributeValue,
 			name: 'name' as AttributeValue,
-			address: 'address' as AttributeValue,
+			address: addressAttributeMap,
 			createdAt: 'updatedAt' as AttributeValue,
 			updatedAt: 'updatedAt' as AttributeValue,
 			description: 'description' as AttributeValue,
@@ -333,7 +327,7 @@ describe('Data access - ListUsersAsync tests', () => {
 				{
 					id: userId,
 					name: 'name',
-					address: 'address',
+					address: address,
 					createdAt: 'updatedAt',
 					updatedAt: 'updatedAt',
 					description: 'description',
@@ -352,7 +346,7 @@ describe('Data access - ListUsersAsync tests', () => {
 		const userResponse: AttributeMap = {
 			id: userId as AttributeValue,
 			name: 'name' as AttributeValue,
-			address: 'address' as AttributeValue,
+			address: addressAttributeMap,
 			createdAt: 'updatedAt' as AttributeValue,
 			updatedAt: 'updatedAt' as AttributeValue,
 			description: 'description' as AttributeValue,
@@ -376,7 +370,7 @@ describe('Data access - ListUsersAsync tests', () => {
 				{
 					id: userId,
 					name: 'name',
-					address: 'address',
+					address: address,
 					createdAt: 'updatedAt',
 					updatedAt: 'updatedAt',
 					description: 'description',
@@ -396,7 +390,7 @@ describe('Data access - ListUsersAsync tests', () => {
 			userListResponse.push({
 				id: `${i}` as AttributeValue,
 				name: 'name' as AttributeValue,
-				address: 'address' as AttributeValue,
+				address: addressAttributeMap,
 				createdAt: 'updatedAt' as AttributeValue,
 				updatedAt: 'updatedAt' as AttributeValue,
 				description: 'description' as AttributeValue,
@@ -422,7 +416,7 @@ describe('Data access - ListUsersAsync tests', () => {
 				{
 					id: '0',
 					name: 'name',
-					address: 'address',
+					address: address,
 					createdAt: 'updatedAt',
 					updatedAt: 'updatedAt',
 					description: 'description',

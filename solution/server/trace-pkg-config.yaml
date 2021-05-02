@@ -22,6 +22,8 @@ options:
         'ws': # Ignore optional, lazy imported dependencies in `ws` package. Discussion: https://github.com/websockets/ws/issues/659
             - 'bufferutil'
             - 'utf-8-validate'
+        'got':
+            - 'electron' # Ignore optional, https://github.com/sindresorhus/got/issues/1404
 
 # Each "package" corresponds to an outputted zip file. It can contain an number
 # of traced or straight included files.

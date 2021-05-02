@@ -1,5 +1,6 @@
 import { CloudBackEndTestContext } from '../lambda-server'
-import { Resolvers } from '../types'
+import { FindAddressAsync } from '../mapbox-access'
+import { Resolvers } from '../types/types'
 import { DeleteUserAsync, GetUserByIdAsync, UpdateUserAsync, AddUserAsync, ListUsersAsync } from '../user-data-access'
 
 export const UserResolvers: Resolvers<CloudBackEndTestContext> = {
@@ -9,6 +10,16 @@ export const UserResolvers: Resolvers<CloudBackEndTestContext> = {
 		},
 		listUsers: async (_parent, { params }, { dynamo }) => {
 			return await ListUsersAsync(dynamo, params)
+		},
+		queryAddress: async (_parent, { location }, { mapbox }) => {
+			const mapboxResponse = await FindAddressAsync(mapbox, location)
+			return mapboxResponse.map((item) => {
+				return {
+					longitude: item.center[0],
+					latitude: item.center[1],
+					place: item.place_name,
+				}
+			})
 		},
 	},
 	Mutation: {

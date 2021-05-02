@@ -13,6 +13,19 @@ export type Scalars = {
   Float: number;
 };
 
+export type Address = {
+  __typename?: 'Address';
+  place: Scalars['String'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+};
+
+export type AddressInput = {
+  place: Scalars['String'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addUser: User;
@@ -38,9 +51,9 @@ export type MutationDeleteUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  hello?: Maybe<Scalars['String']>;
   getUser: User;
   listUsers: UserPaginatedResponse;
+  queryAddress?: Maybe<Array<Address>>;
 };
 
 
@@ -53,12 +66,17 @@ export type QueryListUsersArgs = {
   params: UserListParams;
 };
 
+
+export type QueryQueryAddressArgs = {
+  location: Scalars['String'];
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
   name: Scalars['String'];
   dob?: Maybe<Scalars['String']>;
-  address?: Maybe<Scalars['String']>;
+  address?: Maybe<Address>;
   description?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -68,7 +86,7 @@ export type User = {
 export type UserInput = {
   name?: Maybe<Scalars['String']>;
   dob?: Maybe<Scalars['String']>;
-  address?: Maybe<Scalars['String']>;
+  address?: Maybe<AddressInput>;
   description?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['String']>;
 };
@@ -163,8 +181,11 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Mutation: ResolverTypeWrapper<{}>;
+  Address: ResolverTypeWrapper<Address>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
+  AddressInput: AddressInput;
+  Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Query: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
@@ -177,8 +198,11 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Mutation: {};
+  Address: Address;
   String: Scalars['String'];
+  Float: Scalars['Float'];
+  AddressInput: AddressInput;
+  Mutation: {};
   Boolean: Scalars['Boolean'];
   Query: {};
   User: User;
@@ -189,6 +213,13 @@ export type ResolversParentTypes = {
   UserPaginatedResponse: UserPaginatedResponse;
 };
 
+export type AddressResolvers<ContextType = any, ParentType extends ResolversParentTypes['Address'] = ResolversParentTypes['Address']> = {
+  place?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  latitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  longitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddUserArgs, 'userInput'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'id' | 'userInput'>>;
@@ -196,16 +227,16 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  hello?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   getUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>;
   listUsers?: Resolver<ResolversTypes['UserPaginatedResponse'], ParentType, ContextType, RequireFields<QueryListUsersArgs, 'params'>>;
+  queryAddress?: Resolver<Maybe<Array<ResolversTypes['Address']>>, ParentType, ContextType, RequireFields<QueryQueryAddressArgs, 'location'>>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   dob?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  address?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  address?: Resolver<Maybe<ResolversTypes['Address']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -220,6 +251,7 @@ export type UserPaginatedResponseResolvers<ContextType = any, ParentType extends
 };
 
 export type Resolvers<ContextType = any> = {
+  Address?: AddressResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
