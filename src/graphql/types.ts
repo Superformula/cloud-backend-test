@@ -39,16 +39,29 @@ export type MutationDeleteUserArgs = {
 	id: Scalars['ID'];
 };
 
+/** Pagination parameters: 'limit' refers to the number of elements of each page, and 'exclusiveStartId' is the ID of the last element of the previous page */
+export type PaginationInput = {
+	limit?: Maybe<Scalars['Int']>;
+	exclusiveStartId?: Maybe<Scalars['ID']>;
+};
+
 /** Query is meant to expose all the APIs whose purpose is to simply fetch data */
 export type Query = {
 	__typename?: 'Query';
 	hello: Scalars['String'];
 	user: User;
+	listUsers: UserPaginationResult;
 };
 
 /** Query is meant to expose all the APIs whose purpose is to simply fetch data */
 export type QueryUserArgs = {
 	id: Scalars['ID'];
+};
+
+/** Query is meant to expose all the APIs whose purpose is to simply fetch data */
+export type QueryListUsersArgs = {
+	paginationParams?: Maybe<PaginationInput>;
+	nameFilter?: Maybe<Scalars['String']>;
 };
 
 /** User type */
@@ -71,6 +84,16 @@ export type UserCreationInput = {
 	address?: Maybe<Scalars['String']>;
 	description?: Maybe<Scalars['String']>;
 	imageUrl?: Maybe<Scalars['String']>;
+};
+
+/**
+ * Result of a pagination of users: 'users' refers to the list of users of this page, and 'lastEvaluatedId' is the ID of the last element of the page;
+ * its presence indicates that there are more elements to be fetched.
+ */
+export type UserPaginationResult = {
+	__typename?: 'UserPaginationResult';
+	users: Array<User>;
+	lastEvaluatedId?: Maybe<Scalars['ID']>;
 };
 
 /** Update user input type */
@@ -166,9 +189,12 @@ export type ResolversTypes = {
 	Mutation: ResolverTypeWrapper<{}>;
 	String: ResolverTypeWrapper<Scalars['String']>;
 	ID: ResolverTypeWrapper<Scalars['ID']>;
+	PaginationInput: PaginationInput;
+	Int: ResolverTypeWrapper<Scalars['Int']>;
 	Query: ResolverTypeWrapper<{}>;
 	User: ResolverTypeWrapper<User>;
 	UserCreationInput: UserCreationInput;
+	UserPaginationResult: ResolverTypeWrapper<UserPaginationResult>;
 	UserUpdateInput: UserUpdateInput;
 	Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
@@ -178,9 +204,12 @@ export type ResolversParentTypes = {
 	Mutation: {};
 	String: Scalars['String'];
 	ID: Scalars['ID'];
+	PaginationInput: PaginationInput;
+	Int: Scalars['Int'];
 	Query: {};
 	User: User;
 	UserCreationInput: UserCreationInput;
+	UserPaginationResult: UserPaginationResult;
 	UserUpdateInput: UserUpdateInput;
 	Boolean: Scalars['Boolean'];
 };
@@ -211,6 +240,12 @@ export type QueryResolvers<
 > = {
 	hello?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 	user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+	listUsers?: Resolver<
+		ResolversTypes['UserPaginationResult'],
+		ParentType,
+		ContextType,
+		RequireFields<QueryListUsersArgs, never>
+	>;
 };
 
 export type UserResolvers<
@@ -228,10 +263,20 @@ export type UserResolvers<
 	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserPaginationResultResolvers<
+	ContextType = any,
+	ParentType extends ResolversParentTypes['UserPaginationResult'] = ResolversParentTypes['UserPaginationResult']
+> = {
+	users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+	lastEvaluatedId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
 	Mutation?: MutationResolvers<ContextType>;
 	Query?: QueryResolvers<ContextType>;
 	User?: UserResolvers<ContextType>;
+	UserPaginationResult?: UserPaginationResultResolvers<ContextType>;
 };
 
 /**
