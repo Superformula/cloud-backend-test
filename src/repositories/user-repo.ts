@@ -76,7 +76,7 @@ export class UserRepo extends DataSource implements IRepo<UserModel, UserCreatio
 
 		// if filterValue was passed, build the FilterExpression string to be used by DynamoDB during the "scan" command to filter the elements that will be returned, and
 		// also build other properties that will be useful in the "scan" command (expressionAttributeValues and expressionAttributeNames); otherwise, leave it undefined.
-		const filterExpression = filterValue ? 'contains (#n, :filterValue)' : undefined;
+		const filterExpression = filterValue ? 'contains (#n, :filterValue)' : undefined; // this filter expression will check if the user name contains the filter value that was passed
 		const expressionAttributeValues = filterValue ? { ':filterValue': filterValue } : undefined;
 		const expressionAttributeNames = filterValue ? { '#n': 'name' } : undefined;
 
