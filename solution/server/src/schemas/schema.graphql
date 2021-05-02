@@ -1,6 +1,7 @@
 type Query {
 	getUser(id: String!): User!
 	listUsers(params: UserListParams!): UserPaginatedResponse!
+	queryAddress(location: String!): [Address!]
 }
 
 type Mutation {
@@ -13,11 +14,17 @@ type User {
 	id: ID!
 	name: String!
 	dob: String
-	address: String
+	address: Address
 	description: String
 	createdAt: String
 	updatedAt: String
 	imageUrl: String
+}
+
+type Address {
+	place: String!
+	latitude: Float!
+	longitude: Float!
 }
 
 type UserPaginatedResponse {
@@ -28,9 +35,15 @@ type UserPaginatedResponse {
 input UserInput {
 	name: String
 	dob: String
-	address: String
+	address: AddressInput
 	description: String
 	imageUrl: String
+}
+
+input AddressInput {
+	place: String!
+	latitude: Float!
+	longitude: Float!
 }
 
 input UserListParams {

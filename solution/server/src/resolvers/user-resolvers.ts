@@ -1,5 +1,6 @@
 import { CloudBackEndTestContext } from '../lambda-server'
-import { Resolvers } from '../types'
+import { findLocation as FindLocation } from '../mapbox-access'
+import { Resolvers } from '../types/types'
 import { DeleteUserAsync, GetUserByIdAsync, UpdateUserAsync, AddUserAsync, ListUsersAsync } from '../user-data-access'
 
 export const UserResolvers: Resolvers<CloudBackEndTestContext> = {
