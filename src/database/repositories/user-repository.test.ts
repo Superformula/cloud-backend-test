@@ -1,12 +1,16 @@
-import { DocumentClient } from 'aws-sdk/clients/dynamodb';
+import { BatchGetResponseMap, DocumentClient, ItemList, ScanInput } from 'aws-sdk/clients/dynamodb';
 import moment from 'moment';
 import { UserInput } from '../../graphql/types/schema-types';
 import { UserModel } from '../models/user';
 import { DynamoDBUserRepository, UserRepository } from './user-repository';
 import { awsSdkPromiseResponse } from './__mocks__/aws-sdk/clients/dynamodb';
 import { v4 as uuid } from 'uuid';
+import { AttributeValue } from 'aws-sdk/clients/directoryservice';
+import { Optional, WithIndexSignature } from '../../utils/types';
+import { ApolloError } from 'apollo-server-errors';
 
 const testTableName = 'TestUserTable';
+const testIndexName = 'UserNameIndex';
 
 describe('Test user repository creation', () => {
 	const OLD_ENV = process.env;
@@ -282,12 +286,9 @@ describe('Test user delete', () => {
 
 	const setup = () => {
 		const database = new DocumentClient();
-		const now = moment();
-		Date.now = jest.fn().mockReturnValue(now);
 		return {
 			database,
 			repository: new DynamoDBUserRepository(database),
-			now,
 		};
 	};
 
@@ -322,6 +323,197 @@ describe('Test user delete', () => {
 		});
 
 		expect(user).toBeNull();
+	});
+});
+
+describe('Test user list', () => {
+	const existingUsers: WithIndexSignature<UserModel, AttributeValue>[] = [
+		{
+			id: '1234',
+			address: 'Brasilia, Brazil',
+			dob: '1995-09-03T00:00:00.000Z',
+			name: 'Test user',
+			description: 'Test description',
+			createdAt: '2021-05-01T17:52:48.299Z',
+		},
+		{
+			id: '5678',
+			address: 'Rio de Janeiro, Brazil',
+			dob: '1996-09-04T00:00:00.000Z',
+			name: 'Test user 2',
+			description: 'Test description 2',
+			createdAt: '2021-03-01T17:52:48.299Z',
+		},
+	];
+
+	const mockResponses = (expectedCursor: Optional<string>) => {
+		const batchGetResponse: BatchGetResponseMap = {};
+		batchGetResponse[testTableName] = existingUsers as ItemList;
+		awsSdkPromiseResponse
+			.mockReturnValueOnce(
+				Promise.resolve({
+					Items: existingUsers.map((u) => ({
+						id: u.id,
+						name: u.name,
+					})),
+					LastEvaluatedKey: expectedCursor,
+				}),
+			)
+			.mockReturnValueOnce(
+				Promise.resolve({
+					Responses: batchGetResponse,
+				}),
+			);
+	};
+
+	const setup = () => {
+		const database = new DocumentClient();
+		return {
+			database,
+			repository: new DynamoDBUserRepository(database),
+		};
+	};
+
+	beforeEach(() => {
+		process.env['USERS_TABLE_NAME'] = testTableName;
+	});
+
+	it('Should scan table without query', async () => {
+		const pageSize = 2;
+		const expectedCursor = '12345';
+		const { database, repository } = setup();
+
+		mockResponses(expectedCursor);
+
+		const result = await repository.listUsers(null, pageSize, null);
+		expect(database.scan).toHaveBeenCalledWith({
+			TableName: testTableName,
+			Limit: pageSize,
+			IndexName: testIndexName,
+			ExclusiveStartKey: undefined,
+		});
+
+		expect(result.cursor).toBe(JSON.stringify(expectedCursor));
+		expect(result.items).toEqual(existingUsers);
+	});
+
+	it('Should query table with query', async () => {
+		const pageSize = 2;
+		const query = 'Test query';
+		const expectedCursor = '12345';
+		const expectedExpression = '#name = :query';
+		const expectedAttributeNames = { '#name': 'name' };
+		const { database, repository } = setup();
+
+		mockResponses(expectedCursor);
+
+		const result = await repository.listUsers(query, pageSize, null);
+		expect(database.query).toHaveBeenCalledWith({
+			TableName: testTableName,
+			Limit: pageSize,
+			IndexName: testIndexName,
+			ExclusiveStartKey: undefined,
+			ExpressionAttributeValues: { ':query': query },
+			KeyConditionExpression: expectedExpression,
+			ExpressionAttributeNames: expectedAttributeNames,
+		});
+
+		expect(result.cursor).toBe(JSON.stringify(expectedCursor));
+		expect(result.items).toEqual(existingUsers);
+	});
+
+	test('if cursor is passed to DynamoDB on query', async () => {
+		const pageSize = 2;
+		const query = 'Test query';
+		const expectedCursor = '12345';
+		const expectedExpression = '#name = :query';
+		const expectedAttributeNames = { '#name': 'name' };
+		const { database, repository } = setup();
+
+		mockResponses(expectedCursor);
+
+		await repository.listUsers(query, pageSize, expectedCursor);
+		expect(database.query).toHaveBeenCalledWith({
+			TableName: testTableName,
+			Limit: pageSize,
+			IndexName: testIndexName,
+			ExclusiveStartKey: JSON.parse(expectedCursor),
+			ExpressionAttributeValues: { ':query': query },
+			KeyConditionExpression: expectedExpression,
+			ExpressionAttributeNames: expectedAttributeNames,
+		});
+	});
+
+	test('If cursor is null on last page', async () => {
+		const pageSize = 2;
+		const query = 'Test query';
+		const { repository } = setup();
+
+		mockResponses(null);
+
+		const result = await repository.listUsers(query, pageSize, null);
+		expect(result.cursor).toBeNull();
+	});
+
+	it('Should return empty list if query on index returns null items', async () => {
+		const pageSize = 2;
+		const query = 'Test query';
+		const { repository } = setup();
+
+		awsSdkPromiseResponse.mockReturnValueOnce(
+			Promise.resolve({
+				Items: null,
+				LastEvaluatedKey: null,
+			}),
+		);
+
+		const result = await repository.listUsers(query, pageSize, null);
+		expect(result.items).toEqual([]);
+	});
+
+	it('Should return empty list if query on index returns empty list', async () => {
+		const pageSize = 2;
+		const query = 'Test query';
+		const { repository } = setup();
+
+		awsSdkPromiseResponse.mockReturnValueOnce(
+			Promise.resolve({
+				Items: [],
+				LastEvaluatedKey: null,
+			}),
+		);
+
+		const result = await repository.listUsers(query, pageSize, null);
+		expect(result.items).toEqual([]);
+	});
+
+	it('Should return throw error if batchGet on table returns null responses', async () => {
+		const pageSize = 2;
+		const query = 'Test query';
+		const { repository } = setup();
+
+		awsSdkPromiseResponse
+			.mockReturnValueOnce(
+				Promise.resolve({
+					Items: existingUsers.map((u) => ({
+						id: u.id,
+						name: u.name,
+					})),
+					LastEvaluatedKey: null,
+				}),
+			)
+			.mockReturnValueOnce(
+				Promise.resolve({
+					Responses: null,
+				}),
+			);
+
+		try {
+			await repository.listUsers(query, pageSize, null);
+			fail();
+		} catch (error) {
+			expect(error.message).toBe('Unexpected batch get items result');
+		}
 	});
 });
 

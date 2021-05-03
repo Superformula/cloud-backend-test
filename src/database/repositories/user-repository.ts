@@ -116,35 +116,31 @@ export class DynamoDBUserRepository implements UserRepository {
 		return result.Attributes as UserModel;
 	}
 
-	async listUsers(query: string, limit: number, cursor: string): Promise<UserPageModel> {
+	async listUsers(query: Optional<string>, limit: number, cursor: Optional<string>): Promise<UserPageModel> {
 		// TODO: This API would be more powerful if it used a full text search engine. we should use something like
-		// Elastic search to better fulfill its requirements
+		// Elastic search to better fulfill its requirements.
 		const searchParams = {
 			TableName: this.tableName,
 			Limit: limit,
 			IndexName: 'UserNameIndex', //TODO: Extract this to environment variable,
-			ExclusiveStartKey: cursor ? JSON.parse(cursor) : null,
+			ExclusiveStartKey: cursor ? JSON.parse(cursor) : undefined,
 		};
 
-		let queryResult: QueryOutput | ScanOutput | null = null;
+		let queryResult: QueryOutput | ScanOutput;
 		if (query) {
 			queryResult = await this.database
 				.query({
 					...searchParams,
-					KeyConditionExpression: query ? '#name = :query' : undefined,
+					KeyConditionExpression: '#name = :query',
 					ExpressionAttributeNames: { '#name': 'name' },
-					ExpressionAttributeValues: query
-						? {
-								':query': query,
-						  }
-						: undefined,
+					ExpressionAttributeValues: { ':query': query },
 				})
 				.promise();
 		} else {
 			queryResult = await this.database.scan(searchParams).promise();
 		}
 
-		const queryItems = queryResult?.Items as Pick<UserModel, 'id' | 'name'>[];
+		const queryItems = queryResult.Items as Pick<UserModel, 'id' | 'name'>[];
 
 		let itemsResult: UserModel[] = [];
 		if (queryItems && queryItems.length > 0) {
@@ -162,12 +158,17 @@ export class DynamoDBUserRepository implements UserRepository {
 				})
 				.promise();
 
-			itemsResult = response.Responses?.[this.tableName] as UserModel[];
+			if (!response.Responses) {
+				// This should not happen;
+				throw new ApolloError('Unexpected batch get items result');
+			}
+
+			itemsResult = response.Responses[this.tableName] as UserModel[];
 		}
 
 		return {
 			items: itemsResult,
-			cursor: JSON.stringify(queryResult?.LastEvaluatedKey),
+			cursor: queryResult.LastEvaluatedKey ? JSON.stringify(queryResult.LastEvaluatedKey) : null,
 		};
 	}
 
