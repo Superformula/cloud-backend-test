@@ -17,7 +17,7 @@ import { UserModel } from '../db-models/user-models';
 import { Context } from '../types/context';
 import { PaginationOutputModel } from '../types/pagination-output';
 
-export class UserRepo extends DataSource {
+export class UserDataSource extends DataSource {
 	private readonly tableName = 'Users';
 	private docCient: DocumentClient;
 	private context: Context | null = null;
@@ -216,4 +216,4 @@ export class UserRepo extends DataSource {
 	}
 }
 
-export default UserRepo;
+export default UserDataSource;

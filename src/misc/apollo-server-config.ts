@@ -1,12 +1,12 @@
 import { UserModelConverter } from '../model-converters/user-model-converter';
 import { Config } from 'apollo-server-core';
 import { schema } from '../graphql/schema';
-import { UserRepo } from '../repositories/user-repo';
+import { UserDataSource } from '../data-sources/user-data-source';
 
 export const apolloServerConfig: Config = {
 	schema,
 	dataSources: () => ({
-		userRepo: new UserRepo(),
+		userDataSource: new UserDataSource(),
 	}),
 	context: { userModelConverter: new UserModelConverter() },
 };

@@ -1,8 +1,8 @@
 import { UserModelConverter } from '../model-converters/user-model-converter';
-import UserRepo from '../repositories/user-repo';
+import UserDataSource from '../data-sources/user-data-source';
 
 export type DataSources = {
-	userRepo: UserRepo;
+	userDataSource: UserDataSource;
 };
 
 export type Context = {
