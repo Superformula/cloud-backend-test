@@ -94,7 +94,7 @@ In order to build, deploy and/or test the project you need to install:
 -   [Yarn](https://yarnpkg.com/getting-started/install)
 -   [Terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli?in=terraform/aws-get-started)
 
-## Testing
+## Unit tests
 
 To run the project tests, navigate to the "server" folder and execute the following commands
 
@@ -104,6 +104,59 @@ yarn test
 ```
 
 All tests will be executed and a coverage report will be shown.
+
+## Integration tests
+
+It was not simple to setup an environment for integration tests, so I came up with the following approach: run the Lambda server and DynamoDB locally and execute the tests making calls to the API.
+
+### Setup
+
+To run the integration tests you must also install:
+
+-   [Docker](https://www.docker.com/get-started)
+-   [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+
+Be sure your ports 8000 and 3000 are available and navigate to [solution/server](./solution/server) in your command line and execute the following commands to setup the environment:
+
+```
+docker run -d --name ddb -p 8000:8000 amazon/dynamodb-local
+aws dynamodb create-table --cli-input-json file://tests/integration/setup/dynamodb-config.json --endpoint-url http://localhost:8000
+aws dynamodb batch-write-item --request-items file://tests/integration/setup/UsersTable.json --endpoint-url http://localhost:8000
+docker network create integration-tests-network
+docker network connect integration-tests-network ddb
+yarn build
+```
+
+The DynamoDB local should be running in background, now it's time to start the Lambda server. Navigate to [solution/server/tests/integration](./solution/server/tests/integration), update the [template.yaml](./solution/server/tests/integration/template.yaml) file with your Mapbox API Key (line 23) and execute the following commands inside integration folder:
+
+```
+sam build
+sam local start-api --docker-network integration-tests-network
+```
+
+Now, the Lambda server will be running on http://localhost:3000.
+
+### Test execution
+
+Navigate to [solution/server](./solution/server) folder and execute the following command to run the tests:
+
+```
+yarn integ-test
+```
+
+These tests take a little to run, but the timeouts are configured to let them run.
+
+### Clean up resources
+
+When done testing, clean up the resources created. Close the Lambda server and run the following commands to unmount Docker resources:
+
+```
+docker stop ddb
+docker rm ddb
+docker network rm integration-tests-network
+```
+
+These commands will stop DynamoDB local and remove the network created.
 
 ## Deploying
 
@@ -136,7 +189,6 @@ The Playground is available in the URL received as output from API Gateway, you 
 ## Further improvements
 
 -   E2E testing
--   Integration tests
 -   Strategy for Lambda error handling, retries, and DLQs
 -   Improve cloud-native logging, monitoring, and alarming strategy across all queries/mutations
 -   Online interactive demo with a publicly accessible link to API
