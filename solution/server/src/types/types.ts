@@ -13,93 +13,137 @@ export type Scalars = {
   Float: number;
 };
 
+/** The Address type. */
 export type Address = {
   __typename?: 'Address';
+  /** Name of the place */
   place: Scalars['String'];
+  /** Latitude of the address */
   latitude: Scalars['Float'];
+  /** Latitude of the address */
   longitude: Scalars['Float'];
 };
 
+/** Address input data */
 export type AddressInput = {
+  /** Name of the place */
   place: Scalars['String'];
+  /** Latitude of the address */
   latitude: Scalars['Float'];
+  /** Latitude of the address */
   longitude: Scalars['Float'];
 };
 
+/** User Mutations. */
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Add a new User. */
   addUser: User;
+  /** Update an existing User. */
   updateUser: User;
+  /** Delete a existing User. */
   deleteUser: Scalars['Boolean'];
 };
 
 
+/** User Mutations. */
 export type MutationAddUserArgs = {
   userInput: UserInput;
 };
 
 
+/** User Mutations. */
 export type MutationUpdateUserArgs = {
   id: Scalars['String'];
   userInput: UserInput;
 };
 
 
+/** User Mutations. */
 export type MutationDeleteUserArgs = {
   id: Scalars['String'];
 };
 
+/** User Queries. */
 export type Query = {
   __typename?: 'Query';
+  /** Retrieves an user from the received id */
   getUser: User;
+  /** List users with pagination and filtering */
   listUsers: UserPaginatedResponse;
+  /** Translates a string from a given language into a different language. */
   queryAddress?: Maybe<Array<Address>>;
 };
 
 
+/** User Queries. */
 export type QueryGetUserArgs = {
   id: Scalars['String'];
 };
 
 
+/** User Queries. */
 export type QueryListUsersArgs = {
-  params: UserListParams;
+  params?: Maybe<UserListParams>;
 };
 
 
+/** User Queries. */
 export type QueryQueryAddressArgs = {
   location: Scalars['String'];
 };
 
+/** The User type. */
 export type User = {
   __typename?: 'User';
+  /** User's id */
   id: Scalars['ID'];
+  /** User's name */
   name: Scalars['String'];
+  /** User's date of birth */
   dob?: Maybe<Scalars['String']>;
+  /** User's address */
   address?: Maybe<Address>;
+  /** User's description */
   description?: Maybe<Scalars['String']>;
+  /** User's date of creation */
   createdAt?: Maybe<Scalars['String']>;
+  /** User's date of last update */
   updatedAt?: Maybe<Scalars['String']>;
+  /** User's image url */
   imageUrl?: Maybe<Scalars['String']>;
 };
 
+/** User input data */
 export type UserInput = {
+  /** User's name */
   name?: Maybe<Scalars['String']>;
+  /** User's date of birth */
   dob?: Maybe<Scalars['String']>;
+  /** User's address */
   address?: Maybe<AddressInput>;
+  /** User's description */
   description?: Maybe<Scalars['String']>;
+  /** User's image url */
   imageUrl?: Maybe<Scalars['String']>;
 };
 
+/** User listing params */
 export type UserListParams = {
+  /** Key used for pagination, must be passed when it's defined */
   lastEvaluatedKey?: Maybe<Scalars['String']>;
+  /** Maximum results to retrieve */
   limit?: Maybe<Scalars['Int']>;
+  /** String filter */
   filter?: Maybe<Scalars['String']>;
 };
 
+/** User query paginated response */
 export type UserPaginatedResponse = {
   __typename?: 'UserPaginatedResponse';
+  /** User list */
   users?: Maybe<Array<User>>;
+  /** Key used for pagination, must be passed when it's defined */
   lastEvaluatedKey?: Maybe<Scalars['String']>;
 };
 
@@ -228,7 +272,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   getUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>;
-  listUsers?: Resolver<ResolversTypes['UserPaginatedResponse'], ParentType, ContextType, RequireFields<QueryListUsersArgs, 'params'>>;
+  listUsers?: Resolver<ResolversTypes['UserPaginatedResponse'], ParentType, ContextType, RequireFields<QueryListUsersArgs, never>>;
   queryAddress?: Resolver<Maybe<Array<ResolversTypes['Address']>>, ParentType, ContextType, RequireFields<QueryQueryAddressArgs, 'location'>>;
 };
 

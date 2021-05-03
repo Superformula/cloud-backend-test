@@ -1,3 +1,9 @@
+"""
+Address queries
+"""
 type Query {
-	queryAddress(location: String!): [Address!]
+	"""
+	Receive a list of possible address candidates from a string location
+	"""
+	queryAddress("Location to be queried" location: String!): [Address!]
 }

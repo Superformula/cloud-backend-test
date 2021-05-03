@@ -1,53 +1,139 @@
+"""
+User Queries.
+"""
 type Query {
-	getUser(id: String!): User!
-	listUsers(params: UserListParams!): UserPaginatedResponse!
-	queryAddress(location: String!): [Address!]
+	"""
+	Retrieves an user from the received id
+	"""
+	getUser("The original language that `text` is provided in." id: String!): User!
+
+	"""
+	List users with pagination and filtering
+	"""
+	listUsers("Pagianation and filtering params" params: UserListParams): UserPaginatedResponse!
+
+	"""
+	Translates a string from a given language into a different language.
+	"""
+	queryAddress("The string location to be queried" location: String!): [Address!]
 }
 
+"""
+User Mutations.
+"""
 type Mutation {
-	addUser(userInput: UserInput!): User!
-	updateUser(id: String!, userInput: UserInput!): User!
-	deleteUser(id: String!): Boolean!
+	"""
+	Add a new User.
+	"""
+	addUser("User data" userInput: UserInput!): User!
+
+	"""
+	Update an existing User.
+	"""
+	updateUser("User id" id: String!, "User data" userInput: UserInput!): User!
+
+	"""
+	Delete a existing User.
+	"""
+	deleteUser("User id" id: String!): Boolean!
 }
 
+"""
+The User type.
+"""
 type User {
+	"User's id"
 	id: ID!
+
+	"User's name"
 	name: String!
+
+	"User's date of birth"
 	dob: String
+
+	"User's address"
 	address: Address
+
+	"User's description"
 	description: String
+
+	"User's date of creation"
 	createdAt: String
+
+	"User's date of last update"
 	updatedAt: String
+
+	"User's image url"
 	imageUrl: String
 }
 
+"""
+The Address type.
+"""
 type Address {
+	"Name of the place"
 	place: String!
+
+	"Latitude of the address"
 	latitude: Float!
+
+	"Latitude of the address"
 	longitude: Float!
 }
 
+"""
+User query paginated response
+"""
 type UserPaginatedResponse {
+	"User list"
 	users: [User!]
+
+	"Key used for pagination, must be passed when it's defined"
 	lastEvaluatedKey: String
 }
 
+"""
+User input data
+"""
 input UserInput {
+	"User's name"
 	name: String
+
+	"User's date of birth"
 	dob: String
+
+	"User's address"
 	address: AddressInput
+
+	"User's description"
 	description: String
+
+	"User's image url"
 	imageUrl: String
 }
 
+"""
+Address input data
+"""
 input AddressInput {
+	"Name of the place"
 	place: String!
+
+	"Latitude of the address"
 	latitude: Float!
+
+	"Latitude of the address"
 	longitude: Float!
 }
 
+"""
+User listing params
+"""
 input UserListParams {
+	"Key used for pagination, must be passed when it's defined"
 	lastEvaluatedKey: String
+	"Maximum results to retrieve"
 	limit: Int
+	"String filter"
 	filter: String
 }
