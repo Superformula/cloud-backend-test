@@ -429,6 +429,20 @@ describe('Data access - ListUsersAsync tests', () => {
 		expect(await ListUsersAsync(ddb, listingParams)).toEqual(expected)
 	})
 
+	it('should ListUsersAsync throw when receiving an invalid response from server', async () => {
+		AWSMock.mock('DynamoDB.DocumentClient', 'scan', (_params: ScanInput, callback: (err: AWSError | null, data: ScanOutput) => void) => {
+			callback(null, { Items: undefined })
+		})
+
+		const ddb = new AWS.DynamoDB.DocumentClient()
+
+		try {
+			await ListUsersAsync(ddb, {})
+		} catch (error) {
+			expect(error.message).toMatch('Error on User list')
+		}
+	})
+
 	it('should ListUsersAsync throw when receiving an error from server', async () => {
 		AWSMock.mock('DynamoDB.DocumentClient', 'scan', (_params: ScanInput, callback: (err: AWSError | null, data: ScanOutput) => void) => {
 			callback({ code: '', message: '', name: '', time: new Date() }, {})
