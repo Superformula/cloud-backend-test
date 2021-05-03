@@ -39,7 +39,7 @@ export async function handler(event: LocationQueryInput): Promise<LocationQueryO
 	// build the LocationQueryOutput from the response from mapbox API
 	for (const feat of responseFromMapbox.data.features) {
 		locQueryOutput.locations.push({
-			name: feat.matching_place_name,
+			name: feat.matching_place_name || feat.place_name, // prefer matching_place_name to place_name, since matching_place_name, if returned, gives a string that is in the same language as the given location input
 			coordinates: feat.center,
 		});
 	}

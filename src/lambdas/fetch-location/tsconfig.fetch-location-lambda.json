@@ -4,7 +4,5 @@
     "outDir": "dist",
     "baseUrl": "./",
   },
-  "files": [
-    "fetch-location-handler.ts"
-  ]
+  "include": ["fetch-location-handler.ts"],
 }
