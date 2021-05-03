@@ -1,0 +1,48 @@
+{
+	"name": "cloud-backend-test",
+	"version": "1.0.0",
+	"repository": "https://github.com/fabiocmarques/cloud-backend-test.git",
+	"author": "Fabio Costa Farias Marques <fabio.cfmarques@gmail.com>",
+	"license": "MIT",
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"copy-graphql-files": "cpy src/schemas/*.graphql dist/schemas/",
+		"build-package": "yarn lint && yarn build && yarn copy-graphql-files && trace-pkg -c trace-pkg-config.yaml",
+		"lint": "eslint **/*.{js,ts} --quiet --fix",
+		"test": "jest --coverage",
+		"gql-codegen": "graphql-codegen --config codegen.yml"
+	},
+	"devDependencies": {
+		"@graphql-codegen/cli": "1.21.4",
+		"@graphql-codegen/typescript": "^1.22.0",
+		"@graphql-codegen/typescript-resolvers": "1.19.1",
+		"@types/jest": "^26.0.23",
+		"@types/mapbox__mapbox-sdk": "^0.11.1",
+		"@types/uuid": "^8.3.0",
+		"@typescript-eslint/eslint-plugin": "^4.22.0",
+		"@typescript-eslint/parser": "^4.22.0",
+		"aws-sdk": "^2.897.0",
+		"cpy-cli": "^3.1.1",
+		"eslint": "^7.25.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-prettier": "^3.4.0",
+		"jest": "^26.6.3",
+		"jest-aws-sdk-mock": "^1.0.2",
+		"prettier": "^2.2.1",
+		"trace-pkg": "^0.3.4",
+		"ts-jest": "^26.5.5",
+		"typescript": "^4.2.4"
+	},
+	"dependencies": {
+		"@graphql-tools/graphql-file-loader": "^6.2.7",
+		"@graphql-tools/load": "^6.2.8",
+		"@graphql-tools/load-files": "^6.3.2",
+		"@mapbox/mapbox-sdk": "^0.12.1",
+		"apollo-server-lambda": "^2.23.0",
+		"dotenv": "^8.2.0",
+		"graphql": "^15.5.0",
+		"import-from": "^3.0.0",
+		"moment": "^2.29.1",
+		"uuid": "^8.3.2"
+	}
+}

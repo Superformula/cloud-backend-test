@@ -1,0 +1,52 @@
+# Global options
+options:
+    # Number of parallel processes to use for bundling.
+    #
+    # - Defaults to `1` process, which serially runs each bundle.
+    # - `1`/serial mode is run in the same process as `trace-pkg`.
+    # - Setting to `0` will use number of CPUs detected on machine.
+    # - Can be overridden by `--concurrency=<NUMBER>` command line option.
+    concurrency: 0
+
+    # Package path prefixes up to a directory level to skip tracing on.
+    ignores:
+        - 'aws-sdk' # According to https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html, it is not necessary to add
+
+    # Package keys with sub-dependencies to allow to be missing.
+    allowMissing:
+        'node-fetch':
+            - 'encoding' # Ignore optional, lazy imported dependencies in `node_fetch` package https://github.com/node-fetch/node-fetch/issues/675
+        'ws': # Ignore optional, lazy imported dependencies in `ws` package. Discussion: https://github.com/websockets/ws/issues/659
+            - 'bufferutil'
+            - 'utf-8-validate'
+        'got':
+            - 'electron' # Ignore optional, https://github.com/sindresorhus/got/issues/1404
+
+# Each "package" corresponds to an outputted zip file. It can contain an number
+# of traced or straight included files.
+packages:
+    # FULL OPTIONS
+    # ============
+    # Keys should be designated according to zip file name without the ".zip"
+    # suffix.
+    cloud-backend-test:
+        # Current working directory - OPTIONAL (default: `options.cwd` value)
+        cwd: ./dist
+
+        # Output file path - OPTIONAL (default: `[packages.<NAME>].zip`)
+        # File path (absolute or relative to `cwd` option) for output bundle.
+        output: ../../artifacts/cloud-backend-test-lambda.zip
+
+        # Absolute or CWD-relative file paths to trace and include all dependent files.
+        #
+        # - Must be JavaScript or JSON files capable of being `require|import`-ed by Node.js.
+        # - May be glob patterns.
+        trace:
+            - lambda-server.js # Trace individual file `./lambda-server.js`
+
+        # Absolute or CWD-relative file paths to straight include without tracing or introspection
+        #
+        # - May be any type of file on disk.
+        # - May be glob patterns.
+        include:
+            - 'schemas/*.graphql'
