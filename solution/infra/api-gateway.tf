@@ -1,9 +1,6 @@
 resource "aws_api_gateway_rest_api" "gql_api_gateway" {
   name        = "CloudBackendTestGateway"
   description = "Cloud Backend Test API Gateway"
-  endpoint_configuration {
-    types = [ "REGIONAL" ]
-  }
 }
 
 resource "aws_api_gateway_resource" "gql_proxy_resource" {
@@ -26,7 +23,7 @@ resource "aws_api_gateway_integration" "gql_lambda" {
   resource_id = aws_api_gateway_method.gql_proxy_method.resource_id
   http_method = aws_api_gateway_method.gql_proxy_method.http_method
 
-  integration_http_method = "ANY"
+  integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.gql_lambda_function.invoke_arn
 }
@@ -47,7 +44,7 @@ resource "aws_api_gateway_integration" "gql_lambda_root" {
    resource_id = aws_api_gateway_method.gql_proxy_root_method.resource_id
    http_method = aws_api_gateway_method.gql_proxy_root_method.http_method
 
-   integration_http_method = "ANY"
+   integration_http_method = "POST"
    type                    = "AWS_PROXY"
    uri                     = aws_lambda_function.gql_lambda_function.invoke_arn
 }
@@ -63,7 +60,7 @@ resource "aws_api_gateway_deployment" "gql_api_deployment" {
   ]
 
   rest_api_id = aws_api_gateway_rest_api.gql_api_gateway.id
-  stage_name  = "test"
+  stage_name  = var.deployment_stage
 }
 
 #
@@ -73,7 +70,7 @@ resource "aws_api_gateway_deployment" "gql_api_deployment" {
 resource "aws_lambda_permission" "api_gw" {
    statement_id  = "AllowAPIGatewayInvoke"
    action        = "lambda:InvokeFunction"
-   function_name = aws_lambda_function.gql_lambda_function.function_name
+   function_name = var.function_name
    principal     = "apigateway.amazonaws.com"
 
    # The "/*/*" portion grants access from any method on any resource

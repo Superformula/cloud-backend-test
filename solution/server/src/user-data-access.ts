@@ -147,7 +147,7 @@ export const AddUserAsync = async (db: DocumentClient, fields: UserInput): Promi
 	const addUserData = genUserDataMap(fields) as PutItemInputAttributeMap
 	addUserData['id'] = uuidv4() as AttributeValue
 	addUserData['createdAt'] = addUserData['updatedAt']
-	return AddOrUpdateUserAsync(db, addUserData)
+	return AddOrUpdateUserAsync(db, addUserData, true)
 }
 
 /**
@@ -169,11 +169,17 @@ export const UpdateUserAsync = async (db: DocumentClient, id: string, fields: Us
  * @param data User Data
  * @returns User
  */
-const AddOrUpdateUserAsync = async (db: DocumentClient, data: PutItemInputAttributeMap): Promise<User> => {
+const AddOrUpdateUserAsync = async (db: DocumentClient, data: PutItemInputAttributeMap, create = false): Promise<User> => {
 	try {
 		const params: PutItemInput = {
 			TableName: tableName,
 			Item: data,
+		}
+
+		if (create) {
+			params.ConditionExpression = 'attribute_not_exists(id)'
+		} else {
+			params.ConditionExpression = 'attribute_exists(id)'
 		}
 
 		await db
