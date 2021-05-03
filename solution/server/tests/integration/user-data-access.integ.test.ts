@@ -4,8 +4,8 @@ import { User, UserPaginatedResponse } from '../../src/types/types'
 
 const baseAddress = 'http://localhost:3000/graphql'
 
-describe('Data access - GetUserAsync tests', () => {
-	it('should GetUserAsync work as expected', async () => {
+describe('Data access - getUser tests', () => {
+	it('should getUser work as expected', async () => {
 		const userId = '5698760a-12ed-4dee-83bb-47f58d421d22'
 		const query = `
             query {
@@ -19,7 +19,7 @@ describe('Data access - GetUserAsync tests', () => {
 		expect(user.id).toEqual(userId)
 	})
 
-	it('should GetUserAsync work as expected when fetching non-existent user', async () => {
+	it('should getUser work as expected when fetching non-existent user', async () => {
 		const userId = 'non-existent'
 		const query = `
             query {
@@ -41,8 +41,8 @@ describe('Data access - GetUserAsync tests', () => {
 	})
 })
 
-describe('Data access - UpdateUserAsync tests', () => {
-	it('should UpdateUserAsync work as expected', async () => {
+describe('Data access - updateUser tests', () => {
+	it('should updateUser work as expected', async () => {
 		const userId = '5698760a-12ed-4dee-83bb-47f58d421d22'
 		const place = 'Seattle'
 		const dob = '1999-11-12'
@@ -75,7 +75,7 @@ describe('Data access - UpdateUserAsync tests', () => {
 		expect(user.dob).toEqual(dob)
 	})
 
-	it('should UpdateUserAsync returns and error when updating non-existent user', async () => {
+	it('should updateUser returns and error when updating non-existent user', async () => {
 		const userId = 'non-existent'
 		const place = 'Seattle'
 		const dob = '1999-11-12'
@@ -99,7 +99,7 @@ describe('Data access - UpdateUserAsync tests', () => {
 		expect(response.errors).toBeTruthy()
 	})
 
-	it('should UpdateUserAsync returns and error when updating user with invalid address', async () => {
+	it('should updateUser returns and error when updating user with invalid address', async () => {
 		const userId = '5698760a-12ed-4dee-83bb-47f58d421d22'
 		const place = 'Seattle'
 		const dob = '1999-11-12'
@@ -127,7 +127,7 @@ describe('Data access - UpdateUserAsync tests', () => {
 	})
 })
 
-describe('Data access - AddUserAsync tests', () => {
+describe('Data access - addUser tests', () => {
 	const createdIds: string[] = []
 
 	// Clear all created users
@@ -141,7 +141,7 @@ describe('Data access - AddUserAsync tests', () => {
 		}
 	}, 600000)
 
-	it('should AddUserAsync work as expected', async () => {
+	it('should addUser work as expected', async () => {
 		const name = 'New Test Name'
 		const place = 'Seattle'
 		const dob = '1999-10-12'
@@ -183,8 +183,8 @@ describe('Data access - AddUserAsync tests', () => {
 	})
 })
 
-describe('Data access - DeleteUserAsync tests', () => {
-	it('should DeleteUserAsync work as expected', async () => {
+describe('Data access - deleteUser tests', () => {
+	it('should deleteUser work as expected', async () => {
 		const userId = await addUserAsync()
 
 		const query = `
@@ -199,8 +199,8 @@ describe('Data access - DeleteUserAsync tests', () => {
 	})
 })
 
-describe('Data access - ListUserAsync tests', () => {
-	it('should ListUserAsync work as expected', async () => {
+describe('Data access - listUsers tests', () => {
+	it('should listUsers work as expected', async () => {
 		const query = `
             query {
                 listUsers(params: {
