@@ -3,6 +3,7 @@ artifacts
 server/node_modules
 server/dist
 server/coverage
+server/tests/integration/.aws-sam
 
 infra/.terraform
 
