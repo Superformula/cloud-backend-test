@@ -1,0 +1,31 @@
+# Global options
+options:
+  # Number of parallel processes to use for bundling.
+  # (Setting to `0` will use number of CPUs detected on machine)
+  concurrency: 0
+
+  # Directory from which to read input files as well as output zip bundles.
+  cwd: ./dist
+
+  # Package path prefixes up to a directory level to skip tracing on.
+  # (we don't want to include 'aws-sdk' in the .zip file because it will be already available in AWS Lambda)
+  ignores:
+    - 'aws-sdk'
+
+  # Package keys with sub-dependencies to allow to be missing.
+  allowMissing:
+    'node-fetch':
+      - 'encoding'
+    'ws':
+      - 'bufferutil'
+      - 'utf-8-validate'
+
+# Each "package" corresponds to an outputted zip file. It can contain a number of traced or straight included files.
+packages:
+  backend_lambda:
+    # File path (absolute or relative to `cwd` option) for output bundle.
+    output: ../lambda-zips/backend-lambda.zip
+
+    # entry point file
+    trace:
+      - backend-lambda.js
