@@ -7,14 +7,14 @@ import validator from 'validator';
 import { v4 as uuid } from 'uuid';
 import { ApolloError } from 'apollo-server-lambda';
 import { DocumentClient, QueryOutput, ScanOutput } from 'aws-sdk/clients/dynamodb';
-import { Optional } from '../../utils/types';
+import { Maybe } from 'graphql/jsutils/Maybe';
 
 export interface UserRepository {
 	createUser(data: UserInput): Promise<UserModel>;
 	updateUser(id: string, data: UserInput): Promise<UserModel>;
 	deleteUser(id: string): Promise<UserModel>;
 	getUser(id: string): Promise<UserModel>;
-	listUsers(query: Optional<string>, limit: number, cursor: Optional<string>): Promise<UserPageModel>;
+	listUsers(query: Maybe<string>, limit: number, cursor: Maybe<string>): Promise<UserPageModel>;
 }
 
 interface ValidatedInput extends UserInput {
@@ -116,9 +116,9 @@ export class DynamoDBUserRepository implements UserRepository {
 		return result.Attributes as UserModel;
 	}
 
-	async listUsers(query: Optional<string>, limit: number, cursor: Optional<string>): Promise<UserPageModel> {
-		// TODO: This API would be more powerful if it used a full text search engine. we should use something like
-		// Elastic search to better fulfill its requirements.
+	async listUsers(query: Maybe<string>, limit: number, cursor: Maybe<string>): Promise<UserPageModel> {
+		// TODO: This API would be more powerful if it used a full text search engine. In production we should
+		// use something like Elastic search to better fulfill its requirements.
 		const searchParams = {
 			TableName: this.tableName,
 			Limit: limit,

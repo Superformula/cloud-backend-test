@@ -1,4 +1,4 @@
-import { BatchGetResponseMap, DocumentClient, ItemList, ScanInput } from 'aws-sdk/clients/dynamodb';
+import { BatchGetResponseMap, DocumentClient, ItemList } from 'aws-sdk/clients/dynamodb';
 import moment from 'moment';
 import { UserInput } from '../../graphql/types/schema-types';
 import { UserModel } from '../models/user';
@@ -6,8 +6,8 @@ import { DynamoDBUserRepository, UserRepository } from './user-repository';
 import { awsSdkPromiseResponse } from './__mocks__/aws-sdk/clients/dynamodb';
 import { v4 as uuid } from 'uuid';
 import { AttributeValue } from 'aws-sdk/clients/directoryservice';
-import { Optional, WithIndexSignature } from '../../utils/types';
-import { ApolloError } from 'apollo-server-errors';
+import { WithIndexSignature } from '../../utils/types';
+import { Maybe } from 'graphql/jsutils/Maybe';
 
 const testTableName = 'TestUserTable';
 const testIndexName = 'UserNameIndex';
@@ -346,7 +346,7 @@ describe('Test user list', () => {
 		},
 	];
 
-	const mockResponses = (expectedCursor: Optional<string>) => {
+	const mockResponses = (expectedCursor: Maybe<string>) => {
 		const batchGetResponse: BatchGetResponseMap = {};
 		batchGetResponse[testTableName] = existingUsers as ItemList;
 		awsSdkPromiseResponse

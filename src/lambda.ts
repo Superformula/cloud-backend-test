@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { DynamoDBUserRepository } from './database/repositories/user-repository';
 import { Context } from './graphql/types/context';
+import { MapboxGeolocationRepository } from './database/repositories/geolocation-repository';
 dotenv.config();
 
 const server = new ApolloServer({
@@ -20,7 +21,9 @@ const server = new ApolloServer({
 		// with dependencies that would not be used for a particular resolver, maybe use a IOC container to better handle this?
 		const documentClient = new DocumentClient();
 		const userRepository = new DynamoDBUserRepository(documentClient);
-		return { userRepository };
+		const geolocationRepository = new MapboxGeolocationRepository(process.env['MAPBOX_ACCESS_TOKEN']);
+
+		return { userRepository, geolocationRepository };
 	},
 });
 

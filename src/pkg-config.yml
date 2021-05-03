@@ -17,9 +17,19 @@ options:
   ignores:
     - 'aws-sdk'
 
+  allowMissing:
+    got:
+      - electron
+
   collapsed:
     # Error if any collapsed files in zip are found (default: `true`)
     bail: true
+  
+  # We ignore the dynamic imports of this module, since the API of mapbox we are using
+  # does not depend on it 
+  dynamic:
+    resolutions:
+      "keyv/src/index.js": []
 
 # Each "package" corresponds to an outputted zip file. It can contain an number
 # of traced or straight included files.

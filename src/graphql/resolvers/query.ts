@@ -10,4 +10,7 @@ export const Query: QueryResolvers<Context> = {
 		//TODO: Map UserModel (databse user type) to User (resolver return type)
 		return await context.userRepository.listUsers(args.query, args.limit, args.cursor);
 	},
+	geolocation: async (_parent, args, context) => {
+		return await context.geolocationRepository.getGeolocation(args.query);
+	},
 };

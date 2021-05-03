@@ -1,4 +1,4 @@
-import { Optional } from '../../utils/types';
+import { Maybe } from 'graphql/jsutils/Maybe';
 
 export interface UserModel {
 	id: string;
@@ -12,5 +12,5 @@ export interface UserModel {
 
 export interface UserPageModel {
 	items: UserModel[];
-	cursor: Optional<string>;
+	cursor: Maybe<string>;
 }
