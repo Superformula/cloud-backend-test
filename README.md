@@ -42,7 +42,7 @@ The GraphQL server was created using [TypeScript](https://www.typescriptlang.org
 
 Here is the architecture:
 
-![Superformula-fabio-solution-architecture](./assets/SuperformulaFabio1.png)
+![Superformula-fabio-solution-architecture](./assets/SuperformulaFabio1.jpg)
 
 [Mapbox](https://www.mapbox.com/) was the Geolocation API chosen for address queries, integrated with the solution using the [@mapbox/mapbox-sdk](https://www.npmjs.com/package/@mapbox/mapbox-sdk) package.
 
@@ -75,13 +75,15 @@ Dates are supported on DynamoDB, but I chose to store them as ISO strings using 
 
 Since I chose to use DynamoDB for listing users and support filetering on pagination on it, I tried to use native functions to achieve it. I searched a lot on how to do it directly with DynamoDB and tried to bring the best practices found, even though I know there is a huge space for improvement.
 
+The server uses CloudWatch for logging and currently has no alarms set. All exceptions occured on business logic are logged.
+
 ### Unit tests
 
 All unit tests for the server business logic were made using [Jest](https://jestjs.io/) with the "ts-jest" package. To mock DynamoDB, "[jest-aws-sdk-mock](https://www.npmjs.com/package/jest-aws-sdk-mock)" was also used since it made it much simpler to deal with DynamoDB in the testing environment.
 
 ### GraphQL API Documentation
 
-You can find the GraphQL Documentation [here](http://graphql-doc.s3-website-us-east-1.amazonaws.com).
+You can find the GraphQL Documentation [here](http://graphql-doc.s3-website-us-east-1.amazonaws.com). (Created manually to save time)
 
 ## Requirements
 
@@ -132,7 +134,7 @@ The API Gateway outputs the URL of the API, append the path "/graphql" to it in 
 -   E2E testing
 -   Integration tests
 -   Strategy for Lambda error handling, retries, and DLQs
--   Describe cloud-native logging, monitoring, and alarming strategy across all queries/mutations
+-   Improve cloud-native logging, monitoring, and alarming strategy across all queries/mutations
 -   Online interactive demo with a publicly accessible link to API
 -   Optimized lambda build
 -   Commit linting

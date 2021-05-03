@@ -42,12 +42,16 @@ export const GetUserByIdAsync = async (db: DocumentClient, id: string): Promise<
 			})
 
 		if (!userDbObj || !userDbObj.Item) {
-			throw new ApolloError(`No user was found`)
+			const errorMessage = `No user was found`
+			console.log(errorMessage)
+			throw new ApolloError(errorMessage)
 		}
 
 		return attributeMapToUser(userDbObj.Item)
 	} catch (error) {
-		throw new ApolloError('Error on User get', error)
+		const errorMessage = 'Error on User get'
+		console.log(errorMessage)
+		throw new ApolloError(errorMessage, error)
 	}
 }
 
@@ -99,7 +103,9 @@ export const ListUsersAsync = async (db: DocumentClient, listingParams: UserList
 				})
 
 			if (!userDbObj || !userDbObj.Items) {
-				throw new ApolloError(`No object was found on list Users`)
+				const errorMessage = `No object was found on list Users`
+				console.log(errorMessage)
+				throw new ApolloError(errorMessage)
 			}
 
 			lastEvaluatedKey = userDbObj.LastEvaluatedKey?.id as AttributeValue
@@ -125,7 +131,9 @@ export const ListUsersAsync = async (db: DocumentClient, listingParams: UserList
 			lastEvaluatedKey: lastEvaluatedKey as string,
 		}
 	} catch (error) {
-		throw new ApolloError('Error on User list', error)
+		const errorMessage = 'Error on User list'
+		console.log(errorMessage)
+		throw new ApolloError(errorMessage, error)
 	}
 }
 
@@ -176,7 +184,9 @@ const AddOrUpdateUserAsync = async (db: DocumentClient, data: PutItemInputAttrib
 			})
 		return await GetUserByIdAsync(db, data['id'] as string)
 	} catch (error) {
-		throw new ApolloError('Error on User add/update', error)
+		const errorMessage = 'Error on User add/update'
+		console.log(errorMessage)
+		throw new ApolloError(errorMessage, error)
 	}
 }
 
@@ -204,7 +214,9 @@ export const DeleteUserAsync = async (db: DocumentClient, id: string): Promise<b
 
 		return true
 	} catch (error) {
-		throw new ApolloError('Error on User delete', error)
+		const errorMessage = 'Error on User delete'
+		console.log(errorMessage)
+		throw new ApolloError(errorMessage, error)
 	}
 }
 
