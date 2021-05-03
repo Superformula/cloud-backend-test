@@ -39,11 +39,19 @@ export type MutationDeleteUserArgs = {
 export type Query = {
   __typename?: 'Query';
   user: User;
+  users: UserPage;
 };
 
 
 export type QueryUserArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryUsersArgs = {
+  query?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['String']>;
 };
 
 export type User = {
@@ -63,6 +71,12 @@ export type UserInput = {
   address?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   dob?: Maybe<Scalars['String']>;
+};
+
+export type UserPage = {
+  __typename?: 'UserPage';
+  items: Array<Maybe<User>>;
+  cursor?: Maybe<Scalars['String']>;
 };
 
 
@@ -146,9 +160,11 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Query: ResolverTypeWrapper<{}>;
-  User: ResolverTypeWrapper<User>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
+  User: ResolverTypeWrapper<User>;
   UserInput: UserInput;
+  UserPage: ResolverTypeWrapper<UserPage>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
@@ -157,9 +173,11 @@ export type ResolversParentTypes = {
   Mutation: {};
   ID: Scalars['ID'];
   Query: {};
-  User: User;
   String: Scalars['String'];
+  Int: Scalars['Int'];
+  User: User;
   UserInput: UserInput;
+  UserPage: UserPage;
   Boolean: Scalars['Boolean'];
 };
 
@@ -171,6 +189,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+  users?: Resolver<ResolversTypes['UserPage'], ParentType, ContextType, RequireFields<QueryUsersArgs, 'limit'>>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -185,10 +204,17 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserPageResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserPage'] = ResolversParentTypes['UserPage']> = {
+  items?: Resolver<Array<Maybe<ResolversTypes['User']>>, ParentType, ContextType>;
+  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserPage?: UserPageResolvers<ContextType>;
 };
 
 

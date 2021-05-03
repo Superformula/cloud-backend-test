@@ -36,7 +36,10 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "dynamodb:PutItem",
           "dynamodb:UpdateItem"
         ],
-        Resource = aws_dynamodb_table.users_table.arn
+        Resource = [
+          aws_dynamodb_table.users_table.arn,
+          "${aws_dynamodb_table.users_table.arn}/index/UserNameIndex"
+        ]
       }
     ]
   })

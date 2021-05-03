@@ -6,4 +6,8 @@ export const Query: QueryResolvers<Context> = {
 		//TODO: Map UserModel (databse user type) to User (resolver return type)
 		return await context.userRepository.getUser(args.id);
 	},
+	users: async (_parent, args, context) => {
+		//TODO: Map UserModel (databse user type) to User (resolver return type)
+		return await context.userRepository.listUsers(args.query, args.limit, args.cursor);
+	},
 };

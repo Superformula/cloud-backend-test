@@ -1,17 +1,20 @@
 import { UserInput } from '../../graphql/types/schema-types';
-import { UserModel } from '../models/user';
+import { UserModel, UserPageModel } from '../models/user';
 import AWS from 'aws-sdk';
 import { UserInputError } from 'apollo-server-errors';
 import moment from 'moment';
 import validator from 'validator';
 import { v4 as uuid } from 'uuid';
 import { ApolloError } from 'apollo-server-lambda';
+import { DocumentClient, QueryOutput, ScanOutput } from 'aws-sdk/clients/dynamodb';
+import { Optional } from '../../utils/types';
 
 export interface UserRepository {
 	createUser(data: UserInput): Promise<UserModel>;
 	updateUser(id: string, data: UserInput): Promise<UserModel>;
 	deleteUser(id: string): Promise<UserModel>;
 	getUser(id: string): Promise<UserModel>;
+	listUsers(query: Optional<string>, limit: number, cursor: Optional<string>): Promise<UserPageModel>;
 }
 
 interface ValidatedInput extends UserInput {
@@ -111,6 +114,61 @@ export class DynamoDBUserRepository implements UserRepository {
 			.promise();
 
 		return result.Attributes as UserModel;
+	}
+
+	async listUsers(query: string, limit: number, cursor: string): Promise<UserPageModel> {
+		// TODO: This API would be more powerful if it used a full text search engine. we should use something like
+		// Elastic search to better fulfill its requirements
+		const searchParams = {
+			TableName: this.tableName,
+			Limit: limit,
+			IndexName: 'UserNameIndex', //TODO: Extract this to environment variable,
+			ExclusiveStartKey: cursor ? JSON.parse(cursor) : null,
+		};
+
+		let queryResult: QueryOutput | ScanOutput | null = null;
+		if (query) {
+			queryResult = await this.database
+				.query({
+					...searchParams,
+					KeyConditionExpression: query ? '#name = :query' : undefined,
+					ExpressionAttributeNames: { '#name': 'name' },
+					ExpressionAttributeValues: query
+						? {
+								':query': query,
+						  }
+						: undefined,
+				})
+				.promise();
+		} else {
+			queryResult = await this.database.scan(searchParams).promise();
+		}
+
+		const queryItems = queryResult?.Items as Pick<UserModel, 'id' | 'name'>[];
+
+		let itemsResult: UserModel[] = [];
+		if (queryItems && queryItems.length > 0) {
+			const itemsToRequest: DocumentClient.BatchGetRequestMap = {};
+
+			itemsToRequest[this.tableName] = {
+				Keys: queryItems.map((i) => ({
+					id: i.id,
+				})),
+			};
+
+			const response = await this.database
+				.batchGet({
+					RequestItems: itemsToRequest,
+				})
+				.promise();
+
+			itemsResult = response.Responses?.[this.tableName] as UserModel[];
+		}
+
+		return {
+			items: itemsResult,
+			cursor: JSON.stringify(queryResult?.LastEvaluatedKey),
+		};
 	}
 
 	private validateInput(data: UserInput): ValidatedInput {

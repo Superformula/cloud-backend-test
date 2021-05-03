@@ -1,3 +1,5 @@
+import { Optional } from '../../utils/types';
+
 export interface UserModel {
 	id: string;
 	name: string;
@@ -6,4 +8,9 @@ export interface UserModel {
 	description?: string;
 	createdAt: string;
 	updatedAt?: string;
+}
+
+export interface UserPageModel {
+	items: UserModel[];
+	cursor: Optional<string>;
 }
