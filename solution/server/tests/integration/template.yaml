@@ -20,7 +20,7 @@ Resources:
             Environment:
                 Variables:
                     USERS_TABLE_NAME: UsersTable
-                    MAPBOX_API_KEY: pk.eyJ1IjoiZmFiaW9jZm1hcnF1ZXMiLCJhIjoiY2tvN3hlYTVmMG4yNzJ1azY4Njk5aHdzaiJ9.HdBYm0TDC2M4GGWmPerBzg
+                    MAPBOX_API_KEY: pk.eyJ1IjoiZmFiaW9jZm1hcnF1ZXMiLCJhIjoiY2tvN3hlYTVmMG4yNzJ1azY4Njk5aHdzaiJ9.HdBYm0TDC2M4GGWmPerBzg # Example API Key
                     LOCAL_DYNAMODB: http://ddb:8000
             Events:
                 CloudBackendTest:
@@ -28,16 +28,3 @@ Resources:
                     Properties:
                         Path: /graphql
                         Method: post
-Outputs:
-    # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-    # Find out more about other implicit resources you can reference within SAM
-    # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-    CloudBackendTestApi:
-        Description: 'API Gateway endpoint URL for CloudBackendTestFunction function'
-        Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/graphql/'
-    CloudBackendTestFunction:
-        Description: 'CloudBackendTestFunction Lambda Function ARN'
-        Value: !GetAtt CloudBackendTestFunction.Arn
-    CloudBackendTestFunctionIamRole:
-        Description: 'Implicit IAM Role created for CloudBackendTestFunction function'
-        Value: !GetAtt CloudBackendTestFunctionRole.Arn
