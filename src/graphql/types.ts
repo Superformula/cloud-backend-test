@@ -14,6 +14,13 @@ export type Scalars = {
 	Float: number;
 };
 
+/** LocationInformation type carries the property "name", which is the full name of the place/location, and coordinates, which is an array of two floats that represent the longitude and the latitude respectively. */
+export type LocationInformation = {
+	__typename?: 'LocationInformation';
+	name: Scalars['String'];
+	coordinates: Array<Scalars['Float']>;
+};
+
 /** Mutation is meant to expose all the APIs whose purpose is to manipulate the database somehow, be it creating, updating, or deleting data */
 export type Mutation = {
 	__typename?: 'Mutation';
@@ -51,6 +58,8 @@ export type Query = {
 	hello: Scalars['String'];
 	user: User;
 	listUsers: UserPaginationResult;
+	/** TESTE */
+	location: Array<LocationInformation>;
 };
 
 /** Query is meant to expose all the APIs whose purpose is to simply fetch data */
@@ -62,6 +71,11 @@ export type QueryUserArgs = {
 export type QueryListUsersArgs = {
 	paginationParams?: Maybe<PaginationInput>;
 	nameFilter?: Maybe<Scalars['String']>;
+};
+
+/** Query is meant to expose all the APIs whose purpose is to simply fetch data */
+export type QueryLocationArgs = {
+	input: Scalars['String'];
 };
 
 /** User type */
@@ -186,8 +200,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-	Mutation: ResolverTypeWrapper<{}>;
+	LocationInformation: ResolverTypeWrapper<LocationInformation>;
 	String: ResolverTypeWrapper<Scalars['String']>;
+	Float: ResolverTypeWrapper<Scalars['Float']>;
+	Mutation: ResolverTypeWrapper<{}>;
 	ID: ResolverTypeWrapper<Scalars['ID']>;
 	PaginationInput: PaginationInput;
 	Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -201,8 +217,10 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-	Mutation: {};
+	LocationInformation: LocationInformation;
 	String: Scalars['String'];
+	Float: Scalars['Float'];
+	Mutation: {};
 	ID: Scalars['ID'];
 	PaginationInput: PaginationInput;
 	Int: Scalars['Int'];
@@ -212,6 +230,15 @@ export type ResolversParentTypes = {
 	UserPaginationResult: UserPaginationResult;
 	UserUpdateInput: UserUpdateInput;
 	Boolean: Scalars['Boolean'];
+};
+
+export type LocationInformationResolvers<
+	ContextType = any,
+	ParentType extends ResolversParentTypes['LocationInformation'] = ResolversParentTypes['LocationInformation']
+> = {
+	name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+	coordinates?: Resolver<Array<ResolversTypes['Float']>, ParentType, ContextType>;
+	__isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type MutationResolvers<
@@ -246,6 +273,12 @@ export type QueryResolvers<
 		ContextType,
 		RequireFields<QueryListUsersArgs, never>
 	>;
+	location?: Resolver<
+		Array<ResolversTypes['LocationInformation']>,
+		ParentType,
+		ContextType,
+		RequireFields<QueryLocationArgs, 'input'>
+	>;
 };
 
 export type UserResolvers<
@@ -273,6 +306,7 @@ export type UserPaginationResultResolvers<
 };
 
 export type Resolvers<ContextType = any> = {
+	LocationInformation?: LocationInformationResolvers<ContextType>;
 	Mutation?: MutationResolvers<ContextType>;
 	Query?: QueryResolvers<ContextType>;
 	User?: UserResolvers<ContextType>;
