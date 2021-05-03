@@ -280,11 +280,13 @@ function attributeMapToUser(attMap: AttributeMap): User {
 	return {
 		id: attMap.id as string,
 		name: attMap.name as string,
-		address: {
-			place: (attMap.address as AttributeMap).place as string,
-			latitude: (attMap.address as AttributeMap).latitude as number,
-			longitude: (attMap.address as AttributeMap).longitude as number,
-		},
+		address: attMap.address
+			? {
+					place: (attMap.address as AttributeMap).place as string,
+					latitude: (attMap.address as AttributeMap).latitude as number,
+					longitude: (attMap.address as AttributeMap).longitude as number,
+			  }
+			: null,
 		createdAt: attMap.createdAt as string,
 		updatedAt: attMap.updatedAt as string,
 		description: attMap.description as string,
