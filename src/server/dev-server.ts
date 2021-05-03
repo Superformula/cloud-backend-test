@@ -1,5 +1,5 @@
 import { ApolloServer } from 'apollo-server';
-import { apolloServerConfig } from './misc/apollo-server-config';
+import { apolloServerConfig } from './apollo-server-config';
 
 const PORT = process.env.PORT || 4000;
 
