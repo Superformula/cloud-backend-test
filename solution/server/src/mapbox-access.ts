@@ -23,7 +23,9 @@ export const FindAddressAsync = async (service: GeocodeService, query: string): 
 			.send()
 
 		if (!geocondingQueryResponse || !geocondingQueryResponse.body) {
-			throw new ApolloError(`No valid response from Mapbox`)
+			const errorMessage = `List users`
+			console.log(errorMessage)
+			throw new ApolloError(errorMessage)
 		}
 
 		checkResponseStatusCode(geocondingQueryResponse)
@@ -33,7 +35,9 @@ export const FindAddressAsync = async (service: GeocodeService, query: string): 
 		const geoResponse: GeocodingResponse = geocondingQueryResponse.body
 		return geoResponse.features
 	} catch (error) {
-		throw new ApolloError(`Error on Geocoding fetch from Mapbox`, error)
+		const errorMessage = `Error on Geocoding fetch from Mapbox`
+		console.log(errorMessage)
+		throw new ApolloError(errorMessage, error)
 	}
 }
 
@@ -44,6 +48,8 @@ export const FindAddressAsync = async (service: GeocodeService, query: string): 
 const checkResponseStatusCode = (response: MapiResponse) => {
 	const codeMod = response.statusCode % 100
 	if (codeMod == 4 || codeMod == 5) {
-		throw new ApolloError(`Response has no success code: ${response.statusCode}`, response.body)
+		const errorMessage = `Response has no success code: ${response.statusCode}`
+		console.log(errorMessage, response.body)
+		throw new ApolloError(errorMessage, response.body)
 	}
 }
