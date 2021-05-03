@@ -1,6 +1,6 @@
 import { UserCreationModel, UserModel, UserUpdateModel } from '../db-models/user-models';
 import { User, UserCreationInput, UserPaginationResult, UserUpdateInput } from '../graphql/types';
-import { PaginationOutputModel } from '../repositories/irepo';
+import { PaginationOutputModel } from '../types/pagination-output';
 
 // This class is meant to decouple the models from graphQL API from the models that are used with our database tables.
 // With UserModelConverter, we stopped using graphQL input models directly when creating or updating a user, for example.
