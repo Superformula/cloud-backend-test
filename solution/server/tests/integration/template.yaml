@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    sam-app
+
+    SAM Script for Integration Tests - Superformula Fabio's solution
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+    Function:
+        Timeout: 600
+
+Resources:
+    CloudBackendTestFunction:
+        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+        Properties:
+            CodeUri: ../../
+            Handler: dist/lambda-server.graphqlHandler
+            Runtime: nodejs14.x
+            Environment:
+                Variables:
+                    USERS_TABLE_NAME: UsersTable
+                    MAPBOX_API_KEY: pk.eyJ1IjoiZmFiaW9jZm1hcnF1ZXMiLCJhIjoiY2tvN3hlYTVmMG4yNzJ1azY4Njk5aHdzaiJ9.HdBYm0TDC2M4GGWmPerBzg
+                    LOCAL_DYNAMODB: http://ddb:8000
+            Events:
+                CloudBackendTest:
+                    Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+                    Properties:
+                        Path: /graphql
+                        Method: post
+Outputs:
+    # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+    # Find out more about other implicit resources you can reference within SAM
+    # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+    CloudBackendTestApi:
+        Description: 'API Gateway endpoint URL for CloudBackendTestFunction function'
+        Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/graphql/'
+    CloudBackendTestFunction:
+        Description: 'CloudBackendTestFunction Lambda Function ARN'
+        Value: !GetAtt CloudBackendTestFunction.Arn
+    CloudBackendTestFunctionIamRole:
+        Description: 'Implicit IAM Role created for CloudBackendTestFunction function'
+        Value: !GetAtt CloudBackendTestFunctionRole.Arn
