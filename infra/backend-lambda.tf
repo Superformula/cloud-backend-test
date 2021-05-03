@@ -43,10 +43,16 @@ resource "aws_iam_policy" "backend_lambda_logging" {
   })
 }
 
+# attach the logging policy to the execution role of this lambda 
+resource "aws_iam_role_policy_attachment" "backend_lambda_logs" {
+  role       = aws_iam_role.iam_for_backend_lambda.name
+  policy_arn = aws_iam_policy.backend_lambda_logging.arn
+}
+
 # this policy grants that our backend lambda will be able to handle logging
 resource "aws_iam_role_policy" "backend_lambda_dynamodb" {
-  name        = "backend_lambda_dynamodb"
-  role        = aws_iam_role.iam_for_backend_lambda.id
+  name = "backend_lambda_dynamodb"
+  role = aws_iam_role.iam_for_backend_lambda.id
 
   policy = jsonencode({
     "Version" : "2012-10-17",
@@ -59,7 +65,7 @@ resource "aws_iam_role_policy" "backend_lambda_dynamodb" {
           "dynamodb:UpdateItem",
           "dynamodb:DeleteItem"
         ],
-        "Resource": "${aws_dynamodb_table.users-table.arn}",
+        "Resource" : "${aws_dynamodb_table.users-table.arn}",
         "Effect" : "Allow"
       }
     ]
@@ -70,10 +76,27 @@ resource "aws_iam_role_policy" "backend_lambda_dynamodb" {
   ]
 }
 
-# attach the policy above to the role above
-resource "aws_iam_role_policy_attachment" "backend_lambda_logs" {
-  role       = aws_iam_role.iam_for_backend_lambda.name
-  policy_arn = aws_iam_policy.backend_lambda_logging.arn
+# this policy gives permission for the Backend Lambda to invoke Fetch Location Lambda
+resource "aws_iam_role_policy" "invoke_fetch_location_from_backend" {
+  name = "invoke_fetch_location_from_backend"
+  role = aws_iam_role.iam_for_backend_lambda.id
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : [
+          "lambda:InvokeFunction"
+        ],
+        "Resource" : "${aws_lambda_function.fetch_location_lambda.arn}",
+        "Effect" : "Allow"
+      }
+    ]
+  })
+
+  depends_on = [
+    aws_lambda_function.fetch_location_lambda,
+  ]
 }
 
 # the AWS Lambda resource for our backend
