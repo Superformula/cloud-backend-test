@@ -4,9 +4,9 @@ import { Mutation } from './graphql/resolvers/mutation';
 import { typeDefs } from './graphql/schema/schema';
 import dotenv from 'dotenv';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { DynamoDBUserRepository } from './database/repositories/user-repository';
+import { DynamoDBUserRepository } from './data-access/repositories/user-repository';
 import { Context } from './graphql/types/context';
-import { MapboxGeolocationRepository } from './database/repositories/geolocation-repository';
+import { MapboxGeolocationRepository } from './data-access/repositories/geolocation-repository';
 dotenv.config();
 
 const server = new ApolloServer({

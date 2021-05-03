@@ -1,5 +1,5 @@
-import { GeolocationRepository } from '../../database/repositories/geolocation-repository';
-import { UserRepository } from '../../database/repositories/user-repository';
+import { GeolocationRepository } from '../../data-access/repositories/geolocation-repository';
+import { UserRepository } from '../../data-access/repositories/user-repository';
 
 export interface Context {
 	userRepository: UserRepository;
