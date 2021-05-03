@@ -18,6 +18,17 @@ const mapboxService = Geocoding({
 	accessToken: process.env.MAPBOX_API_KEY ?? '',
 })
 
-const server = new ApolloServer({ typeDefs, resolvers, context: { dynamo, mapbox: mapboxService } })
+const stageName = process.env.DEPLOYMENT_STAGE_NAME ?? ''
+
+console.log(`CloudBackEndTestLambda - Deployment stage: ${stageName}`)
+
+const server = new ApolloServer({
+	typeDefs,
+	resolvers,
+	context: { dynamo, mapbox: mapboxService },
+	playground: {
+		endpoint: `/${stageName}/graphql`,
+	},
+})
 
 exports.graphqlHandler = server.createHandler()
