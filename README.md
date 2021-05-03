@@ -107,7 +107,7 @@ All tests will be executed and a coverage report will be shown.
 
 ## Integration tests
 
-It was not simple to setup an environment for integration tests, so I came up with the following approach: run the Lambda server and DynamoDB locally and execute the tests making calls to the API.
+It was not simple to set up an environment for integration tests, so I came up with the following approach: run the Lambda server and DynamoDB locally and execute the tests making calls to the API.
 
 ### Setup
 
@@ -116,7 +116,7 @@ To run the integration tests you must also install:
 -   [Docker](https://www.docker.com/get-started)
 -   [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
 
-Be sure your ports 8000 and 3000 are available and navigate to [solution/server](./solution/server) in your command line and execute the following commands to setup the environment:
+Be sure your ports 8000 and 3000 are available and navigate to [solution/server](./solution/server) in your command line and execute the following commands to set up the environment:
 
 ```
 docker run -d --name ddb -p 8000:8000 amazon/dynamodb-local
@@ -146,7 +146,7 @@ yarn integ-test
 
 These tests take a little to run, but the timeouts are configured to let them run.
 
-### Clean up resources
+### Cleanup resources
 
 When done testing, clean up the resources created. Close the Lambda server and run the following commands to unmount Docker resources:
 
