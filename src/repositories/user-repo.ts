@@ -8,16 +8,16 @@ import {
 } from 'aws-sdk/clients/dynamodb';
 import { DataSource, DataSourceConfig } from 'apollo-datasource';
 import { v4 as uuidv4 } from 'uuid';
-import { IRepo, PaginationOutputModel } from './irepo';
 import { ApolloError } from 'apollo-server-errors';
 import { Maybe, PaginationInput, UserCreationInput, UserUpdateInput } from '../graphql/types';
 import { PromiseResult } from 'aws-sdk/lib/request';
 import { ErrorCodes } from '../enums/error-codes';
 import { buildSimpleUpdateItemInput } from '../misc/utils';
 import { UserModel } from '../db-models/user-models';
-import { Context } from '../misc/context-type';
+import { Context } from '../types/context';
+import { PaginationOutputModel } from '../types/pagination-output';
 
-export class UserRepo extends DataSource implements IRepo<UserModel, UserCreationInput, UserUpdateInput> {
+export class UserRepo extends DataSource {
 	private readonly tableName = 'Users';
 	private docCient: DocumentClient;
 	private context: Context | null = null;

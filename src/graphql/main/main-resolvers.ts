@@ -1,4 +1,4 @@
-import { Context } from '../../misc/context-type';
+import { Context } from '../../types/context';
 import { Resolvers } from '../types';
 
 // Resolvers for common fields and types declared in Query and Mutation
