@@ -13,7 +13,8 @@ resource "aws_lambda_function" "gql_lambda" {
 
   environment {
     variables = {
-      "USERS_TABLE_NAME" = var.users_table_name
+      "USERS_TABLE_NAME"    = var.users_table_name
+      "MAPBOX_ACCESS_TOKEN" = var.mapbox_access_token
     }
   }
 }
