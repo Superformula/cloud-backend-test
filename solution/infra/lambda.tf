@@ -19,7 +19,7 @@ resource "aws_lambda_function" "gql_lambda_function" {
   environment {
     variables = {
       USERS_TABLE_NAME = "${aws_dynamodb_table.users_dynamodb_table.name}"
-      MAPBOX_API_KEY = "pk.eyJ1IjoiZmFiaW9jZm1hcnF1ZXMiLCJhIjoiY2tvNjh2em15MHhueTJub252czU1eHh5ayJ9.3Cds6u5zt_oCNrSPfC-9zQ"
+      MAPBOX_API_KEY = "pk.eyJ1IjoiZmFiaW9jZm1hcnF1ZXMiLCJhIjoiY2tvNjh2em15MHhueTJub252czU1eHh5ayJ9.3Cds6u5zt_oCNrSPfC-9zQ" # Example API Key
     }
   }
 }
