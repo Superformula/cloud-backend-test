@@ -1,5 +1,5 @@
 locals {
-  zipfile = "../lambda-zips/fetch-location-lambda.zip"
+  fetchLocationZipFile = "../lambda-zips/fetch-location-lambda.zip"
 }
 
 variable "MAPBOX_ACCESS_TOKEN" {
@@ -59,18 +59,18 @@ resource "aws_iam_role_policy_attachment" "fetch_location_lambda_logs" {
 }
 
 resource "aws_lambda_function" "fetch_location_lambda" {
-  filename      = local.zipfile
+  filename      = local.fetchLocationZipFile
   function_name = "fetch_location"
   role          = aws_iam_role.iam_for_fetch_location_lambda.arn
   handler       = "fetch-location-handler.handler"
 
-  source_code_hash = filebase64sha256(local.zipfile)
+  source_code_hash = filebase64sha256(local.fetchLocationZipFile)
 
   runtime = "nodejs14.x"
 
   environment {
     variables = {
-      MAPBOX_ACCESS_TOKEN = var.MAPBOX_ACCESS_TOKEN
+      MAPBOX_ACCESS_TOKEN             = var.MAPBOX_ACCESS_TOKEN
       MAPBOX_GEOCODING_PLACES_API_URL = var.MAPBOX_GEOCODING_PLACES_API_URL
     }
   }
