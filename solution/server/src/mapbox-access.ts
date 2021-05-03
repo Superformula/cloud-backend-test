@@ -46,8 +46,8 @@ export const FindAddressAsync = async (service: GeocodeService, query: string): 
  * @param response The response received from Mapbox API, used to check status code
  */
 const checkResponseStatusCode = (response: MapiResponse) => {
-	const codeMod = response.statusCode % 100
-	if (codeMod == 4 || codeMod == 5) {
+	// Checing if the response has a bad status code
+	if (response.statusCode >= 400 && response.statusCode < 600) {
 		const errorMessage = `Response has no success code: ${response.statusCode}`
 		console.log(errorMessage, response.body)
 		throw new ApolloError(errorMessage, response.body)
