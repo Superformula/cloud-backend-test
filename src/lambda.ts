@@ -16,12 +16,12 @@ const server = new ApolloServer({
 		Mutation,
 	},
 	context: (): Context => {
-		// This client initialization here ensure we are using the same instance of this client through all our resolvers.
+		// This client initialization here ensure we are using the same instance of this client through all our resolvers in this request.
 		// We don't want to declare too many of our dependencies in this way since it might slow down our requests
 		// with dependencies that would not be used for a particular resolver, maybe use a IOC container to better handle this?
 		const documentClient = new DocumentClient();
 		const userRepository = new DynamoDBUserRepository(documentClient);
-		const geolocationRepository = new MapboxGeolocationRepository(process.env['MAPBOX_ACCESS_TOKEN']);
+		const geolocationRepository = new MapboxGeolocationRepository();
 
 		return { userRepository, geolocationRepository };
 	},

@@ -9,12 +9,15 @@ export interface GeolocationRepository {
 export class MapboxGeolocationRepository implements GeolocationRepository {
 	private client: GeocodeService;
 
-	constructor(accessToken?: string) {
+	constructor() {
+		const accessToken = process.env['MAPBOX_ACCESS_TOKEN'];
+
 		if (!accessToken) {
 			throw new ApolloError('No Mapbox access token provided');
 		}
+
 		this.client = Geocoding({
-			accessToken: accessToken,
+			accessToken,
 		});
 	}
 
@@ -27,7 +30,7 @@ export class MapboxGeolocationRepository implements GeolocationRepository {
 
 		const response = await request.send();
 		if (response.statusCode != 200) {
-			throw new ApolloError('Error when fetching geolocation data', 'GeolocationApiRequestFailed', {
+			throw new ApolloError('Error while fetching geolocation data', 'GeolocationApiRequestFailed', {
 				respoonseCode: response.statusCode,
 				respoonseBody: response.body,
 			});
