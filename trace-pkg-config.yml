@@ -5,7 +5,7 @@ options:
   concurrency: 0
 
   # Directory from which to read input files as well as output zip bundles.
-  cwd: ./dist
+  cwd: ./src/server/dist
 
   # Package path prefixes up to a directory level to skip tracing on.
   # (we don't want to include 'aws-sdk' in the .zip file because it will be already available in AWS Lambda)
@@ -24,8 +24,8 @@ options:
 packages:
   backend_lambda:
     # File path (absolute or relative to `cwd` option) for output bundle.
-    output: ../lambda-zips/backend-lambda.zip
+    output: ../../../lambda-zips/backend-lambda.zip
 
     # entry point file
     trace:
-      - backend-lambda.js
+      - server/backend-lambda.js

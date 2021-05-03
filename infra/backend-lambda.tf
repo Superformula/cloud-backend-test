@@ -104,7 +104,7 @@ resource "aws_lambda_function" "backend_lambda" {
   filename      = local.backendZipFile
   function_name = "backend_handler"
   role          = aws_iam_role.iam_for_backend_lambda.arn
-  handler       = "backend-lambda.handler"
+  handler       = "server/backend-lambda.handler"
 
   source_code_hash = filebase64sha256(local.backendZipFile)
 

@@ -1,8 +1,8 @@
 import { DataSource } from 'apollo-datasource';
 import { ApolloError } from 'apollo-server';
 import AWS from 'aws-sdk';
+import { LocationQueryInput, LocationQueryOutput } from '../../fetch-location-lambda/types';
 import { ErrorCodes } from '../enums/error-codes';
-import { LocationQueryInput, LocationQueryOutput } from '../lambdas/fetch-location/dist/types';
 
 export class LocationDataSource extends DataSource {
 	lambda: AWS.Lambda;

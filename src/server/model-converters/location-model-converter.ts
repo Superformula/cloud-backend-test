@@ -1,4 +1,4 @@
-import { LocationQueryOutput } from '../lambdas/fetch-location/types';
+import { LocationQueryOutput } from '../../fetch-location-lambda/types';
 import { LocationInformation } from '../graphql/types';
 
 // This class is meant to decouple the models from graphQL API from the models that are used by the FetchLocationLambda.

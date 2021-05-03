@@ -4,9 +4,10 @@
   "description": "Bruno Rodrigues' solution to the Cloud Backend Test from Superformula.",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev src/dev-server.ts",
+    "dev": "ts-node-dev src/server/dev-server.ts",
     "build": "tsc -p tsconfig.json",
-    "bundle:trace-pkg": "npm run build && trace-pkg -c trace-pkg-config.yml",
+    "build:backend-lambda": "tsc -p ./src/server/tsconfig.backend-lambda.json",
+    "bundle:trace-pkg": "npm run build:backend-lambda && trace-pkg -c trace-pkg-config.yml",
     "graphql": "graphql-codegen --config codegen.yml",
     "test": "jest --collect-coverage"
   },

@@ -11,7 +11,7 @@ options:
 packages:
   location_lambda:
     # File path (absolute or relative to `cwd` option) for output bundle.
-    output: ../../../../lambda-zips/fetch-location-lambda.zip
+    output: ../../../lambda-zips/fetch-location-lambda.zip
 
     # entry point file
     trace:
