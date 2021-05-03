@@ -129,6 +129,10 @@ Check if the resources listed are the ones you want and confirm the creation on 
 
 The API Gateway outputs the URL of the API, append the path "/graphql" to it in order to make requests to the server.
 
+### GraphQL Playground
+
+The Playground is available in the URL received as output from API Gateway, you can use it to make queries to the server.
+
 ## Further improvements
 
 -   E2E testing
@@ -136,7 +140,6 @@ The API Gateway outputs the URL of the API, append the path "/graphql" to it in 
 -   Strategy for Lambda error handling, retries, and DLQs
 -   Improve cloud-native logging, monitoring, and alarming strategy across all queries/mutations
 -   Online interactive demo with a publicly accessible link to API
--   Optimized lambda build
 -   Commit linting
 -   Semantic release
 -   Improve logging
