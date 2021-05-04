@@ -1,25 +1,18 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { DataSource, DataSourceConfig } from 'apollo-datasource';
+import { DataSource } from 'apollo-datasource';
 import { v4 as uuidv4 } from 'uuid';
 import { ApolloError } from 'apollo-server-errors';
-import { Maybe, PaginationInput, UserCreationInput, UserUpdateInput } from '../graphql/types';
+import { Maybe, PaginationInput } from '../graphql/types';
 import { ErrorCodes } from '../enums/error-codes';
 import { buildSimpleUpdateItemInput } from '../misc/utils';
-import { UserModel } from '../data-source-models/user-models';
-import { Context } from '../types/context';
+import { UserCreationModel, UserModel, UserUpdateModel } from '../data-source-models/user-models';
 import { PaginationOutputModel } from '../data-source-models/pagination-output-model';
 
 export class UserDataSource extends DataSource {
 	private readonly tableName = 'Users';
-	private context: Context | null = null;
 
 	constructor(private docCient: DocumentClient) {
 		super();
-	}
-
-	// This method is called by Apollo Server
-	initialize({ context }: DataSourceConfig<Context>): void {
-		this.context = context;
 	}
 
 	getItem(id: string): Promise<UserModel> {
@@ -100,25 +93,14 @@ export class UserDataSource extends DataSource {
 		});
 	}
 
-	async putItem(input: UserCreationInput): Promise<UserModel> {
+	async putItem(input: UserCreationModel): Promise<UserModel> {
 		return new Promise<UserModel>((resolve, reject) => {
-			// If context is not fulfilled, it means that DataSource was not correctly initialized, then throw excecion.
-			if (!this.context) {
-				reject(
-					new ApolloError(
-						'Operation to create user failed: Apollo did not initialize DataSource correctly.',
-						ErrorCodes.DATASOURCE_NOT_INITIALIZED,
-					),
-				);
-				return;
-			}
-
 			// get current date as UTC to fulfill fields createdAt and updatedAt
 			const currentDate = new Date().toUTCString();
 
-			// map the given UserCreationInput to what will be actually sent to DynamoDB, and fulfill some more props
+			// fulfill some other props of the input, to make it ready to send to Dynamo
 			const item: UserModel = {
-				...this.context.userModelConverter.fromGqlCreationInputToDbCreationModel(input),
+				...input,
 				id: uuidv4(),
 				createdAt: currentDate,
 				updatedAt: currentDate,
@@ -141,28 +123,14 @@ export class UserDataSource extends DataSource {
 		});
 	}
 
-	async updateItem(id: string, input: UserUpdateInput): Promise<UserModel> {
+	async updateItem(id: string, input: UserUpdateModel): Promise<UserModel> {
 		return new Promise<UserModel>((resolve, reject) => {
-			// If context is not fulfilled, it means that DataSource was not correctly initialized, then throw excecion.
-			if (!this.context) {
-				reject(
-					new ApolloError(
-						'Operation to update user failed: Apollo did not initialize DataSource correctly.',
-						ErrorCodes.DATASOURCE_NOT_INITIALIZED,
-					),
-				);
-				return;
-			}
-
 			// get current date as UTC to update the field updatedAt
 			const currentDate = new Date().toUTCString();
 
-			// map the given UserUpdateInput to what will be actually sent to DynamoDB
-			const updateModel = this.context.userModelConverter.fromGqlUpdateInputToDbUpdateModel(input);
-
 			// generate the update object that will be passed to docCient.update
 			const updateItemInput = buildSimpleUpdateItemInput(this.tableName, id, {
-				...updateModel,
+				...input,
 				updatedAt: currentDate,
 			});
 

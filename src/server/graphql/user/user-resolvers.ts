@@ -14,11 +14,13 @@ export const userResolvers: Resolvers<Context> = {
 	},
 	Mutation: {
 		createUser: async (_, args, context) => {
-			const userModel = await context.dataSources.userDataSource.putItem(args.input);
+			const userCreationModel = context.userModelConverter.fromGqlCreationInputToDbCreationModel(args.input);
+			const userModel = await context.dataSources.userDataSource.putItem(userCreationModel);
 			return context.userModelConverter.fromDbModelToGqlModel(userModel);
 		},
 		updateUser: async (_, args, context) => {
-			const userModel = await context.dataSources.userDataSource.updateItem(args.id, args.input);
+			const userUpdateModel = context.userModelConverter.fromGqlUpdateInputToDbUpdateModel(args.input);
+			const userModel = await context.dataSources.userDataSource.updateItem(args.id, userUpdateModel);
 			return context.userModelConverter.fromDbModelToGqlModel(userModel);
 		},
 		deleteUser: async (_, args, context) => {
