@@ -27,6 +27,7 @@ describe('server > data-sources > LocationDataSource', () => {
 		// ----- Arrange -----
 
 		const mockLambda = new Lambda();
+		// in this mock, the lambda will successfully return an array of 5 locations related to the given input
 		mocked(mockLambda.invoke as LambdaInvokeType).mockImplementation(
 			(_params: InvocationRequest, callback: (error: AWSError | null, data: InvocationResponse) => void) => {
 				callback(null, {
@@ -56,6 +57,7 @@ describe('server > data-sources > LocationDataSource', () => {
 		// ----- Arrange -----
 		const mockLambda = new Lambda();
 		const mockInvoke = mocked(mockLambda.invoke as LambdaInvokeType);
+		// in this mock, the lambda will successfully return an empty array of locations, given the odd input
 		mockInvoke.mockImplementation(
 			(_params: InvocationRequest, callback: (error: AWSError | null, data: InvocationResponse) => void) => {
 				callback(null, {
@@ -77,6 +79,7 @@ describe('server > data-sources > LocationDataSource', () => {
 	test('If an empty input is passed to fetchLocationInfo, it should return exception indicating it', async () => {
 		// ----- Arrange -----
 		const mockLambda = new Lambda();
+		// in this mock, the lambda will throw an exception because of the empty input, and should return the error in the payload
 		mocked(mockLambda.invoke as LambdaInvokeType).mockImplementation(
 			(_params: InvocationRequest, callback: (error: AWSError | null, data: InvocationResponse) => void) => {
 				callback(null, {
@@ -107,6 +110,7 @@ describe('server > data-sources > LocationDataSource', () => {
 		const errorCode = 'FORBIDDEN';
 		const errorMessage = 'You do not have permission to perform this action';
 		const mockLambda = new Lambda();
+		// in this mock, the invocation of the lambda will fail, and an error will be returned, indicating the respective problem
 		mocked(mockLambda.invoke as LambdaInvokeType).mockImplementation(
 			(_params: InvocationRequest, callback: (error: AWSError | null, data: InvocationResponse) => void) => {
 				callback({ code: errorCode, message: errorMessage, name: 'Forbidden', time: new Date() }, {});
