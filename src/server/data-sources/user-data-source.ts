@@ -8,6 +8,8 @@ import { buildSimpleUpdateItemInput } from '../misc/utils';
 import { UserCreationModel, UserModel, UserUpdateModel } from '../data-source-models/user-models';
 import { PaginationOutputModel } from '../data-source-models/pagination-output-model';
 
+export const conditionalCheckFailedErrorCode = 'ConditionalCheckFailedException';
+
 export class UserDataSource extends DataSource {
 	private readonly tableName = 'Users';
 
@@ -75,8 +77,8 @@ export class UserDataSource extends DataSource {
 					if (res.Items === undefined || res.Count === undefined || res.ScannedCount === undefined) {
 						reject(
 							new ApolloError(
-								'Listing users failed: the result of the scan command is invalid.',
-								ErrorCodes.LIST_USERS_FAILED,
+								'The response of the "scan" command is invalid, thus operation to list users failed.',
+								ErrorCodes.INVALID_SCAN_RESPONSE,
 							),
 						);
 						return;
@@ -139,7 +141,7 @@ export class UserDataSource extends DataSource {
 				if (err) {
 					// since the condition for the update to happen is that the user with the given ID exists (see usage of "ConditionExpression" inside
 					// "buildSimpleUpdateItemInput"), if it is not found, an exception with code 'ConditionalCheckFailedException' will be thrown
-					if (err.code === 'ConditionalCheckFailedException') {
+					if (err.code === conditionalCheckFailedErrorCode) {
 						reject(
 							new ApolloError(
 								`User with ID '${id}' not found; hence, update operation failed.`,
