@@ -1,14 +1,18 @@
+import { mapUser } from '../../mappers/user-mapper';
 import { Context } from '../types/context';
 import { QueryResolvers } from '../types/schema-types';
 
 export const Query: QueryResolvers<Context> = {
 	user: async (_parent, args, context) => {
-		//TODO: Map UserModel (databse user type) to User (resolver return type)
-		return await context.userRepository.getUser(args.id);
+		const user = await context.userRepository.getUser(args.id);
+		return mapUser(user);
 	},
 	users: async (_parent, args, context) => {
-		//TODO: Map UserModel (databse user type) to User (resolver return type)
-		return await context.userRepository.listUsers(args.query, args.limit, args.cursor);
+		const users = await context.userRepository.listUsers(args.query, args.limit, args.cursor);
+		return {
+			items: users.items.map((u) => mapUser(u)),
+			cursor: users.cursor,
+		};
 	},
 	geolocation: async (_parent, args, context) => {
 		return await context.geolocationRepository.getGeolocation(args.query);
