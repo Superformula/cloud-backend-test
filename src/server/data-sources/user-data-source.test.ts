@@ -12,10 +12,10 @@ import {
 	UpdateItemOutput,
 } from 'aws-sdk/clients/dynamodb';
 import { AWSError } from 'aws-sdk';
-import { conditionalCheckFailedErrorCode, UserDataSource } from '../../../../src/server/data-sources/user-data-source';
-import UserModel, { UserCreationModel, UserUpdateModel } from '../../../../src/server/data-source-models/user-models';
+import { conditionalCheckFailedErrorCode, UserDataSource } from './user-data-source';
+import UserModel, { UserCreationModel, UserUpdateModel } from '../data-source-models/user-models';
 import { mocked } from 'ts-jest/utils';
-import ErrorCodes from '../../../../src/server/enums/error-codes';
+import ErrorCodes from '../enums/error-codes';
 
 // ----- TYPE DEFS -----
 

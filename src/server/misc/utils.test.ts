@@ -1,5 +1,5 @@
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
-import { buildSimpleUpdateItemInput } from '../../../../src/server/misc/utils';
+import { buildSimpleUpdateItemInput } from './utils';
 import {} from 'uuid';
 
 const mockUuid = 'f30692ca-48b9-4a2f-be35-dfd8c98e5662';

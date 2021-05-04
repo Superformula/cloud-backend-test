@@ -1,10 +1,7 @@
 import { AWSError, Lambda } from 'aws-sdk';
-import {
-	fetchLocationInfoFailedErrorMessage,
-	LocationDataSource,
-} from '../../../../src/server/data-sources/location-data-source';
-import ErrorCodes from '../../../../src/server/enums/error-codes';
-import { emptyLocationInputErrorMessage } from '../../../../src/fetch-location-lambda/fetch-location-handler';
+import { fetchLocationInfoFailedErrorMessage, LocationDataSource } from './location-data-source';
+import ErrorCodes from '../enums/error-codes';
+import { emptyLocationInputErrorMessage } from '../../fetch-location-lambda/fetch-location-handler';
 import { InvocationRequest, InvocationResponse } from 'aws-sdk/clients/lambda';
 import { mocked } from 'ts-jest/utils';
 
