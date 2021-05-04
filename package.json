@@ -5,7 +5,7 @@
     "bootstrap": "lerna bootstrap",
     "generate": "lerna run generate --scope=core --stream",
     "install:dynamodb": "lerna run install:dynamodb --scope=api --stream",
-    "start:offline-api": "lerna run start:offline --scope=api --stream",
+    "start:api": "lerna run start:offline --scope=api --stream",
     "seed:data": "lerna run seed:data --scope=api --stream",
     "build:api": "lerna run build --scope=api --stream",
     "deploy:api": "lerna run deploy --scope=api --stream",
