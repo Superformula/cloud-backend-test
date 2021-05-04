@@ -4,6 +4,9 @@ import { LocationQueryInput, LocationQueryOutput } from './types';
 export const emptyLocationInputErrorMessage =
 	'Received a null/undefined/empty location input. The location input must have a value.';
 
+export const invalidResponseObjectErrorMessage =
+	'Something wrong happened while fetching coordinates from Mapbox API. The response object is not valid.';
+
 export async function handler(event: LocationQueryInput): Promise<LocationQueryOutput> {
 	if (!event || !event.value) {
 		throw new Error(emptyLocationInputErrorMessage);
@@ -30,9 +33,7 @@ export async function handler(event: LocationQueryInput): Promise<LocationQueryO
 
 	// check if the response is valid
 	if (!responseFromMapbox || !responseFromMapbox.data || !responseFromMapbox.data.features) {
-		throw new Error(
-			'Something wrong happened while fetching coordinates from Mapbox API. The response object is not valid.',
-		);
+		throw new Error(invalidResponseObjectErrorMessage);
 	}
 
 	const locQueryOutput: LocationQueryOutput = {
