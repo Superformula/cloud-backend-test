@@ -18,11 +18,11 @@ The repository is composed of two main directories:
 -   "infra": Terraform files to create resources on AWS
 -   "server": The GraphQL server
 
-A GitHub action was configured to run all unit tests on commits and only allow merge requests if all tests are passing.
+A GitHub Action was configured to run all unit tests on commits and only allow merge requests if all tests are passing.
 
 ## Infrasctructure
 
-Using Terraform (version 3.30 because it's being already 2 months of testing), the following resources are created on AWS:
+Using Terraform, the following resources are created on AWS:
 
 -   AWS Lambda: The GraphQL server is deployed as a Lambda function
 -   API Gateway: REST API to serve requests to the GraphQL server
@@ -141,7 +141,7 @@ docker network connect integration-tests-network ddb
 yarn build
 ```
 
-The DynamoDB local should be running in background, now it's time to start the Lambda server. Navigate to [solution/server/tests/integration](./solution/server/tests/integration), update the [template.yaml](./solution/server/tests/integration/template.yaml) file with your Mapbox API Key (line 23) and execute the following commands inside integration folder:
+The DynamoDB local should be running in background, now it's time to start the Lambda server. Navigate to [solution/server/tests/integration](./solution/server/tests/integration), update the [template.yaml](./solution/server/tests/integration/template.yaml) file with your Mapbox API Key (line 23) and execute the following commands inside "integration" folder:
 
 ```
 sam build
@@ -200,10 +200,15 @@ The API Gateway outputs the URL of the API, append the path "/graphql" to it in 
 
 The Playground is available in the URL received as output from API Gateway, you can use it to make queries to the server.
 
+## Strategy for Lambda error handling, retries, and DLQs
+
+In order to handle server errors and apply a retry policy, I started to develop an AWS Step Function to monitor the AWS Lambda created as a server. With this resource, I can easily set the behavior when any kind of exception or error occurs, define how many retries in each error, and the treatment pipeline. Like a lot of techs used in this project, it would be my first time trying out the Step Functions, but I could not deliver a good version before the deadline, so I decided to just describe what would be my strategy for error handling.
+
+To deal with DLQs it would be interesting to connect the Lambda server to an SNS topic or SQS queue to be consumed by an external treatment service since Lambdas natively support sending asynchronous events to those resources when their processing fails.
+
 ## Further improvements
 
 -   E2E testing
--   Strategy for Lambda error handling, retries, and DLQs
 -   Improve cloud-native logging, monitoring, and alarming strategy across all queries/mutations
 -   Online interactive demo with a publicly accessible link to API
 -   Commit linting
