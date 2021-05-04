@@ -11,12 +11,10 @@ import { PaginationOutputModel } from '../data-source-models/pagination-output-m
 
 export class UserDataSource extends DataSource {
 	private readonly tableName = 'Users';
-	private docCient: DocumentClient;
 	private context: Context | null = null;
 
-	constructor() {
+	constructor(private docCient: DocumentClient) {
 		super();
-		this.docCient = new DocumentClient();
 	}
 
 	// This method is called by Apollo Server
