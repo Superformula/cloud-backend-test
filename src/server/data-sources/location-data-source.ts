@@ -39,6 +39,7 @@ export class LocationDataSource extends DataSource {
 									JSON.parse(lambdaResponse.Payload as string),
 								),
 							);
+							return;
 						}
 
 						// If no errors occurred during the execution of the lambda, the results will be in the Payload; parse it and return it.
