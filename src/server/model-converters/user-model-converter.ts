@@ -41,15 +41,9 @@ export class UserModelConverter {
 	}
 
 	fromPaginationOutputModelToUserPaginationResult(pagOutput: PaginationOutputModel<UserModel>): UserPaginationResult {
-		let lastEvaluatedId: string | undefined;
-
-		if (pagOutput.lastEvaluatedKey) {
-			lastEvaluatedId = pagOutput.lastEvaluatedKey['id'];
-		}
-
 		return {
 			users: pagOutput.items.map((user) => this.fromDbModelToGqlModel(user)),
-			lastEvaluatedId,
+			lastEvaluatedId: pagOutput.lastEvaluatedKey ? pagOutput.lastEvaluatedKey['id'] : undefined,
 		};
 	}
 }
