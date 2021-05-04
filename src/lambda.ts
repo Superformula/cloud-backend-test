@@ -18,6 +18,9 @@ const server = new ApolloServer({
 		Query,
 		Mutation,
 	},
+	playground: {
+		endpoint: `/${process.env.STAGE_NAME || 'dev'}/graphql`,
+	},
 	context: (): Context => {
 		// This client initialization here ensure we are using the same instance of this client through all our resolvers in this request.
 		// We don't want to declare too many of our dependencies in this way since it might slow down our requests

@@ -16,6 +16,7 @@ resource "aws_lambda_function" "gql_lambda" {
       "USERS_TABLE_NAME"    = var.users_table_name
       "NAME_INDEX"          = var.user_name_index
       "MAPBOX_ACCESS_TOKEN" = var.mapbox_access_token
+      "STAGE_NAME"          = var.gateway_stage
     }
   }
 }
