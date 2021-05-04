@@ -20,7 +20,7 @@ Resources:
             Environment:
                 Variables:
                     USERS_TABLE_NAME: UsersTable
-                    MAPBOX_API_KEY: pk.eyJ1IjoiZmFiaW9jZm1hcnF1ZXMiLCJhIjoiY2tvN3hlYTVmMG4yNzJ1azY4Njk5aHdzaiJ9.HdBYm0TDC2M4GGWmPerBzg # Example API Key
+                    MAPBOX_API_KEY: INSERT_YOUR_KEY_HERE
                     LOCAL_DYNAMODB: http://ddb:8000
             Events:
                 CloudBackendTest:
