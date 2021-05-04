@@ -264,3 +264,19 @@ Configure CI/CD pipeline which runs the followings for stage branches(i.e. dev):
 - E2E test
 - Build
 - Deploy
+
+### Technical Debts
+
+- Scaling issue
+  I have challenged to implement solutions without AppSync and use [aws-lambda-graphql](https://github.com/michalkvasnicak/aws-lambda-graphql#readme) for Grahpql Engine.
+  The problem I am seeing here is that when we are going to scale things, we will face some issues with scaling and the size of lambda.
+  AppSync provides flexible scalability by keeping resolvers in different lambda functions rather than keeping them in one lambda.
+  [Issue](https://github.com/michalkvasnicak/aws-lambda-graphql/issues/143)
+
+- Dynamodb Pricing
+  I have used dynamodb stream and while looking into the codebase, it seems like it has some cost issues with large applications. Maybe can try with other solutions like Redis, etc.
+  [Issue](https://github.com/michalkvasnicak/aws-lambda-graphql/issues/72)
+
+#### Conclusion
+
+- For now, I think it would be worth using AppSync for more stable and scaling app development which is scaling great although it has some [limitations](https://docs.aws.amazon.com/general/latest/gr/appsync.html).
