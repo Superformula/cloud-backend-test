@@ -23,7 +23,7 @@ jest.mock('aws-sdk', () => {
 });
 
 describe('server > data-sources > LocationDataSource', () => {
-	test('Simple input (e.g. "Brasília") passed to fetchLocationInfo should return 5 locations', async () => {
+	test('If a simple input (e.g. "Brasília") is passed to fetchLocationInfo, it should return 5 locations', async () => {
 		// ----- Arrange -----
 
 		const mockLambda = new Lambda();
@@ -52,7 +52,7 @@ describe('server > data-sources > LocationDataSource', () => {
 		}
 	});
 
-	test('Odd input (e.g. "asldkjfhasdlfkjh") passed to fetchLocationInfo should return 0 locations', async () => {
+	test('If an odd input (e.g. "asldkjfhasdlfkjh") is passed to fetchLocationInfo, it should return 0 locations', async () => {
 		// ----- Arrange -----
 		const mockLambda = new Lambda();
 		const mockInvoke = mocked(mockLambda.invoke as LambdaInvokeType);
@@ -74,7 +74,7 @@ describe('server > data-sources > LocationDataSource', () => {
 		expect(output.locations.length).toEqual(0);
 	});
 
-	test('Empty input passed to fetchLocationInfo should return error', async () => {
+	test('If an empty input is passed to fetchLocationInfo, it should return exception indicating it', async () => {
 		// ----- Arrange -----
 		const mockLambda = new Lambda();
 		mocked(mockLambda.invoke as LambdaInvokeType).mockImplementation(
@@ -102,7 +102,7 @@ describe('server > data-sources > LocationDataSource', () => {
 		}
 	});
 
-	test('When Lambda.invoke fails, fetchLocationInfo should throw exception', async () => {
+	test('When Lambda.invoke fails, fetchLocationInfo should throw exception indicating that the operation failed', async () => {
 		// ----- Arrange -----
 		const errorCode = 'FORBIDDEN';
 		const errorMessage = 'You do not have permission to perform this action';
