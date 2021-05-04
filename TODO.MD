@@ -21,4 +21,4 @@
 - [x] Code coverage report generation
 - [ ] E2E Testing
 - [ ] Integration Testing
-- [ ] Add documentations before release
+- [x] Add documentations before release

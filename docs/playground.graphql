@@ -1,0 +1,74 @@
+fragment UserFragment on User {
+  id
+  name
+  dob
+  address
+  imageUrl
+  description
+  createdAt
+  updatedAt
+}
+
+query listUsers {
+  listUsers(pageInfo: { offset: 0, limit: 10 }, filter: { name: "a" }) {
+    users {
+      ...UserFragment
+    }
+    offset
+    total
+  }
+}
+
+query getUser {
+  getUser(id: "7dccdfde-ba9b-4ee5-92c7-c186c21c8543") {
+    ...UserFragment
+  }
+}
+
+query getGeoLocation {
+  getGeoLocation(address: "Koepp Plains, Grahamside, 62260-3757") {
+    lat
+    lng
+  }
+}
+
+mutation createUser {
+  createUser(user: {
+    name: "Created User",
+    dob: "1998-07-13T07:08:13.154Z",
+    address: "Koepp Plains, Grahamside, 62260-3757",
+    description: "A Newly created user by Douglas Wang"
+  }) {
+    ...UserFragment
+  }
+}
+
+mutation updateUser {
+  updateUser(user: {
+    id: "7dccdfde-ba9b-4ee5-92c7-c186c21c8543",
+    name: "Updated User",
+    address: "Koepp Plains, Grahamside, 62260-3757",
+    description: "Updated user by Douglas Wang"
+  }) {
+    ...UserFragment
+  }
+}
+
+mutation deleteUser {
+  deleteUser(id: "7dccdfde-ba9b-4ee5-92c7-c186c21c8543")
+}
+
+subscription subscribeToUser {
+  subscribeToUser {
+    user {
+      id
+      name
+      dob
+      address
+      description
+      createdAt
+      updatedAt
+    }
+    event
+  }
+}
