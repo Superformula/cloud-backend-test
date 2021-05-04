@@ -61,17 +61,17 @@ export const GetUserByIdAsync = async (db: DocumentClient, id: string): Promise<
  * @param listingParams The pagination params
  * @returns The paginated user list
  */
-export const ListUsersAsync = async (db: DocumentClient, listingParams: UserListParams): Promise<UserPaginatedResponse> => {
+export const ListUsersAsync = async (db: DocumentClient, listingParams: UserListParams | null | undefined): Promise<UserPaginatedResponse> => {
 	try {
 		// Set the base limit
-		const limit = listingParams.limit ?? defaultListLimit
+		const limit = listingParams?.limit ?? defaultListLimit
 		const params: ScanInput = {
 			TableName: tableName,
 			Limit: limit,
 		}
 
 		// Check and add if there is a filter
-		if (listingParams.filter) {
+		if (listingParams?.filter) {
 			params.FilterExpression = 'contains(#name, :filter)'
 			params.ExpressionAttributeNames = {
 				'#name': 'name',
@@ -86,7 +86,7 @@ export const ListUsersAsync = async (db: DocumentClient, listingParams: UserList
 		// https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.Pagination.html
 		let userList: User[] = []
 		let userDbObj: ScanOutput
-		let lastEvaluatedKey = listingParams.lastEvaluatedKey as AttributeValue
+		let lastEvaluatedKey = listingParams?.lastEvaluatedKey as AttributeValue
 
 		do {
 			if (lastEvaluatedKey) {
