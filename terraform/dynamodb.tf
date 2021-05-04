@@ -15,7 +15,7 @@ resource "aws_dynamodb_table" "users_table" {
   }
 
   global_secondary_index {
-    name            = "UserNameIndex"
+    name            = var.user_name_index
     hash_key        = "name"
     write_capacity  = 5
     read_capacity   = 5
