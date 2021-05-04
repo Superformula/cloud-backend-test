@@ -9,7 +9,7 @@ export interface GeolocationRepository {
 export class MapboxGeolocationRepository implements GeolocationRepository {
 	constructor(private client: GeocodeService) {}
 
-	async getGeolocation(query: string): Promise<Exclude<Maybe<GeolocationData>, undefined>> {
+	async getGeolocation(query: string): Promise<Maybe<GeolocationData>> {
 		const request = this.client.forwardGeocode({
 			query,
 			mode: 'mapbox.places',
