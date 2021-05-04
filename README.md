@@ -87,10 +87,10 @@ You can find the GraphQL Documentation [here](http://graphql-doc.s3-website-us-e
 
 ### Listing, filtering and pagination
 
-All GraphQL APIs are easy to consume, just listing User is a bit more complicated, because it involves filtering and pagination. I this version, I decided to use only DynamoDB to fulfill this requirement, but this database definitely was not built for this kind of task. I had to come up with my logic to provide this feature. Starting with the params, the filter string will be used to match any part of the User name ("contains" operation) and the limit param will limit the number of results retrieved for pagination.
+All GraphQL APIs are easy to consume, just listing users is a bit more complicated, because it involves filtering and pagination. In this version, I decided to use only DynamoDB to fulfill this requirement, but this database definitely was not built for this kind of task. I had to come up with my logic to provide this feature. Starting with the params, the filter string will be used to match any part of the User name ("contains" operation) and the limit param will limit the number of results retrieved for pagination.
 
-So far so good, but what does "lastEvaluatedKey" do? It's the key component for pagination. DynamoDB queries have a limit of data to be processed, that's why it may complete the operation without searching all of its data and may it return a field called
-"LastEvaluatedKey": this field is exactly the key of the last record processed by the database. To search the remaining data, a new request must be made and the parameter "ExclusiveStartKey" must be the previously received "LastEvaluatedKey", the database will reading from this record. The reference of this documentation can be found [here](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html).
+So far so good, but what does "lastEvaluatedKey" do? It's the key component for pagination. DynamoDB queries have a limit of data to be processed, that's why it may complete the operation without searching all of its data and may return a field called
+"LastEvaluatedKey": this field is exactly the key of the last record processed by the database. To search the remaining data, a new request must be made and the parameter "ExclusiveStartKey" must be the previously received "LastEvaluatedKey", the database will start reading from this record. The reference of this documentation can be found [here](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html).
 
 The pagination in this solution works the same way, if a "lastEvaluatedKey" is provided, the result must be paginated and all records on the database weren't processed. The usage is very simple:
 
