@@ -5,9 +5,9 @@ import { ApolloError } from 'apollo-server-errors';
 import { Maybe, PaginationInput, UserCreationInput, UserUpdateInput } from '../graphql/types';
 import { ErrorCodes } from '../enums/error-codes';
 import { buildSimpleUpdateItemInput } from '../misc/utils';
-import { UserModel } from '../db-models/user-models';
+import { UserModel } from '../data-source-models/user-models';
 import { Context } from '../types/context';
-import { PaginationOutputModel } from '../types/pagination-output';
+import { PaginationOutputModel } from '../data-source-models/pagination-output-model';
 
 export class UserDataSource extends DataSource {
 	private readonly tableName = 'Users';
