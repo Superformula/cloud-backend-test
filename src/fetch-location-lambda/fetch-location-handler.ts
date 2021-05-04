@@ -1,9 +1,12 @@
 import axios, { AxiosResponse } from 'axios';
 import { LocationQueryInput, LocationQueryOutput } from './types';
 
+export const emptyLocationInputErrorMessage =
+	'Received a null/undefined/empty location input. The location input must have a value.';
+
 export async function handler(event: LocationQueryInput): Promise<LocationQueryOutput> {
 	if (!event || !event.value) {
-		throw new Error('Received a null/undefined/empty location input. The location input must have a value.');
+		throw new Error(emptyLocationInputErrorMessage);
 	}
 
 	// organize data to send to Mapbox API
