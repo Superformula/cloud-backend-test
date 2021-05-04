@@ -53,29 +53,6 @@ describe('server > data-sources > LocationDataSource', () => {
 		}
 	});
 
-	test('If an odd input (e.g. "asldkjfhasdlfkjh") is passed to fetchLocationInfo, it should return 0 locations', async () => {
-		// ----- Arrange -----
-		const mockLambda = new Lambda();
-		const mockInvoke = mocked(mockLambda.invoke as LambdaInvokeType);
-		// in this mock, the lambda will successfully return an empty array of locations, given the odd input
-		mockInvoke.mockImplementation(
-			(_params: InvocationRequest, callback: (error: AWSError | null, data: InvocationResponse) => void) => {
-				callback(null, {
-					StatusCode: 200,
-					Payload: '{"locations":[]}',
-				});
-			},
-		);
-		const locationDataSource = new LocationDataSource(mockLambda);
-
-		// ----- Act -----
-		const output = await locationDataSource.fetchLocationInfo('asldkjfhasdlfkjh');
-
-		// ----- Assert -----
-		expect(output.locations).toBeDefined();
-		expect(output.locations.length).toEqual(0);
-	});
-
 	test('If an empty input is passed to fetchLocationInfo, it should return exception indicating it', async () => {
 		// ----- Arrange -----
 		const mockLambda = new Lambda();
