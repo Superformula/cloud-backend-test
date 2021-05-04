@@ -1,0 +1,39 @@
+{
+  "name": "test-full-stack",
+  "private": true,
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "lint": "eslint --ext ts,tsx packages",
+    "lint-staged": "lint-staged",
+    "start:offline-api": "lerna run start:offline --scope=sf-api --stream",
+    "start:app": "lerna run start --scope=sf-app --stream",
+    "test": "lerna run test",
+    "clean": "rimraf packages/**/lib",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
+    "husky": "^6.0.0",
+    "lerna": "^4.0.0",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1",
+    "typescript": "^3.2.4"
+  },
+  "lint-staged": {
+    "*.{json,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

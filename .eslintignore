@@ -1,0 +1,9 @@
+# package directories
+/node_modules/
+/.dynamodb/
+/.serverless/
+/.webpack/
+
+tsconfig.json
+webpack.config.js
+jest.config.js

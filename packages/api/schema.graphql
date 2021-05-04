@@ -1,0 +1,42 @@
+scalar IsoDateScalar
+
+type Mutation {
+	updateUser(user: UserInput!): User!
+}
+
+type Query {
+	getUsers($pageInfo: PageInfo!, filter: String): [Message!]!
+}
+
+type Subscription {
+	updatedUser: User!
+		@aws_subscribe(mutations: ["updateUser"])
+}
+
+input UserInput {
+  id: ID!
+  name: String!
+  description: String!
+	address: String!
+  dob: IsoDateScalar!
+  lat: String!
+  lng: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  description: String!
+	address: String!
+  dob: IsoDateScalar!
+  lat: String!
+  lng: String!
+  createdAt: IsoDateScalar!
+  updatedAt: IsoDateScalar!
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+	subscription: Subscription
+}
