@@ -58,7 +58,7 @@ export type Query = {
 	hello: Scalars['String'];
 	user: User;
 	listUsers: UserPaginationResult;
-	/** This API fetches and returns an array of a maximum of 5 locations from MapBox API, based on the given input. Each location returned has the name of the fetched place and its coordinates. */
+	/** This API fetches and returns an array of a maximum of 5 locations from MapBox API, based on the given input, with the most relevant results first. Each location returned has the name of the fetched place and its coordinates. */
 	location: Array<LocationInformation>;
 };
 
