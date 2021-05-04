@@ -3,25 +3,30 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "lint": "eslint --ext ts,tsx packages",
-    "lint-staged": "lint-staged",
-    "start:offline-api": "lerna run start:offline --scope=sf-api --stream",
+    "generate": "lerna run generate --scope=core --stream",
+    "install:dynamodb": "lerna run install:dynamodb --scope=api --stream",
+    "start:offline-api": "lerna run start:offline --scope=api --stream",
     "start:app": "lerna run start --scope=sf-app --stream",
     "test": "lerna run test",
+    "lint": "eslint --ext ts,tsx packages",
+    "lint-staged": "lint-staged",
     "clean": "rimraf packages/**/lib",
     "prepare": "husky install"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
+    "@types/node": "^10.12.18",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",
     "husky": "^6.0.0",
     "lerna": "^4.0.0",
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
-    "typescript": "^3.2.4"
+    "rimraf": "^3.0.2",
+    "typescript": "^3.7.2"
   },
   "lint-staged": {
     "*.{json,md}": [

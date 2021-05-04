@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "lib"
   },
+  "types": ["jest"],
   "include": ["src"],
   "exclude": ["node_modules/**/*", ".serverless/**/*", ".webpack/**/*", ".vscode/**/*"]
 }

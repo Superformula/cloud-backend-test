@@ -15,7 +15,8 @@
     "baseUrl": ".",
     "types": ["jest"],
     "paths": {
-      "@sf/api/*": ["packages/api/src/*"]
+      "@sf/api/*": ["packages/api/src/*"],
+      "@sf/core/*": ["packages/core/lib/generated/*"]
     }
   },
   "compileOnSave": true

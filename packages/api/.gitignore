@@ -1,9 +1,11 @@
 # package directories
 node_modules
 jspm_packages
+environment
 
 # Serverless directories
 .serverless
+.dynamodb
 
 # Webpack directories
 .webpack

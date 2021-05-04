@@ -1,17 +1,21 @@
 const path = require('path');
 const slsw = require('serverless-webpack');
 const nodeExternals = require('webpack-node-externals');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
-  context: __dirname,
   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
   entry: slsw.lib.entries,
-  devtool: slsw.lib.webpack.isLocal ? 'cheap-module-eval-source-map' : 'source-map',
+  optimization: {
+    concatenateModules: false
+  },
   resolve: {
-    extensions: ['.mjs', '.json', '.ts'],
+    extensions: ['.mjs', '.json', '.ts', '.js'],
     symlinks: false,
     cacheWithContext: false,
+    alias: {
+      "@sf/api": path.resolve(__dirname, './src/'),
+      "@sf/core": path.resolve(__dirname, '../packages/core/lib/generated/')
+    }
   },
   output: {
     libraryTarget: 'commonjs',
@@ -19,12 +23,17 @@ module.exports = {
     filename: '[name].js',
   },
   target: 'node',
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals(),
+    nodeExternals({
+      modulesDir: path.resolve(__dirname, '../../node_modules'),
+    }),
+  ],
   module: {
     rules: [
       // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
       {
-        test: /\.(tsx?)$/,
+        test: /\.(ts?)$/,
         loader: 'ts-loader',
         exclude: [
           [
@@ -38,14 +47,11 @@ module.exports = {
           experimentalWatchApi: true,
         },
       },
+      {
+        test: /\.(graphql|gql)$/,
+        exclude: /node_modules/,
+        loader: 'graphql-tag/loader',
+      },
     ],
   },
-  plugins: [
-    // new ForkTsCheckerWebpackPlugin({
-    //   eslint: true,
-    //   eslintOptions: {
-    //     cache: true
-    //   }
-    // })
-  ],
 };
