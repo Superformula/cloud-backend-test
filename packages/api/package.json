@@ -7,6 +7,7 @@
     "start:offline": "sls offline start",
     "build": "sls package && mv .serverless/sf-api.zip ./terraform/sf-api.zip",
     "deploy": "cd terraform && terraform apply --var-file=./environment/dev.tfvars -auto-approve",
+    "destroy": "cd terraform && terraform destroy --var-file=./environment/dev.tfvars -auto-approve",
     "seed:data": "aws dynamodb batch-write-item --request-items file://Users.json"
   },
   "dependencies": {

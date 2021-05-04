@@ -9,6 +9,7 @@
     "seed:data": "lerna run seed:data --scope=api --stream",
     "build:api": "lerna run build --scope=api --stream",
     "deploy:api": "lerna run deploy --scope=api --stream",
+    "destroy:api": "lerna run destroy --scope=api --stream",
     "start:app": "lerna run start --scope=app --stream",
     "test": "jest",
     "test:ci": "jest --ci --runInBand",

@@ -34,6 +34,10 @@ const server = new Server({
       }
     : {
       // TODO: Replace with deployed api url
+      playground: {
+        endpoint: 'https://1tms7d8k7d.execute-api.us-east-2.amazonaws.com/dev',
+        subscriptionEndpoint: 'wss://5fbszrwza9.execute-api.us-east-2.amazonaws.com/dev',
+      },
     }),
   typeDefs,
 });

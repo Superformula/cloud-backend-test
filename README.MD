@@ -8,6 +8,11 @@ Build a GraphQL API for User management.
 
 Detailed requirements can be found in [here](./REQUIREMENTS.md)
 
+### DEMO
+
+Here is the [demo playground](https://1tms7d8k7d.execute-api.us-east-2.amazonaws.com/dev) that I have deployed.
+You can find graphql queries/mutations/subscriptions to play around from [here](./docs/playground.graphql).
+
 ### Tools
 
 - Typescript
@@ -178,9 +183,7 @@ Project heavily depends on [aws-lambda-graphql](https://github.com/michalkvasnic
 
   `yarn deploy:api` script will print out the `https` and `websocket` API Gateway endpoint url that has been deployed.
 
-  | *NOTE* To enjoy the full graphql playground experiences with subscriptions, you can do one of the followings:
-  - You can add `subscriptionEndpoint` settings of the playground to `websocket` endpoint url.
-  ![Playground subscriptionEndpoint Settings](./docs/playground-subscription.png)
+  | *NOTE* To enjoy the full graphql playground experiences with subscriptions, please follow the next step:
   - You can update `playground` configurations in the `api` source code and redeploy endpoint.
   ![Playground settings](./docs/playground-configuration.png)
 
@@ -225,6 +228,7 @@ You can just repeat `build/deploy` api.
 - `yarn start:app` Starts local React application
 - `yarn build:api` Bundles api
 - `yarn deploy:api` Deploys api with terraform
+- `yarn destry:api` Destroys deployed api with terraform
 - `yarn seed:data` Seed the deployed DynamoDB `Users` Table
 - `yarn lint` Runs eslint
 
