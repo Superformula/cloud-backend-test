@@ -88,9 +88,9 @@ These may be used for further challenges. You can freely skip these; feel free t
 
 Assume the GraphQL API you are developing will be used by a hypothetical front-end team to build the following screens:
 
-![Superformula-front-end-test-mockup](./mockup1.png)
+![Superformula-front-end-test-mockup](./docs/mockup1.png)
 
-![Superformula-front-end-test-mockup-2](./mockup2.png)
+![Superformula-front-end-test-mockup-2](./docs/mockup2.png)
 
 > [Source Figma file](https://www.figma.com/file/hd7EgdTxJs2fpTzzSKlNxo/Superformula-full-stack-test)
 
