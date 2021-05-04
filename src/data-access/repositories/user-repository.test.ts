@@ -8,37 +8,11 @@ import { v4 as uuid } from 'uuid';
 import { AttributeValue } from 'aws-sdk/clients/directoryservice';
 import { WithIndexSignature } from '../../utils/types';
 import { Maybe } from 'graphql/jsutils/Maybe';
-
-const testTableName = 'TestUserTable';
-const testIndexName = 'UserNameIndex';
-
-describe('Test user repository creation', () => {
-	const OLD_ENV = process.env;
-
-	beforeEach(() => {
-		process.env = { ...OLD_ENV }; // We want to reset process.env state while calling each test
-	});
-
-	it('Should be created if users table environment variable is set', () => {
-		const databaseMock = new DocumentClient();
-		process.env['USERS_TABLE_NAME'] = testTableName;
-		const repo = new DynamoDBUserRepository(databaseMock);
-		expect(repo).toBeDefined();
-	});
-
-	it('Should throw error if users table environment variable is not set', () => {
-		const databaseMock = new DocumentClient();
-		process.env['USERS_TABLE_NAME'] = undefined;
-		try {
-			new DynamoDBUserRepository(databaseMock);
-		} catch (error) {
-			expect(error.message).toBe('No users table name provided');
-		}
-	});
-});
+import dotenv from 'dotenv';
+import { configureUsersDB, nameIndexEnvName, usersTableEnvName } from '../../configuration/users-db';
+dotenv.config();
 
 describe('Test user retrieval', () => {
-	const testTableName = 'TestUserTable';
 	const mockUser: UserModel = {
 		id: '1234',
 		address: 'Brasilia, Brazil',
@@ -48,18 +22,14 @@ describe('Test user retrieval', () => {
 		createdAt: '2021-05-01T17:52:48.299Z',
 	};
 
-	beforeEach(() => {
-		process.env['USERS_TABLE_NAME'] = testTableName;
-	});
-
 	it('Should be retrieved if found', async () => {
 		const databaseMock = new DocumentClient();
-		const repo = new DynamoDBUserRepository(databaseMock);
+		const repo = new DynamoDBUserRepository(databaseMock, configureUsersDB());
 		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Item: mockUser }));
 
 		const user = await repo.getUser(mockUser.id);
 		expect(databaseMock.get).toHaveBeenCalledWith({
-			TableName: testTableName,
+			TableName: process.env[usersTableEnvName],
 			Key: { id: mockUser.id },
 		});
 		expect(user).toEqual(mockUser);
@@ -67,7 +37,7 @@ describe('Test user retrieval', () => {
 
 	it('Error should be thrown if not found', async () => {
 		const databaseMock = new DocumentClient();
-		const repo = new DynamoDBUserRepository(databaseMock);
+		const repo = new DynamoDBUserRepository(databaseMock, configureUsersDB());
 		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Item: null }));
 
 		let user: UserModel | null = null;
@@ -79,7 +49,7 @@ describe('Test user retrieval', () => {
 
 		expect(user).toBeNull();
 		expect(databaseMock.get).toHaveBeenCalledWith({
-			TableName: testTableName,
+			TableName: process.env[usersTableEnvName],
 			Key: { id: mockUser.id },
 		});
 	});
@@ -99,14 +69,13 @@ describe('Test user creation', () => {
 		Date.now = jest.fn().mockReturnValue(now);
 		return {
 			database,
-			repository: new DynamoDBUserRepository(database),
+			repository: new DynamoDBUserRepository(database, configureUsersDB()),
 			now,
 		};
 	};
 
 	beforeEach(() => {
 		jest.clearAllMocks();
-		process.env['USERS_TABLE_NAME'] = testTableName;
 	});
 
 	it('Should be created with valid input', async () => {
@@ -114,7 +83,7 @@ describe('Test user creation', () => {
 
 		const user = await repository.createUser(mockInput);
 		expect(database.put).toHaveBeenCalledWith({
-			TableName: testTableName,
+			TableName: process.env[usersTableEnvName],
 			Item: user,
 		});
 
@@ -230,14 +199,10 @@ describe('Test user update', () => {
 		Date.now = jest.fn().mockReturnValue(now);
 		return {
 			database,
-			repository: new DynamoDBUserRepository(database),
+			repository: new DynamoDBUserRepository(database, configureUsersDB()),
 			now,
 		};
 	};
-
-	beforeEach(() => {
-		process.env['USERS_TABLE_NAME'] = testTableName;
-	});
 
 	it('Should be updated with valid inputs', async () => {
 		const { database, repository, now } = setup();
@@ -245,7 +210,7 @@ describe('Test user update', () => {
 
 		const user = await repository.updateUser(existingUser.id, mockInput);
 		expect(database.put).toHaveBeenCalledWith({
-			TableName: testTableName,
+			TableName: process.env[usersTableEnvName],
 			Item: user,
 		});
 
@@ -263,7 +228,7 @@ describe('Test user update', () => {
 
 		const user = await repository.updateUser(existingUser.id, {});
 		expect(database.put).toHaveBeenCalledWith({
-			TableName: testTableName,
+			TableName: process.env[usersTableEnvName],
 			Item: user,
 		});
 
@@ -288,13 +253,9 @@ describe('Test user delete', () => {
 		const database = new DocumentClient();
 		return {
 			database,
-			repository: new DynamoDBUserRepository(database),
+			repository: new DynamoDBUserRepository(database, configureUsersDB()),
 		};
 	};
-
-	beforeEach(() => {
-		process.env['USERS_TABLE_NAME'] = testTableName;
-	});
 
 	it('Should be deleted if user exisits', async () => {
 		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Attributes: { ...existingUser } }));
@@ -302,7 +263,7 @@ describe('Test user delete', () => {
 
 		const user = await repository.deleteUser(existingUser.id);
 		expect(database.delete).toHaveBeenCalledWith({
-			TableName: testTableName,
+			TableName: process.env[usersTableEnvName],
 			Key: { id: existingUser.id },
 		});
 
@@ -318,7 +279,7 @@ describe('Test user delete', () => {
 
 		const user = await repository.deleteUser(uuid());
 		expect(database.delete).toHaveBeenCalledWith({
-			TableName: testTableName,
+			TableName: process.env[usersTableEnvName],
 			Key: { id: uuid() },
 		});
 
@@ -348,7 +309,7 @@ describe('Test user list', () => {
 
 	const mockResponses = (expectedCursor: Maybe<string>) => {
 		const batchGetResponse: BatchGetResponseMap = {};
-		batchGetResponse[testTableName] = existingUsers as ItemList;
+		batchGetResponse[process.env[usersTableEnvName] as string] = existingUsers as ItemList;
 		awsSdkPromiseResponse
 			.mockReturnValueOnce(
 				Promise.resolve({
@@ -370,13 +331,9 @@ describe('Test user list', () => {
 		const database = new DocumentClient();
 		return {
 			database,
-			repository: new DynamoDBUserRepository(database),
+			repository: new DynamoDBUserRepository(database, configureUsersDB()),
 		};
 	};
-
-	beforeEach(() => {
-		process.env['USERS_TABLE_NAME'] = testTableName;
-	});
 
 	it('Should scan table without query', async () => {
 		const pageSize = 2;
@@ -387,9 +344,9 @@ describe('Test user list', () => {
 
 		const result = await repository.listUsers(null, pageSize, null);
 		expect(database.scan).toHaveBeenCalledWith({
-			TableName: testTableName,
+			TableName: process.env[usersTableEnvName],
 			Limit: pageSize,
-			IndexName: testIndexName,
+			IndexName: process.env[nameIndexEnvName],
 			ExclusiveStartKey: undefined,
 		});
 
@@ -409,9 +366,9 @@ describe('Test user list', () => {
 
 		const result = await repository.listUsers(query, pageSize, null);
 		expect(database.query).toHaveBeenCalledWith({
-			TableName: testTableName,
+			TableName: process.env[usersTableEnvName],
 			Limit: pageSize,
-			IndexName: testIndexName,
+			IndexName: process.env[nameIndexEnvName],
 			ExclusiveStartKey: undefined,
 			ExpressionAttributeValues: { ':query': query },
 			KeyConditionExpression: expectedExpression,
@@ -434,9 +391,9 @@ describe('Test user list', () => {
 
 		await repository.listUsers(query, pageSize, expectedCursor);
 		expect(database.query).toHaveBeenCalledWith({
-			TableName: testTableName,
+			TableName: process.env[usersTableEnvName],
 			Limit: pageSize,
-			IndexName: testIndexName,
+			IndexName: process.env[nameIndexEnvName],
 			ExclusiveStartKey: JSON.parse(expectedCursor),
 			ExpressionAttributeValues: { ':query': query },
 			KeyConditionExpression: expectedExpression,

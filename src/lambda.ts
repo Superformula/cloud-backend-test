@@ -7,6 +7,8 @@ import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { DynamoDBUserRepository } from './data-access/repositories/user-repository';
 import { Context } from './graphql/types/context';
 import { MapboxGeolocationRepository } from './data-access/repositories/geolocation-repository';
+import { configureUsersDB } from './configuration/users-db';
+import { configureMapbox } from './configuration/mapbox';
 dotenv.config();
 
 const server = new ApolloServer({
@@ -20,8 +22,9 @@ const server = new ApolloServer({
 		// We don't want to declare too many of our dependencies in this way since it might slow down our requests
 		// with dependencies that would not be used for a particular resolver, maybe use a IOC container to better handle this?
 		const documentClient = new DocumentClient();
-		const userRepository = new DynamoDBUserRepository(documentClient);
-		const geolocationRepository = new MapboxGeolocationRepository();
+		const userDBConfig = configureUsersDB();
+		const userRepository = new DynamoDBUserRepository(documentClient, userDBConfig);
+		const geolocationRepository = new MapboxGeolocationRepository(configureMapbox());
 
 		return { userRepository, geolocationRepository };
 	},

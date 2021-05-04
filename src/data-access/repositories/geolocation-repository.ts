@@ -1,6 +1,7 @@
 import { GeolocationData, Maybe } from '../../graphql/types/schema-types';
 import Geocoding, { GeocodeResponse, GeocodeService } from '@mapbox/mapbox-sdk/services/geocoding';
 import { ApolloError } from 'apollo-server-errors';
+import { MapboxConfiguration } from '../../configuration/mapbox';
 
 export interface GeolocationRepository {
 	getGeolocation(query: string): Promise<Maybe<GeolocationData>>;
@@ -9,7 +10,7 @@ export interface GeolocationRepository {
 export class MapboxGeolocationRepository implements GeolocationRepository {
 	private client: GeocodeService;
 
-	constructor() {
+	constructor(private config: MapboxConfiguration) {
 		const accessToken = process.env['MAPBOX_ACCESS_TOKEN'];
 
 		if (!accessToken) {
@@ -17,7 +18,7 @@ export class MapboxGeolocationRepository implements GeolocationRepository {
 		}
 
 		this.client = Geocoding({
-			accessToken,
+			accessToken: config.accessToken,
 		});
 	}
 

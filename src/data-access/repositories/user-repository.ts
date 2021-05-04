@@ -8,6 +8,7 @@ import { v4 as uuid } from 'uuid';
 import { ApolloError } from 'apollo-server-lambda';
 import { DocumentClient, QueryOutput, ScanOutput } from 'aws-sdk/clients/dynamodb';
 import { Maybe } from 'graphql/jsutils/Maybe';
+import { UsersDBConfiguration } from '../../configuration/users-db';
 
 export interface UserRepository {
 	createUser(data: UserInput): Promise<UserModel>;
@@ -22,17 +23,7 @@ interface ValidatedInput extends UserInput {
 }
 
 export class DynamoDBUserRepository implements UserRepository {
-	private tableName: string;
-
-	constructor(private database: AWS.DynamoDB.DocumentClient) {
-		const tableName = process.env['USERS_TABLE_NAME'];
-
-		if (!tableName) {
-			throw new ApolloError('No users table name provided');
-		}
-
-		this.tableName = tableName;
-	}
+	constructor(private database: AWS.DynamoDB.DocumentClient, private config: UsersDBConfiguration) {}
 
 	async createUser(data: UserInput): Promise<UserModel> {
 		if (!data.name) {
@@ -59,7 +50,7 @@ export class DynamoDBUserRepository implements UserRepository {
 
 		await this.database
 			.put({
-				TableName: this.tableName,
+				TableName: this.config.tableName,
 				Item: user,
 			})
 			.promise();
@@ -82,7 +73,7 @@ export class DynamoDBUserRepository implements UserRepository {
 		// From a cost perspective, with an update I can cut out the previous read operation.
 		await this.database
 			.put({
-				TableName: this.tableName,
+				TableName: this.config.tableName,
 				Item: user,
 			})
 			.promise();
@@ -93,7 +84,7 @@ export class DynamoDBUserRepository implements UserRepository {
 	async getUser(id: string): Promise<UserModel> {
 		const response = await this.database
 			.get({
-				TableName: this.tableName,
+				TableName: this.config.tableName,
 				Key: { id },
 			})
 			.promise();
@@ -108,7 +99,7 @@ export class DynamoDBUserRepository implements UserRepository {
 	async deleteUser(id: string): Promise<UserModel> {
 		const result = await this.database
 			.delete({
-				TableName: this.tableName,
+				TableName: this.config.tableName,
 				Key: { id },
 			})
 			.promise();
@@ -120,9 +111,9 @@ export class DynamoDBUserRepository implements UserRepository {
 		// TODO: This API would be more powerful if it used a full text search engine. In production we should
 		// use something like Elastic search to better fulfill its requirements.
 		const searchParams = {
-			TableName: this.tableName,
+			TableName: this.config.tableName,
 			Limit: limit,
-			IndexName: 'UserNameIndex', //TODO: Extract this to environment variable,
+			IndexName: this.config.nameIndex, //TODO: Extract this to environment variable,
 			ExclusiveStartKey: cursor ? JSON.parse(cursor) : undefined,
 		};
 
@@ -146,7 +137,7 @@ export class DynamoDBUserRepository implements UserRepository {
 		if (queryItems && queryItems.length > 0) {
 			const itemsToRequest: DocumentClient.BatchGetRequestMap = {};
 
-			itemsToRequest[this.tableName] = {
+			itemsToRequest[this.config.tableName] = {
 				Keys: queryItems.map((i) => ({
 					id: i.id,
 				})),
@@ -163,7 +154,7 @@ export class DynamoDBUserRepository implements UserRepository {
 				throw new ApolloError('Unexpected batch get items result');
 			}
 
-			itemsResult = response.Responses[this.tableName] as UserModel[];
+			itemsResult = response.Responses[this.config.tableName] as UserModel[];
 		}
 
 		return {

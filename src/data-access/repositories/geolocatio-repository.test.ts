@@ -1,29 +1,7 @@
+import { accessTokenEnvName, configureMapbox } from '../../configuration/mapbox';
 import { GeolocationData } from '../../graphql/types/schema-types';
 import { MapboxGeolocationRepository } from './geolocation-repository';
 import { sendFn } from './__mocks__/@mapbox/mapbox-sdk/services/geocoding';
-
-describe('Geolocation repository creation', () => {
-	const OLD_ENV = process.env;
-
-	beforeEach(() => {
-		process.env = { ...OLD_ENV }; // We want to reset process.env state while calling each test
-	});
-
-	it('Should be created if access token environment variable is set', () => {
-		process.env['MAPBOX_ACCESS_TOKEN'] = 'test-access-key';
-		const repo = new MapboxGeolocationRepository();
-		expect(repo).toBeDefined();
-	});
-
-	it('Should throw error if access token variable is not set', () => {
-		process.env['MAPBOX_ACCESS_TOKEN'] = undefined;
-		try {
-			new MapboxGeolocationRepository();
-		} catch (error) {
-			expect(error.message).toBe('No Mapbox access token provided');
-		}
-	});
-});
 
 describe('Test get geolocation function', () => {
 	const mockGeolocationData: GeolocationData = {
@@ -32,8 +10,8 @@ describe('Test get geolocation function', () => {
 	};
 
 	const setup = () => {
-		process.env['MAPBOX_ACCESS_TOKEN'] = 'test-access-key';
-		return new MapboxGeolocationRepository();
+		process.env[accessTokenEnvName] = 'test-access-key';
+		return new MapboxGeolocationRepository(configureMapbox());
 	};
 
 	it('Should get geolocation with valid query', async () => {
