@@ -22,7 +22,7 @@ jest.mock('aws-sdk', () => {
 	};
 });
 
-describe('server > data-sources > LocationDataSource tests', () => {
+describe('server > data-sources > LocationDataSource', () => {
 	test('Simple input (e.g. "Brasília") passed to fetchLocationInfo should return 5 locations', async () => {
 		// ----- Arrange -----
 
