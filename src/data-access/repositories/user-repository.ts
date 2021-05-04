@@ -114,7 +114,7 @@ export class DynamoDBUserRepository implements UserRepository {
 		const searchParams = {
 			TableName: this.config.tableName,
 			Limit: limit,
-			IndexName: this.config.nameIndex, //TODO: Extract this to environment variable,
+			IndexName: this.config.nameIndex,
 			ExclusiveStartKey: cursor ? JSON.parse(cursor) : undefined,
 		};
 
