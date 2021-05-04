@@ -17,7 +17,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 const tableName = process.env.USERS_TABLE_NAME ?? ''
 
-const defaultListLimit = 2
+const defaultListLimit = 10
 
 /**
  * Retrives an User by its ID
@@ -61,17 +61,17 @@ export const GetUserByIdAsync = async (db: DocumentClient, id: string): Promise<
  * @param listingParams The pagination params
  * @returns The paginated user list
  */
-export const ListUsersAsync = async (db: DocumentClient, listingParams: UserListParams): Promise<UserPaginatedResponse> => {
+export const ListUsersAsync = async (db: DocumentClient, listingParams: UserListParams | null | undefined): Promise<UserPaginatedResponse> => {
 	try {
 		// Set the base limit
-		const limit = listingParams.limit ?? defaultListLimit
+		const limit = listingParams?.limit ?? defaultListLimit
 		const params: ScanInput = {
 			TableName: tableName,
 			Limit: limit,
 		}
 
 		// Check and add if there is a filter
-		if (listingParams.filter) {
+		if (listingParams?.filter) {
 			params.FilterExpression = 'contains(#name, :filter)'
 			params.ExpressionAttributeNames = {
 				'#name': 'name',
@@ -81,20 +81,20 @@ export const ListUsersAsync = async (db: DocumentClient, listingParams: UserList
 			}
 		}
 
+		// Check if there is a starting point on query, "lastEvaluatedId" is the id of the last visited record
+		if (listingParams?.lastEvaluatedKey) {
+			params.ExclusiveStartKey = {
+				id: listingParams?.lastEvaluatedKey as AttributeValue,
+			}
+		}
+
 		// DynamoDB does not directly support pagination. The "limit" param just limits how many entities will be visited and not how many will be retrieved
 		// That's why we must keep looking until there is no more entities to be visited or the user limit was satisfied
 		// https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.Pagination.html
 		let userList: User[] = []
 		let userDbObj: ScanOutput
-		let lastEvaluatedKey = listingParams.lastEvaluatedKey as AttributeValue
 
 		do {
-			if (lastEvaluatedKey) {
-				params.ExclusiveStartKey = {
-					id: lastEvaluatedKey,
-				}
-			}
-
 			userDbObj = await db
 				.scan(params)
 				.promise()
@@ -108,11 +108,18 @@ export const ListUsersAsync = async (db: DocumentClient, listingParams: UserList
 				throw new ApolloError(errorMessage)
 			}
 
-			lastEvaluatedKey = userDbObj.LastEvaluatedKey?.id as AttributeValue
+			// Put in the result list all items found
 			if (userDbObj.Items) {
 				userList = [...userList, ...itemListToUserList(userDbObj.Items)]
 			}
-		} while (userList.length < limit && lastEvaluatedKey)
+
+			// Set the new "ExclusiveStartKey"
+			params.ExclusiveStartKey = userDbObj.LastEvaluatedKey
+
+			// Loop while the limit was not satified and while there are entities to be visited
+		} while (userList.length < limit && params.ExclusiveStartKey)
+
+		let lastEvaluatedId = params.ExclusiveStartKey?.id as string
 
 		// Check if the final list is larger than the requested by the user, removing entries if necessary
 		if (userList.length > limit) {
@@ -123,12 +130,12 @@ export const ListUsersAsync = async (db: DocumentClient, listingParams: UserList
 			// Set the "lastEvaluatedKey" param as the last User retrieved ID to start the next request from it.
 			// We must do that to get the manually removed items
 			const lastIndex = userList.length - 1
-			lastEvaluatedKey = userList[lastIndex].id as AttributeValue
+			lastEvaluatedId = userList[lastIndex].id
 		}
 
 		return {
 			users: userList,
-			lastEvaluatedKey: lastEvaluatedKey as string,
+			lastEvaluatedKey: lastEvaluatedId,
 		}
 	} catch (error) {
 		const errorMessage = 'Error on User list'
@@ -147,7 +154,7 @@ export const AddUserAsync = async (db: DocumentClient, fields: UserInput): Promi
 	const addUserData = genUserDataMap(fields) as PutItemInputAttributeMap
 	addUserData['id'] = uuidv4() as AttributeValue
 	addUserData['createdAt'] = addUserData['updatedAt']
-	return AddOrUpdateUserAsync(db, addUserData)
+	return AddOrUpdateUserAsync(db, addUserData, true)
 }
 
 /**
@@ -169,11 +176,17 @@ export const UpdateUserAsync = async (db: DocumentClient, id: string, fields: Us
  * @param data User Data
  * @returns User
  */
-const AddOrUpdateUserAsync = async (db: DocumentClient, data: PutItemInputAttributeMap): Promise<User> => {
+const AddOrUpdateUserAsync = async (db: DocumentClient, data: PutItemInputAttributeMap, create = false): Promise<User> => {
 	try {
 		const params: PutItemInput = {
 			TableName: tableName,
 			Item: data,
+		}
+
+		if (create) {
+			params.ConditionExpression = 'attribute_not_exists(id)'
+		} else {
+			params.ConditionExpression = 'attribute_exists(id)'
 		}
 
 		await db
