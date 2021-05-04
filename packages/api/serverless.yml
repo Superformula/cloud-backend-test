@@ -35,6 +35,13 @@ custom:
     useChildProcesses: true
   webpack:
     webpackConfig: ./webpack.config.js
+    includeModules:
+      forceInclude:
+        - graphql
+        - graphql-subscriptions
+        - graphql-tag
+      nodeModulesRelativeDir: '../../'
+    excludeFiles: src/**/__test__/**/*.test.ts
 
 plugins:
   - serverless-webpack
