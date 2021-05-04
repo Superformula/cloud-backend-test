@@ -13,3 +13,6 @@ terraform.tfstate.backup
 
 # lambda .zip files
 lambda-zips 
+
+# Jest coverage report files
+coverage
