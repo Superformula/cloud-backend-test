@@ -1,0 +1,23 @@
+overwrite: true
+watch: true
+generates:
+  ./lib/generated/location.ts:
+    schema: ../api/src/schemas/location/schema.graphql
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      enumsAsTypes: true
+      withHooks: true
+  ./lib/generated/user.ts:
+    schema: ../api/src/schemas/user/schema.graphql
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      enumsAsTypes: true
+      withHooks: true
+      scalars:
+        IsoDateScalar: string

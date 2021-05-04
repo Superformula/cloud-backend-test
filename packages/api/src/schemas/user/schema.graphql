@@ -1,0 +1,78 @@
+scalar IsoDateScalar
+
+input PageInfo {
+  offset: Int!
+  limit: Int!
+}
+
+input UserFilter {
+  name: String!
+}
+
+input CreateUserInput {
+  name: String!
+  dob: IsoDateScalar!
+	address: String!
+  description: String!
+}
+
+input UpdateUserInput {
+  id: ID!
+  name: String
+  dob: IsoDateScalar
+	address: String
+  description: String
+}
+
+input UserFilter {
+  name: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  dob: IsoDateScalar!
+	address: String!
+  description: String!
+  imageUrl: String!
+  createdAt: IsoDateScalar!
+  updatedAt: IsoDateScalar!
+}
+
+type PaginatedUsers {
+  offset: Int!
+  total: Int!
+  users: [User!]!
+}
+
+enum UserEvent {
+  created
+  updated
+  deleted
+}
+
+type SubscribeToUser {
+  user: User!
+  event: UserEvent!
+}
+
+type Query {
+	listUsers(pageInfo: PageInfo!, filter: UserFilter): PaginatedUsers!
+  getUser(id: String!): User!
+}
+
+type Mutation {
+  createUser(user: CreateUserInput!): User!
+	updateUser(user: UpdateUserInput!): User!
+  deleteUser(id: String!): Boolean!
+}
+
+type Subscription {
+	subscribeToUser(filter: UserFilter): SubscribeToUser!
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+	subscription: Subscription
+}

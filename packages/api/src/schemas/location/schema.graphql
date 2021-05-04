@@ -1,0 +1,12 @@
+type GeoLocation {
+  lat: Float!
+  lng: Float!
+}
+
+type Query {
+	getGeoLocation(address: String!): GeoLocation!
+}
+
+schema {
+	query: Query
+}
