@@ -54,7 +54,6 @@ describe('server > data-sources > LocationDataSource', () => {
 
 	test('Odd input (e.g. "asldkjfhasdlfkjh") passed to fetchLocationInfo should return 0 locations', async () => {
 		// ----- Arrange -----
-
 		const mockLambda = new Lambda();
 		const mockInvoke = mocked(mockLambda.invoke as LambdaInvokeType);
 		mockInvoke.mockImplementation(
@@ -68,18 +67,15 @@ describe('server > data-sources > LocationDataSource', () => {
 		const locationDataSource = new LocationDataSource(mockLambda);
 
 		// ----- Act -----
-
 		const output = await locationDataSource.fetchLocationInfo('asldkjfhasdlfkjh');
 
 		// ----- Assert -----
-
 		expect(output.locations).toBeDefined();
 		expect(output.locations.length).toEqual(0);
 	});
 
 	test('Empty input passed to fetchLocationInfo should return error', async () => {
 		// ----- Arrange -----
-
 		const mockLambda = new Lambda();
 		mocked(mockLambda.invoke as LambdaInvokeType).mockImplementation(
 			(_params: InvocationRequest, callback: (error: AWSError | null, data: InvocationResponse) => void) => {
@@ -92,14 +88,14 @@ describe('server > data-sources > LocationDataSource', () => {
 		);
 		const locationDataSource = new LocationDataSource(mockLambda);
 
-		// ----- Act & Assert -----
+		expect.assertions(3);
 
 		try {
-			expect.assertions(3);
-
+			// ----- Act -----
 			// Call fetchLocationInfo with an empty input and check if an Apollo error was thrown, then the details about the exception
 			await locationDataSource.fetchLocationInfo('');
 		} catch (error) {
+			// ----- Assert -----
 			expect(error.message).toMatch(fetchLocationInfoFailedErrorMessage);
 			expect(error.extensions?.code).toMatch(ErrorCodes.FETCH_LOCATION_INFO_FAILED);
 			expect(error.extensions?.errorMessage).toMatch(emptyLocationInputErrorMessage);
@@ -108,7 +104,6 @@ describe('server > data-sources > LocationDataSource', () => {
 
 	test('When Lambda.invoke fails, fetchLocationInfo should throw exception', async () => {
 		// ----- Arrange -----
-
 		const errorCode = 'FORBIDDEN';
 		const errorMessage = 'You do not have permission to perform this action';
 		const mockLambda = new Lambda();
@@ -119,13 +114,13 @@ describe('server > data-sources > LocationDataSource', () => {
 		);
 		const locationDataSource = new LocationDataSource(mockLambda);
 
-		// ----- Act & Assert -----
+		expect.assertions(2);
 
 		try {
-			expect.assertions(2);
-
+			// ----- Act -----
 			await locationDataSource.fetchLocationInfo('Dummy location');
 		} catch (error) {
+			// ----- Assert -----
 			expect(error.code).toMatch(errorCode);
 			expect(error.extensions?.message).toMatch(errorMessage);
 		}
