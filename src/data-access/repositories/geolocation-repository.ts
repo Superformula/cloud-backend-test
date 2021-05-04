@@ -1,26 +1,13 @@
 import { GeolocationData, Maybe } from '../../graphql/types/schema-types';
-import Geocoding, { GeocodeResponse, GeocodeService } from '@mapbox/mapbox-sdk/services/geocoding';
+import { GeocodeResponse, GeocodeService } from '@mapbox/mapbox-sdk/services/geocoding';
 import { ApolloError } from 'apollo-server-errors';
-import { MapboxConfiguration } from '../../configuration/mapbox';
 
 export interface GeolocationRepository {
 	getGeolocation(query: string): Promise<Maybe<GeolocationData>>;
 }
 
 export class MapboxGeolocationRepository implements GeolocationRepository {
-	private client: GeocodeService;
-
-	constructor(private config: MapboxConfiguration) {
-		const accessToken = process.env['MAPBOX_ACCESS_TOKEN'];
-
-		if (!accessToken) {
-			throw new ApolloError('No Mapbox access token provided');
-		}
-
-		this.client = Geocoding({
-			accessToken: config.accessToken,
-		});
-	}
+	constructor(private client: GeocodeService) {}
 
 	async getGeolocation(query: string): Promise<Exclude<Maybe<GeolocationData>, undefined>> {
 		const request = this.client.forwardGeocode({

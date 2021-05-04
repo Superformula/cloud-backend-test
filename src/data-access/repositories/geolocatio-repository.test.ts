@@ -1,7 +1,6 @@
-import { accessTokenEnvName, configureMapbox } from '../../configuration/mapbox';
 import { GeolocationData } from '../../graphql/types/schema-types';
 import { MapboxGeolocationRepository } from './geolocation-repository';
-import { sendFn } from './__mocks__/@mapbox/mapbox-sdk/services/geocoding';
+import Geocoding, { sendFn } from './__mocks__/@mapbox/mapbox-sdk/services/geocoding';
 
 describe('Test get geolocation function', () => {
 	const mockGeolocationData: GeolocationData = {
@@ -10,12 +9,15 @@ describe('Test get geolocation function', () => {
 	};
 
 	const setup = () => {
-		process.env[accessTokenEnvName] = 'test-access-key';
-		return new MapboxGeolocationRepository(configureMapbox());
+		const geocodingClient = Geocoding();
+		return {
+			repository: new MapboxGeolocationRepository(geocodingClient),
+			client: geocodingClient,
+		};
 	};
 
 	it('Should get geolocation with valid query', async () => {
-		const repo = setup();
+		const { repository, client } = setup();
 
 		const query = 'Test';
 		sendFn.mockReturnValueOnce({
@@ -29,9 +31,9 @@ describe('Test get geolocation function', () => {
 			},
 		});
 
-		const geolocation = await repo.getGeolocation(query);
+		const geolocation = await repository.getGeolocation(query);
 		expect(geolocation).toEqual(mockGeolocationData);
-		expect(repo['client'].forwardGeocode).toHaveBeenCalledWith({
+		expect(client.forwardGeocode).toHaveBeenCalledWith({
 			query,
 			mode: 'mapbox.places',
 			limit: 1,
@@ -39,7 +41,7 @@ describe('Test get geolocation function', () => {
 	});
 
 	it('Should return null if no location was found', async () => {
-		const repo = setup();
+		const { repository } = setup();
 
 		const query = 'Test';
 		sendFn.mockReturnValueOnce({
@@ -49,12 +51,12 @@ describe('Test get geolocation function', () => {
 			},
 		});
 
-		const geolocation = await repo.getGeolocation(query);
+		const geolocation = await repository.getGeolocation(query);
 		expect(geolocation).toBeNull();
 	});
 
 	it('Should throw error on bad response code from mapbox', async () => {
-		const repo = setup();
+		const { repository } = setup();
 
 		const query = 'Test';
 		sendFn.mockReturnValueOnce({
@@ -62,7 +64,7 @@ describe('Test get geolocation function', () => {
 		});
 
 		try {
-			await repo.getGeolocation(query);
+			await repository.getGeolocation(query);
 			fail();
 		} catch (error) {
 			expect(error.message).toBe('Error while fetching geolocation data');
