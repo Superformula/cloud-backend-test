@@ -7,6 +7,9 @@ export const mainTypeDefs = gql`
 	Query is meant to expose all the APIs whose purpose is to simply fetch data
 	"""
 	type Query {
+		"""
+		This is a dummy query that simply returns "Hello world!"
+		"""
 		hello: String! # since it's not possible to have empty definitions, we are keeping this dummy query
 	}
 
@@ -14,6 +17,9 @@ export const mainTypeDefs = gql`
 	Mutation is meant to expose all the APIs whose purpose is to manipulate the database somehow, be it creating, updating, or deleting data
 	"""
 	type Mutation {
+		"""
+		This is a dummy mutation that simply returns "Pong"
+		"""
 		ping: String! # since it's not possible to have empty definitions, we are keeping this dummy mutation
 	}
 `;

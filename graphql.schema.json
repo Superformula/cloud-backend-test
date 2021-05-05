@@ -11,11 +11,11 @@
       {
         "kind": "OBJECT",
         "name": "LocationInformation",
-        "description": "LocationInformation type carries the property \"name\", which is the full name of the place/location, and coordinates, which is an array of two floats that represent the longitude and the latitude respectively.",
+        "description": "LocationInformation is the type of each location returned on the query that fetches relevant locations of a given input carries the property",
         "fields": [
           {
             "name": "name",
-            "description": null,
+            "description": "'name' refers to the full name of the place/location",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -31,7 +31,7 @@
           },
           {
             "name": "coordinates",
-            "description": null,
+            "description": "'coordinates' is an array of two floats that represent the longitude and the latitude respectively",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -86,7 +86,7 @@
         "fields": [
           {
             "name": "ping",
-            "description": null,
+            "description": "This is a dummy mutation that simply returns \"Pong\"",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -102,7 +102,7 @@
           },
           {
             "name": "createUser",
-            "description": null,
+            "description": "This is the API to create a new user record with the data inside \"input\"",
             "args": [
               {
                 "name": "input",
@@ -135,7 +135,7 @@
           },
           {
             "name": "updateUser",
-            "description": null,
+            "description": "This is the API to update an existing user record whose ID is the parameter \"id\" with the data inside \"input\"",
             "args": [
               {
                 "name": "id",
@@ -184,7 +184,7 @@
           },
           {
             "name": "deleteUser",
-            "description": null,
+            "description": "This is the API to delete an existing user record whose ID is the parameter \"id\"",
             "args": [
               {
                 "name": "id",
@@ -234,12 +234,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "PaginationInput",
-        "description": "Pagination parameters: 'limit' refers to the number of elements of each page, and 'exclusiveStartId' is the ID of the last element of the previous page",
+        "description": "Parameters used when paginating a list",
         "fields": null,
         "inputFields": [
           {
             "name": "limit",
-            "description": null,
+            "description": "'limit' refers to the number of elements of each page",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
@@ -251,7 +251,7 @@
           },
           {
             "name": "exclusiveStartId",
-            "description": null,
+            "description": "'exclusiveStartId' is the ID of the last element of the previous page, and is used by DynamoDB as \"checkpoint\" when fetching the page",
             "type": {
               "kind": "SCALAR",
               "name": "ID",
@@ -283,7 +283,7 @@
         "fields": [
           {
             "name": "hello",
-            "description": null,
+            "description": "This is a dummy query that simply returns \"Hello world!\"",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -299,7 +299,7 @@
           },
           {
             "name": "user",
-            "description": null,
+            "description": "This is the API to fetch data from a user whose ID is the parameter \"id\"",
             "args": [
               {
                 "name": "id",
@@ -332,7 +332,7 @@
           },
           {
             "name": "listUsers",
-            "description": null,
+            "description": "This is the API to fetch a paginated list of users. \"paginationParams\" includes information to deal with the pagination, and \"nameFilter\" will filter the user records by name,\nincluding only users whose name includes the value of the parameter \"nameFilter\". If no \"paginationParams\" is passed, a complete list will be returned, and if \"nameFilter\"\nis not passed, no filtering will be made.",
             "args": [
               {
                 "name": "paginationParams",
@@ -425,7 +425,7 @@
         "fields": [
           {
             "name": "_id",
-            "description": null,
+            "description": "ID of the user record (non-nullable)",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -441,7 +441,7 @@
           },
           {
             "name": "name",
-            "description": null,
+            "description": "Name of the user (non-nullable)",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -457,7 +457,7 @@
           },
           {
             "name": "dob",
-            "description": null,
+            "description": "Date of birth of the user (non-nullable)",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -473,7 +473,7 @@
           },
           {
             "name": "address",
-            "description": null,
+            "description": "Address of the user",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -485,7 +485,7 @@
           },
           {
             "name": "description",
-            "description": null,
+            "description": "Description of the user",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -497,7 +497,7 @@
           },
           {
             "name": "imageUrl",
-            "description": null,
+            "description": "The URL of the user image",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -509,7 +509,7 @@
           },
           {
             "name": "createdAt",
-            "description": null,
+            "description": "Date in UTC that represents when the user record was created (non-nullable)",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -525,7 +525,7 @@
           },
           {
             "name": "updatedAt",
-            "description": null,
+            "description": "Date in UTC that represents the last time the user record was updated (non-nullable)",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -548,12 +548,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "UserCreationInput",
-        "description": "Create user input type",
+        "description": "Input used when creating a user",
         "fields": null,
         "inputFields": [
           {
             "name": "name",
-            "description": null,
+            "description": "Name of the user (non-nullable)",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -569,7 +569,7 @@
           },
           {
             "name": "dob",
-            "description": null,
+            "description": "Date of birth of the user (non-nullable)",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -585,7 +585,7 @@
           },
           {
             "name": "address",
-            "description": null,
+            "description": "Address of the user",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -597,7 +597,7 @@
           },
           {
             "name": "description",
-            "description": null,
+            "description": "Description of the user",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -609,7 +609,7 @@
           },
           {
             "name": "imageUrl",
-            "description": null,
+            "description": "The URL of the user image",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -627,11 +627,11 @@
       {
         "kind": "OBJECT",
         "name": "UserPaginationResult",
-        "description": "Result of a pagination of users: 'users' refers to the list of users of this page, and 'lastEvaluatedId' is the ID of the last element of the page;\nits presence indicates that there are more elements to be fetched.",
+        "description": "When listing users, this is the type that will be returned",
         "fields": [
           {
             "name": "users",
-            "description": null,
+            "description": "'users' refers to the list of users of this page",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -655,7 +655,7 @@
           },
           {
             "name": "lastEvaluatedId",
-            "description": null,
+            "description": "'lastEvaluatedId' is the ID of the last element of the page; its presence indicates that there are more elements to be fetched. When sending the request\nfor the next page, include this value in the property \"exclusiveStartId\" of PaginationInput to indicate to DynamoDB where the last page stopped.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -674,12 +674,12 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "UserUpdateInput",
-        "description": "Update user input type",
+        "description": "Input used when updating a user",
         "fields": null,
         "inputFields": [
           {
             "name": "name",
-            "description": null,
+            "description": "Name of the user",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -691,7 +691,7 @@
           },
           {
             "name": "dob",
-            "description": null,
+            "description": "Date of birth of the user",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -703,7 +703,7 @@
           },
           {
             "name": "address",
-            "description": null,
+            "description": "Address of the user",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -715,7 +715,7 @@
           },
           {
             "name": "description",
-            "description": null,
+            "description": "Description of the user",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -727,7 +727,7 @@
           },
           {
             "name": "imageUrl",
-            "description": null,
+            "description": "The URL of the user image",
             "type": {
               "kind": "SCALAR",
               "name": "String",

@@ -9,10 +9,17 @@ export const locationTypeDefs = gql`
 	}
 
 	"""
-	LocationInformation type carries the property "name", which is the full name of the place/location, and coordinates, which is an array of two floats that represent the longitude and the latitude respectively.
+	LocationInformation is the type of each location returned on the query that fetches relevant locations of a given input carries the property
 	"""
 	type LocationInformation {
+		"""
+		'name' refers to the full name of the place/location
+		"""
 		name: String!
+
+		"""
+		'coordinates' is an array of two floats that represent the longitude and the latitude respectively
+		"""
 		coordinates: [Float!]!
 	}
 `;

@@ -14,19 +14,25 @@ export type Scalars = {
 	Float: number;
 };
 
-/** LocationInformation type carries the property "name", which is the full name of the place/location, and coordinates, which is an array of two floats that represent the longitude and the latitude respectively. */
+/** LocationInformation is the type of each location returned on the query that fetches relevant locations of a given input carries the property */
 export type LocationInformation = {
 	__typename?: 'LocationInformation';
+	/** 'name' refers to the full name of the place/location */
 	name: Scalars['String'];
+	/** 'coordinates' is an array of two floats that represent the longitude and the latitude respectively */
 	coordinates: Array<Scalars['Float']>;
 };
 
 /** Mutation is meant to expose all the APIs whose purpose is to manipulate the database somehow, be it creating, updating, or deleting data */
 export type Mutation = {
 	__typename?: 'Mutation';
+	/** This is a dummy mutation that simply returns "Pong" */
 	ping: Scalars['String'];
+	/** This is the API to create a new user record with the data inside "input" */
 	createUser: User;
+	/** This is the API to update an existing user record whose ID is the parameter "id" with the data inside "input" */
 	updateUser: User;
+	/** This is the API to delete an existing user record whose ID is the parameter "id" */
 	deleteUser: User;
 };
 
@@ -46,17 +52,26 @@ export type MutationDeleteUserArgs = {
 	id: Scalars['ID'];
 };
 
-/** Pagination parameters: 'limit' refers to the number of elements of each page, and 'exclusiveStartId' is the ID of the last element of the previous page */
+/** Parameters used when paginating a list */
 export type PaginationInput = {
+	/** 'limit' refers to the number of elements of each page */
 	limit?: Maybe<Scalars['Int']>;
+	/** 'exclusiveStartId' is the ID of the last element of the previous page, and is used by DynamoDB as "checkpoint" when fetching the page */
 	exclusiveStartId?: Maybe<Scalars['ID']>;
 };
 
 /** Query is meant to expose all the APIs whose purpose is to simply fetch data */
 export type Query = {
 	__typename?: 'Query';
+	/** This is a dummy query that simply returns "Hello world!" */
 	hello: Scalars['String'];
+	/** This is the API to fetch data from a user whose ID is the parameter "id" */
 	user: User;
+	/**
+	 * This is the API to fetch a paginated list of users. "paginationParams" includes information to deal with the pagination, and "nameFilter" will filter the user records by name,
+	 * including only users whose name includes the value of the parameter "nameFilter". If no "paginationParams" is passed, a complete list will be returned, and if "nameFilter"
+	 * is not passed, no filtering will be made.
+	 */
 	listUsers: UserPaginationResult;
 	/** This API fetches and returns an array of a maximum of 5 locations from MapBox API, based on the given input, with the most relevant results first. Each location returned has the name of the fetched place and its coordinates. */
 	location: Array<LocationInformation>;
@@ -81,41 +96,61 @@ export type QueryLocationArgs = {
 /** User type */
 export type User = {
 	__typename?: 'User';
+	/** ID of the user record (non-nullable) */
 	_id: Scalars['ID'];
+	/** Name of the user (non-nullable) */
 	name: Scalars['String'];
+	/** Date of birth of the user (non-nullable) */
 	dob: Scalars['String'];
+	/** Address of the user */
 	address?: Maybe<Scalars['String']>;
+	/** Description of the user */
 	description?: Maybe<Scalars['String']>;
+	/** The URL of the user image */
 	imageUrl?: Maybe<Scalars['String']>;
+	/** Date in UTC that represents when the user record was created (non-nullable) */
 	createdAt: Scalars['String'];
+	/** Date in UTC that represents the last time the user record was updated (non-nullable) */
 	updatedAt: Scalars['String'];
 };
 
-/** Create user input type */
+/** Input used when creating a user */
 export type UserCreationInput = {
+	/** Name of the user (non-nullable) */
 	name: Scalars['String'];
+	/** Date of birth of the user (non-nullable) */
 	dob: Scalars['String'];
+	/** Address of the user */
 	address?: Maybe<Scalars['String']>;
+	/** Description of the user */
 	description?: Maybe<Scalars['String']>;
+	/** The URL of the user image */
 	imageUrl?: Maybe<Scalars['String']>;
 };
 
-/**
- * Result of a pagination of users: 'users' refers to the list of users of this page, and 'lastEvaluatedId' is the ID of the last element of the page;
- * its presence indicates that there are more elements to be fetched.
- */
+/** When listing users, this is the type that will be returned */
 export type UserPaginationResult = {
 	__typename?: 'UserPaginationResult';
+	/** 'users' refers to the list of users of this page */
 	users: Array<User>;
+	/**
+	 * 'lastEvaluatedId' is the ID of the last element of the page; its presence indicates that there are more elements to be fetched. When sending the request
+	 * for the next page, include this value in the property "exclusiveStartId" of PaginationInput to indicate to DynamoDB where the last page stopped.
+	 */
 	lastEvaluatedId?: Maybe<Scalars['ID']>;
 };
 
-/** Update user input type */
+/** Input used when updating a user */
 export type UserUpdateInput = {
+	/** Name of the user */
 	name?: Maybe<Scalars['String']>;
+	/** Date of birth of the user */
 	dob?: Maybe<Scalars['String']>;
+	/** Address of the user */
 	address?: Maybe<Scalars['String']>;
+	/** Description of the user */
 	description?: Maybe<Scalars['String']>;
+	/** The URL of the user image */
 	imageUrl?: Maybe<Scalars['String']>;
 };
 
