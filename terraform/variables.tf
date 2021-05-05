@@ -11,4 +11,5 @@ variable "gateway_stage" {
 }
 
 variable "mapbox_access_token" {
+  sensitive = true
 }
