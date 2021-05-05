@@ -142,7 +142,7 @@ After building and bundling the lambdas, it is time to deploy the solution:
 
 With the step above, the infrastructure should already be deployed. In your terminal, after running the command above, in the last few lines, terraform should have shown you the base URL of the application; if not, run the command `terraform output`, and it will show it to you again. This is the URL of the solution, which should be up and running!
 
-As our backend is available in the path `/graphql`, add it to the end of the outputted base URL, and use it to test with GraphQL requests via Postman, Insomnia, or even via browser (accessing this URL and using the available Playground).
+As our GraphQL API is available in the path `/graphql`, add it to the end of the outputted base URL, and use it to test with GraphQL requests via Postman, Insomnia, or even via browser (accessing this URL and using the available Playground). For example, if the URL shown in the terminal was `https://myamazingurl.execute-api.us-east-1.amazonaws.com/test`, use the URL `https://myamazingurl.execute-api.us-east-1.amazonaws.com/test/graphql`.
 
 ### Using the dev-server
 
