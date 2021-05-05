@@ -143,3 +143,9 @@ After building and bundling the lambdas, it is time to deploy the solution:
 With the step above, the infrastructure should already be deployed. In your terminal, after running the command above, in the last few lines, terraform should have shown you the base URL of the application; if not, run the command `terraform output`, and it will show it to you again. This is the URL of the solution, which should be up and running!
 
 As our backend is available in the path `/graphql`, add it to the end of the outputted base URL, and use it to test with GraphQL requests via Postman, Insomnia, or even via browser (accessing this URL and using the available Playground).
+
+### Using the dev-server
+
+It is worth mentioning that, instead of bundling and deploying the Backend Lambda every time you want to test after little changes, it is possible to run **only the dev-server** locally, and note that it will only work if the rest of the resources are already deployed and running; in other words, you can only run the dev-server after the command `terraform apply` has been executed.
+
+Without further ado, to run the dev-server, just go to the root directory of the project, and execute the command `npm run dev` or `yarn dev`.
