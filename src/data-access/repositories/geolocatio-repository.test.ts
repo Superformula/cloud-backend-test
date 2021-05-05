@@ -1,6 +1,6 @@
 import { GeolocationData } from '../../graphql/types/schema-types';
 import { MapboxGeolocationRepository } from './geolocation-repository';
-import Geocoding, { sendFn } from './__mocks__/@mapbox/mapbox-sdk/services/geocoding';
+import Geocoding, { sendFn } from '../../__mocks__/@mapbox/mapbox-sdk/services/geocoding';
 
 describe('Test get geolocation function', () => {
 	const mockGeolocationData: GeolocationData = {

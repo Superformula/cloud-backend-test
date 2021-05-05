@@ -3,13 +3,13 @@ import moment from 'moment';
 import { UserInput } from '../../graphql/types/schema-types';
 import { UserModel } from '../models/user';
 import { DynamoDBUserRepository, UserRepository } from './user-repository';
-import { awsResponse } from './__mocks__/aws-sdk/clients/dynamodb';
 import { v4 as uuid } from 'uuid';
 import { AttributeValue } from 'aws-sdk/clients/directoryservice';
 import { WithIndexSignature } from '../../utils/types';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import dotenv from 'dotenv';
 import { configureUsersDB, nameIndexEnvName, usersTableEnvName } from '../../configuration/users-db';
+import { awsResponse } from '../../__mocks__/aws-sdk/clients/dynamodb';
 dotenv.config();
 
 describe('Test user retrieval', () => {
