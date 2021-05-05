@@ -17,4 +17,7 @@ export const apolloServerConfig: Config = {
 		userModelConverter: new UserModelConverter(),
 		locationModelConverter: new LocationModelConverter(),
 	},
+	playground: {
+		endpoint: `/${process.env.TF_VAR_API_DEPLOYMENT_STAGE_NAME || 'test'}/graphql`,
+	},
 };
