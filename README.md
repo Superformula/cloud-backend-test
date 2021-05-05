@@ -122,7 +122,7 @@ Unfortunately, it is currently not possible to run this solution totally locally
 
 By doing this, your initial setup is complete, and you probably won't be repeating this whole process again.
 
-### Building and bundling for deploy
+### Building and bundling for deployment
 
 Before deploying the infrastructure with Terraform, it is necessary to build and bundle our lambdas:
 
