@@ -116,4 +116,9 @@ resource "aws_lambda_function" "backend_lambda" {
       TF_VAR_API_DEPLOYMENT_STAGE_NAME = var.API_DEPLOYMENT_STAGE_NAME
     }
   }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.backend_lambda_logs,
+    aws_iam_role.iam_for_backend_lambda,
+  ]
 }

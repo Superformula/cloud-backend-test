@@ -77,5 +77,6 @@ resource "aws_lambda_function" "fetch_location_lambda" {
 
   depends_on = [
     aws_iam_role_policy_attachment.fetch_location_lambda_logs,
+    aws_iam_role.iam_for_fetch_location_lambda,
   ]
 }
