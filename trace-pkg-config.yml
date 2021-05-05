@@ -20,6 +20,11 @@ options:
       - 'bufferutil'
       - 'utf-8-validate'
 
+  # Ignoring dynamic import misses after confirmation of safety
+  dynamic:
+    resolutions:
+      'express/lib/view.js': []
+
 # Each "package" corresponds to an outputted zip file. It can contain a number of traced or straight included files.
 packages:
   backend_lambda:
