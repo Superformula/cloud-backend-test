@@ -1,3 +1,9 @@
+variable "API_DEPLOYMENT_STAGE_NAME" {
+  type        = string
+  description = "Stage name of this deployment of our API. Some examples are: prod, dev or test. The default value of this variable is 'test'."
+  default     = "test"
+}
+
 # this is the main resource for our API Gateway REST API
 resource "aws_api_gateway_rest_api" "backend_apigw" {
   name        = "backend-api-gateway"
@@ -11,11 +17,11 @@ resource "aws_api_gateway_resource" "graphql_resource" {
   path_part   = "graphql"
 }
 
-# this resource defines the HTTP Method for the gateway resource defined above. In this case, only POSTs will be handled.
+# this resource defines the HTTP Method for the gateway resource defined above. In this case, any method will be handled.
 resource "aws_api_gateway_method" "graphql_method" {
   rest_api_id   = aws_api_gateway_rest_api.backend_apigw.id
   resource_id   = aws_api_gateway_resource.graphql_resource.id
-  http_method   = "POST"
+  http_method   = "ANY"
   authorization = "NONE"
 }
 
@@ -37,7 +43,7 @@ resource "aws_api_gateway_deployment" "backend_apigw_deployment" {
   ]
 
   rest_api_id = aws_api_gateway_rest_api.backend_apigw.id
-  stage_name  = "test"
+  stage_name  = var.API_DEPLOYMENT_STAGE_NAME
 }
 
 # this resource grants access to our API Gateway REST API, so that it can invoke our lambda
