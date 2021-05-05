@@ -5,7 +5,7 @@ import { LocationQueryInput, LocationQueryOutput } from '../../fetch-location-la
 import { ErrorCodes } from '../enums/error-codes';
 
 export const fetchLocationInfoFailedErrorMessage =
-	'An error occurred while trying to fetch location information from MapBox API.';
+	'[LocationDataSource] - An error occurred while trying to fetch location information from MapBox API.';
 
 export class LocationDataSource extends DataSource {
 	functionName = 'fetch_location'; // TODO: put this in an env. variable, so that this class and terraform can use it from the same place
@@ -20,6 +20,8 @@ export class LocationDataSource extends DataSource {
 				value: input,
 			};
 
+			console.log(`[LocationDataSource] - Fetching location info for input "${input}".`);
+
 			this.lambda.invoke(
 				{
 					FunctionName: this.functionName,
@@ -27,18 +29,24 @@ export class LocationDataSource extends DataSource {
 				},
 				(err, lambdaResponse) => {
 					if (err) {
-						reject(new ApolloError(fetchLocationInfoFailedErrorMessage, ErrorCodes.FETCH_LOCATION_INFO_FAILED, err));
+						const apolloError = new ApolloError(
+							fetchLocationInfoFailedErrorMessage,
+							ErrorCodes.FETCH_LOCATION_INFO_FAILED,
+							err,
+						);
+						console.error(apolloError);
+						reject(apolloError);
 					} else {
 						// When present, the property FunctionError indicates that an error occurred while the lambda was executing.
 						if (lambdaResponse.FunctionError) {
 							// If FunctionError is present, the original error will be in the Payload; parse it and throw it inside an ApolloError.
-							reject(
-								new ApolloError(
-									fetchLocationInfoFailedErrorMessage,
-									ErrorCodes.FETCH_LOCATION_INFO_FAILED,
-									JSON.parse(lambdaResponse.Payload as string),
-								),
+							const apolloError = new ApolloError(
+								fetchLocationInfoFailedErrorMessage,
+								ErrorCodes.FETCH_LOCATION_INFO_FAILED,
+								JSON.parse(lambdaResponse.Payload as string),
 							);
+							console.error(apolloError);
+							reject(apolloError);
 							return;
 						}
 
@@ -46,7 +54,9 @@ export class LocationDataSource extends DataSource {
 
 						// (Casting Payload to string since we know that the result will come serialized as string from FetchLocationLambda.
 						// If something unexpected happens, we are going to catch the exception anyways)
-						resolve(JSON.parse(lambdaResponse.Payload as string));
+						const result = JSON.parse(lambdaResponse.Payload as string);
+						console.log(`[LocationDataSource] - Finished fetching location info for the input "${input}".`);
+						resolve(result);
 					}
 				},
 			);

@@ -9,7 +9,9 @@ export const invalidResponseObjectErrorMessage =
 
 export async function handler(event: LocationQueryInput): Promise<LocationQueryOutput> {
 	if (!event || !event.value) {
-		throw new Error(emptyLocationInputErrorMessage);
+		const error = new Error(emptyLocationInputErrorMessage);
+		console.error(error);
+		throw error;
 	}
 
 	// organize data to send to Mapbox API
@@ -26,14 +28,18 @@ export async function handler(event: LocationQueryInput): Promise<LocationQueryO
 	try {
 		responseFromMapbox = await axios.get(`${mapboxGeocodingPlacesApiUrl}/${encodedLocationInput}.json`, { params });
 	} catch (err) {
-		throw new Error(
-			`Failed to get coordinates from Mapbox API with code ${err.response.status}: ${err.response.data.message}`,
+		const error = new Error(
+			`Failed to get coordinates from Mapbox API with code ${err.response.status}: ${err.response.data.message}.`,
 		);
+		console.error(error);
+		throw error;
 	}
 
 	// check if the response is valid
 	if (!responseFromMapbox || !responseFromMapbox.data || !responseFromMapbox.data.features) {
-		throw new Error(invalidResponseObjectErrorMessage);
+		const error = new Error(invalidResponseObjectErrorMessage);
+		console.error(error);
+		throw error;
 	}
 
 	const locQueryOutput: LocationQueryOutput = {
