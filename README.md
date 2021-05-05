@@ -101,7 +101,8 @@ This folder holds the type definitions that are common to the application but ar
 
 - **AWS variables in general**: as this solution is highly dependant on AWS, you can use AWS's credentials and config environment variables such as AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, and AWS_SDK_LOAD_CONFIG (in case you want the app to use your configs from `.aws\config`) to set up your environment for the application;
 - **TF_VAR_MAPBOX_ACCESS_TOKEN**: this variable, which is your access token to use the Mapbox API, will be sent by Terraform to the environment of our Fetch Location Lambda when our AWS infrastructure is deployed. Even though this value must be set, if you do not set it via env. variable, Terraform will ask for it when you try to `apply`;
-- **TF_VAR_MAPBOX_GEOCODING_PLACES_API_URL**: this is the URL that will be used when fetching data from Mapbox API. Its default value is `"https://api.mapbox.com/geocoding/v5/mapbox.places"`.
+- **TF_VAR_MAPBOX_GEOCODING_PLACES_API_URL**: this is the URL that will be used when fetching data from Mapbox API. Its default value is `"https://api.mapbox.com/geocoding/v5/mapbox.places"`;
+- **TF_VAR_API_DEPLOYMENT_STAGE_NAME**: this will be the stage name of the deployment of our API when you execute `terraform apply`. Its default value is `"test"`.
 
 ## Setting up your environment and building/running/testing the solution
 
