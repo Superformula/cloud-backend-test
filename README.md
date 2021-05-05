@@ -1,145 +1,145 @@
-# Superformula Full Stack Developer Test
+# Superformula Cloud Backend Test - Bruno Rodrigues
 
-Be sure to read **all** of this document carefully, and follow the guidelines within.
+## Tech stack
 
-## Backend Context
+To implement this solution for the Superformula Cloud Backend Test, the following tech stack was used:
 
-Build a GraphQL API that can `create/read/update/delete` user data from a persistence store.
+- [**Node.js**](https://nodejs.org/en/) as runtime;
+- [**Typescript**](https://www.typescriptlang.org/) as programming language;
+- [**API Gateway**](https://aws.amazon.com/api-gateway/) to expose our APIs, with **AWS Lambda** to process the requests;
+- [**GraphQL**](https://graphql.org/) as the way of exposing and consuming data from our APIs (used with Apollo Server for lambdas);
+- [**DynamoDB**](https://aws.amazon.com/dynamodb/) as database;
+- [**Terraform**](https://www.terraform.io/) as IaC tool;
 
-### User Model
+## Architecture of the solution
 
-```
-{
-  "id": "xxx",                  // user ID (must be unique)
-  "name": "backend test",       // user name
-  "dob": "",                    // date of birth
-  "address": "",                // user address
-  "description": "",            // user description
-  "createdAt": "",              // user created date
-  "updatedAt": "",              // user updated date
-  "imageUrl": ""                // user avatar image url
-}
-```
+As it is possible to see in the image below, the overall architecture is composed by an API Gateway, an AWS Lambda for our backend, DynamoDB, CloudWatch and another AWS Lambda to fetch locations from Mapbox API. Their roles are as follows:
 
-### Functionality
+- The **API Gateway** takes care of exposing our APIs to the world, and, when it receives requests, it takes care of properly directing them to our Backend Lambda. It is worth mentioning that this combination (API Gateway + AWS Lambda) is really powerful when it comes to building APIs, since it is scalable **by design**: if one or one million users reach the API Gateway, it can instantiate as many AWS Lambdas as needed to handle all the requests;
+- The **Backend Lambda** is the core component of this solution. Its job is to process the requests, fetch data from services, such as DynamoDB, manipulate the received data and return it the way it was requested (that's when GraphQL comes into action). To make it work, **Backend Lambda** uses, at top level, [apollo-server-lambda](https://www.npmjs.com/package/apollo-server-lambda), which is the one who deals with GraphQL, either when receiving a request and directing it to a resolver, or when selecting what will be returned as response;
+- **DynamoDB** is the one in charge for persisting and storing data, and it manages to do it with focus on performance and scalability. In this solution, all information about users is at DynamoDB's hands; therefore, every time someone reaches the backend with the intention of fetching or manipulating user info, Backend Lambda then goes to DynamoDB to do so;
+- **Fetch Location Lambda**, is responsible for getting the coordinates of an address from Mapbox API. When Backend Lambda receives a query for location, it then contacts **Fetch Location Lambda**, which in turn sends the address input to Mapbox, and then returns the 5 locations that best fit the given input;
+- **CloudWatch**'s purpose in this solution is very simple: manage the logs created by our AWS Lambdas.
 
-- The API should follow typical GraphQL API design pattern
-- The data should be saved in the DB
-- Proper error handling should be used
-- Paginating and filtering (by name) users list
-- The API must have a Query to fetch geolocation information based off an address
+![solution-overall-architecture](./assets/overall_arch.png)
 
-### Requirements
+### Internal architecture of **Backend Lambda**
 
-#### Tech Stack
-  - **Use Typescript**
-  - **Use Infrastructure-as-code tooling** that can be used to deploy all resources to an AWS account. Examples:
-    - **Terraform (preferred)**
-    - CloudFormation / SAM
-    - Serverless Framework
-    - Feel free to use other IaC tooling if you prefer
-  - Use **AWS Lambda + API Gateway (preferred)** or AWS AppSync
-  - Use any AWS Database-as-a-Service persistence store. **DynamoDB is preferred.**
-  - Location query must use [NASA](https://api.nasa.gov/api.html) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs to resolve the coordinate based on the address; use AWS Lambda.
+As it is possible to notice below, the architecture of the Backend Lambda is fairly simple.
 
-#### Developer Experience 
-- Write unit tests for business logic
-- Write concise and clear commit messages
-- Document and diagram the architecture of your solution
-- Write clear documentation:
-    - Repository structure
-    - Environment variables and any defaults.
-    - How to build/run/test the solution
-    - Deployment guide
-    
-#### API Consumer Experience
-- GraphQL API documentation
-- Ensure your API is able to support all requirements passed to the consumer team
+![solution-backend-architecture](./assets/backend_arch.png)
 
-### Bonus
+After receiving from Apollo Server a request to be processed, the resolvers need to pass the input to the data sources, but before that, they call a model converter (e.g. UserModelConverter) to transform the input into a format that the data sources can understand. Even though most of the times the outputs of model converters are almost identical to the inputs, this step is important because it decouples the API models from data source models, avoiding cases such as the API breaking because a database model changed, or vice versa.
 
-These may be used for further challenges. You can freely skip these; feel free to try out if you feel up to it.
+When a data source gets the transformed input, it can fetch or manipulate data from DynamoDB, for example, or it can also call Fetch Location Lambda to get location information from Mapbox. After obtaining the response from any of these services, data source validates and processes it, and then gives it back to the resolver.
 
-#### Developer Experience (in order)
+Finally, the resolver passes the data to a model converter once again, so that it transforms it to an API model, which is, a format that complies with the signatures established in our GraphQL definitions of queries and mutations.
 
-1. E2E Testing
-1. Integration testing
-1. Code-coverage report generation
-1. Describe your strategy for Lambda error handling, retries, and DLQs
-1. Describe your cloud-native logging, monitoring, and alarming strategy across all queries/mutations
-1. Online interactive demo with a publicly accessible link to your API
-1. Brief description of the frameworks/tools used in the solution
-1. Optimized lambda build.
-1. Commit linting
-1. Semantic release
+## Top level repository structure
 
+This repository is structured as follows:
 
-#### API Consumer Experience (in order)
+### `/`
 
-1. Document how consumers can quickly prototype against your APIs
-    - GraphQL Playground setup
-    - Insomnia setup
-    - Feel free to use any other tool/client you might know that enable consumers to prototype against your API
-1. GraphQL Documentation Generation
-1. Client API generation
+This folder is composed of basically a bunch of configuration files, be it for _npm_, _typescript_, _prettier_, _eslint_, _jest_, _graphql-codegen_ or _trace_pkg_, besides the rest of the folders of the project.
 
+### `/src`
 
-## Consumer context
+This folder contains all the source code of the project. It currently has only two other directories as children: `/src/fetch-location-lambda` and `/src/server`. The first one stores all the files related to our AWS Lambda that fetches location info from Mapbox API; the second one, all the files that make up our backend server.
 
-Assume the GraphQL API you are developing will be used by a front-end team to build the following screens:
+It is worth mentioning that files for unit tests are in the same locations as their source files, and their names end with "\*_.test.ts_". For example, both `user-data-source.ts` and `user-data-source.test.ts` are in the path `/src/server/data-sources`.
 
-![Superformula-front-end-test-mockup](./mockup1.png)
+### `/infra`
 
-![Superformula-front-end-test-mockup-2](./mockup2.png)
+All the _terraform_ files, which are used to describe and manage our infrastructure, are inside this folder. Hence, operations to create/update (_terraform apply_) and to detroy (_terraform destroy_) our resources and services at AWS sould be executed inside `/infra`.
 
-> [Source Figma file](https://www.figma.com/file/hd7EgdTxJs2fpTzzSKlNxo/Superformula-full-stack-test)
+### `/lambda_zips`
 
-#### Functionality
+After generating the bundles for our lambdas, this folder will be created and they will end up here.
 
-- The search functionality should perform real time filtering on client side data and API side data
-- List of users should be updated automatically after single user is updated
+### `/coverage`
 
-#### Tech stack
+When we run the unit tests of this project, this folder will be created and all the report files from the tests will be generated here.
 
-- Typescript
-- React
+### `/assets`
 
+This folder stores assets such as images and etc.
 
-## What We Care About
+## Structure of the folder `/src/server`
 
-Use any libraries that you would normally use if this were a real production App. Please note: we're interested in your code & the way you solve the problem, not how well you can use a particular library or feature.
+At the very root of this folder, besides all its other folders, we have the two possible entry points of our application: `backend-lambda.ts` and `dev-server.ts`. The first one is meant to run in a AWS Lambda, and the second one to run locally (even though it will try to use resources at AWS anyways, such as DynamoDB). The _Apollo_ setup that is shared between these two files is also in this folder (`apollo-server-config.ts`).
 
-_We're interested in your method and how you approach the problem just as much as we're interested in the end result._
+### `.../data-source-models`
 
-Here's what you should strive for:
+This folder contains all the models used and returned by the data sources.
 
-- Good use of current Typescript, Node.js, GraphQL & performance best practices.
-- Solid testing approach.
-- Extensible code and architecture.
-- Delightful experience for other backend engineers working in this repository
-- Delightful experience for engineers consuming your APIs
+### `.../data-sources`
 
-## Q&A
-> Where should I send back the result when I'm done?
+All the data source classes are here. It is worth emphasizing that **data sources** are the ones responsible for fetching and manipulating data in other services, such as DynamoDB and Mapbox API (via _FetchLocationLambda_).
 
-Fork this repo and send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
+### `.../enums`
 
-> What if I have a question?
+As the name says, enums stay here.
 
-Create a new issue in this repo and we will respond and get back to you quickly.
+### `.../graphql`
 
-> Should I validate inputs?
+Inside this folder are all the files related to GraphQL: definitions of types (Query, Mutation, User, ...), their respective resolvers, the top level schema (which basically is the set of all type defs and resolvers), and `types.ts`, which is the file generated by the package `@graphql-codegen` that contains TypeScript types for all the GraphQL definitions inside our schema.
 
-Please assume a hard requirement has not been set by the product owner. We welcome any input validations and your reasoning for why they add value.
+### `.../misc`
 
-> What is the location format?
+Misc folder basically holds the files that conceptually do not fit any other folder. Currently, the only file inside it is `utils.ts`.
 
-Examples:
-- Seattle, Washington
-- Digital Nomad
-- New Jersey
-- Northern Bergen County, NJ
+### `.../model-converters`
 
-> I almost finished, but I don't have time to create everything what is required
+In this folders are the model converters, which are classes responsible for the conversion between GraphQL API models and the data source models. Currently, there are only two model converters: _UserModelConverter_ and _LocationModelConverter_.
 
-Please provide a plan for the rest of the things that you would do.
+### `.../types`
+
+This folder holds the type definitions that are common to the application but are neither data source models nor GraphQL API models.
+
+## Useful Environment Variables
+
+- **AWS variables in general**: as this solution is highly dependant on AWS, you can use AWS's credentials and config environment variables such as AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION and AWS_SDK_LOAD_CONFIG (in case you want the app to use your configs from `.aws\config`) to setup your environment for the application;
+- **TF_VAR_MAPBOX_ACCESS_TOKEN**: this variable, which is your access token to use the Mapbox API, will be sent by Terraform to the environment of our Fetch Location Lambda when our AWS infrastructure is deployed. Even though this value must be set, if you do not set it via env. variable, Terraform will ask for it when you try to `apply`;
+- **TF_VAR_MAPBOX_GEOCODING_PLACES_API_URL**: this is the url that will be used when fetching data from Mapbox API. Its default value is `"https://api.mapbox.com/geocoding/v5/mapbox.places"`.
+
+## Setting up your environment and building/running/testing the solution
+
+Unfortunately, it is not possible to run this solution totally locally, so we will have to set the environment so that we can deploy the application and use it.
+
+### Initial setup
+
+- First, [download and install Node.js LTS](https://nodejs.org/en/download/), if you haven't already;
+- [Download and install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli), if you haven't already;
+- [Download and install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html), if you haven't already;
+- You will also need to have an [AWS account](https://aws.amazon.com/free/) and a [valid access key](https://console.aws.amazon.com/iam/home?#/security_credentials);
+- You can set the AWS credentials via AWS CLI (by executing `aws configure` in your terminal), via [credentials file](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html) or via [environment variables](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-environment.html);
+- [Set your AWS](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-region.html) region to `us-east-1`;
+- In the folder `/infra`, run the command `terraform init` to initialize Terraform and download its necessary dependencies for this project;
+- In the root of the project, run `npm install` or `yarn install` to install all the dependencies declared in the root `package.json`;
+- Now in the folder `/src/fetch-location-lambda`, run `npm install` or `yarn install` as well to install the dependencies of our Fetch Location Lambda.
+
+By doing this, your initial setup is complete, and you probably won't be repeating this whole process again.
+
+### Running unit tests
+
+In order to run the unit tests of the solution, in the root directory, simply run `npm test` or `yarn test`.
+
+### Building and bundling for deploy
+
+Before deploying the infrastructure with Terraform, it is necessary to build and bundle our lambdas:
+
+- In the root of the project, run the command `npm run bundle:trace-pkg` or `yarn bundle:trace-pkg` to build and bundle the Backend Lambda;
+- Now in the folder `/src/fetch-location-lambda`, run `npm run bundle:trace-pkg` or `yarn bundle:trace-pkg` as well to build and bundle the Fetch Location Lambda.
+
+After these two steps, the generated bundles will be in the folder `/lambda-zips`. Note that every time you modify the code and want to deploy it again, you will have to execute these two steps before it again.
+
+### Deploying the solution
+
+After building and bundling the lambdas, it is time to deploy the solution:
+
+- Go to the folder `/infra` and run the command `terraform apply`, revise the plan and type `yes` case you agree with it;
+
+With the step above, the infrastructure should already be deployed. In your terminal, after running the command above, in the last few lines, terraform should have showed you the base url of the application; if not, run the command `terraform output`, and it will show it to you again. This is the url of the solution, which should be up and running!
+
+As our backend is available in the path `/graphql`, add it to the end of the outputted base url, and use it to test with GraphQL requests via Postman, Insomnia or even via browser (accessing this url and using the available Playground).
