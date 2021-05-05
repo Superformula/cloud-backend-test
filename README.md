@@ -173,9 +173,29 @@ Besides that, if you wish to use Insomnia, you can find an Insomnia v4 data file
 
 ## <a id="frameworks-and-tools"></a> Description of some of the frameworks/tools used in the solution
 
+Besides the ones mentioned in the section "[Tech stack](#tech-stack)", there are some more tools that have been really useful to this solution.
+
+### dependencies
+
+- **`apollo-server` and `apollo-server-lambda`**: these packages provide an easy way to set up a GraphQL server, they are very configurable, have solid documentation, and already come by default with a good playground, which in turn exposes the schema and the docs for it. These packages have `graphql` as _peerDependency_, and that's why we also depend on this one;
+- **`aws-sdk`**: this one is responsible for providing APIs to use AWS services, such as managing tables in DynamoDB, invoking lambdas, and so on;
+- **`axios`**: common http client used in this solution to fetch location data from the Mapbox API;
+- **`lodash`**: for now, the only purpose of this package in this solution is to merge all the resolvers when defining our top-level GraphQL schema;
+- **`uuid`**: responsible for providing unique identifiers for situations like creating a new user.
+
+### devDependencies
+
+- **`@graphql-codegen` packages**: they are responsible for generating TypeScript types for all the definitions and resolvers of our GraphQL schema so that we can use them throughout our solution;
+- **`@types/*` packages**: they provide type definitions for packages that originally were built for pure JavaScript;
+- **`eslint` and `@typescript-eslint/*` packages**: they take care of reinforcing coding patterns defined in the file `.eslintrc.js` (such as banning the usage of type "any"). By statically analyzing all the solution code, it marks everything that is not in compliance with the rules as an error or warning, depending on how it was configured;
+- **`prettier`**: similarly to `eslint`, `prettier` reinforces rules as well, but it is actually responsible for **formatting** the solution files according to the options defined in the file `.prettierrc`, such as tab size, and etc;
+- **`jest` and `ts-jest`**: a common testing framework used for setting up the tests, mocking, running them, and generating the code coverage reports;
+- **`trace-pkg`**: a fast zip application packager for AWS Lambdas, which comes with tree-shaking by default, optimizing then the size of the outputted bundles. In this solution, it is responsible for bundling Backend Lambda and Fetch Location Lambda into zip files to be sent to AWS;
+- **`ts-node-dev`**: this is basically a combination of `ts-node` and `node-dev`. The first one makes it possible to run node on a `.ts` file directly, and the second one takes care of watching changes on the files of the solution and applying them without the need of restarting it manually;
+
 ## <a id="further-improvements"></a> Further improvements
 
 - **Make it possible to run everything locally**: currently, only the backend can run locally, but other resources, such as DynamoDB, still need to be deployed so that the solution can work properly;
 - **Improve the user pagination and filtering**: besides making a "dummy" filtering at Users table (by only checking if the user name contains the filter string), the process of listing in general truly needs a performance improvement. Plugging [Amazon Elasticsearch Service](https://aws.amazon.com/elasticsearch-service/the-elk-stack/what-is-elasticsearch/) into this solution would be a good option for this issue since it was built for this use case of storing data and will be searched for later;
 - **Configure Terraform to store the state files**: even though it is a simple task to set up a Terraform Backend to manage the state snapshots, it would make things a little harder for others to use the repo and play with it as they wish.
-- **Plug a distributed cache into the data sources**: right now, the class _UserDataSource_, for example, needs to go to DynamoDB every time it needs to fetch user data. As all our data sources are currently extending from the abstract class _DataSource_ from Apollo, and [since this class makes it possible to plug a key-value cache](https://www.apollographql.com/docs/apollo-server/data/data-sources/#using-memcachedredis-as-a-cache-storage-backend), we could then use Redis, for instance, as a distributed cache to increase the performance of our queries;
+- **Plug a distributed cache into the data sources**: right now, the class _UserDataSource_, for example, needs to go to DynamoDB every time it needs to fetch user data. As all our data sources are currently extending from the abstract class _DataSource_ from Apollo, and [since this class makes it possible to plug a key-value cache](https://www.apollographql.com/docs/apollo-server/data/data-sources/#caching), we could then use Redis, for instance, as a distributed cache to increase the performance of our queries;
