@@ -129,8 +129,8 @@ In order to run the unit tests of the solution, in the root directory, simply ru
 
 Before deploying the infrastructure with Terraform, it is necessary to build and bundle our lambdas:
 
-- In the root of the project, run the command `npm run bundle:trace-pkg` or `yarn bundle:trace-pkg` to build and bundle the Backend Lambda;
-- Now in the folder `/src/fetch-location-lambda`, run `npm run bundle:trace-pkg` or `yarn bundle:trace-pkg` as well to build and bundle the Fetch Location Lambda.
+- In the root of the project, run the command `npm run bundle:trace-pkg` or `yarn run bundle:trace-pkg` to build and bundle the Backend Lambda;
+- Now in the folder `/src/fetch-location-lambda`, run `npm run bundle:trace-pkg` or `yarn run bundle:trace-pkg` as well to build and bundle the Fetch Location Lambda.
 
 After these two steps, the generated bundles will be in the folder `/lambda-zips`. Note that every time you modify the code and want to deploy it again, you will have to execute these two steps before it again.
 
@@ -148,4 +148,4 @@ As our backend is available in the path `/graphql`, add it to the end of the out
 
 It is worth mentioning that, instead of bundling and deploying the Backend Lambda every time you want to test after little changes, it is possible to run **only the dev-server** locally, and note that it will only work if the rest of the resources are already deployed and running; in other words, you can only run the dev-server after the command `terraform apply` has been executed.
 
-Without further ado, to run the dev-server, just go to the root directory of the project, and execute the command `npm run dev` or `yarn dev`.
+Without further ado, to run the dev-server, just go to the root directory of the project, and execute the command `npm run dev` or `yarn run dev`.
