@@ -3,7 +3,7 @@ import { gql } from 'apollo-server-lambda';
 export const typeDefs = gql`
 	type Query {
 		user(id: ID!): User!
-		users(query: String, limit: Int!, cursor: String): UserPage!
+		users(query: String, limit: Int! = 10, cursor: String): UsersPage!
 		geolocation(query: String!): GeolocationData
 	}
 
@@ -18,8 +18,8 @@ export const typeDefs = gql`
 		longitude: Float!
 	}
 
-	type UserPage {
-		items: [User]!
+	type UsersPage {
+		items: [User!]!
 		cursor: String
 	}
 

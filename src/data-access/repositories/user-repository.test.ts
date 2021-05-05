@@ -3,7 +3,7 @@ import moment from 'moment';
 import { UserInput } from '../../graphql/types/schema-types';
 import { UserModel } from '../models/user';
 import { DynamoDBUserRepository, UserRepository } from './user-repository';
-import { awsSdkPromiseResponse } from './__mocks__/aws-sdk/clients/dynamodb';
+import { awsResponse } from './__mocks__/aws-sdk/clients/dynamodb';
 import { v4 as uuid } from 'uuid';
 import { AttributeValue } from 'aws-sdk/clients/directoryservice';
 import { WithIndexSignature } from '../../utils/types';
@@ -25,7 +25,7 @@ describe('Test user retrieval', () => {
 	it('Should be retrieved if found', async () => {
 		const databaseMock = new DocumentClient();
 		const repo = new DynamoDBUserRepository(databaseMock, configureUsersDB());
-		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Item: mockUser }));
+		awsResponse.mockReturnValueOnce(Promise.resolve({ Item: mockUser }));
 
 		const user = await repo.getUser(mockUser.id);
 		expect(databaseMock.get).toHaveBeenCalledWith({
@@ -38,7 +38,7 @@ describe('Test user retrieval', () => {
 	it('Error should be thrown if not found', async () => {
 		const databaseMock = new DocumentClient();
 		const repo = new DynamoDBUserRepository(databaseMock, configureUsersDB());
-		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Item: null }));
+		awsResponse.mockReturnValueOnce(Promise.resolve({ Item: null }));
 
 		let user: UserModel | null = null;
 		try {
@@ -206,7 +206,7 @@ describe('Test user update', () => {
 
 	it('Should be updated with valid inputs', async () => {
 		const { database, repository, now } = setup();
-		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Item: { ...existingUser } }));
+		awsResponse.mockReturnValueOnce(Promise.resolve({ Item: { ...existingUser } }));
 
 		const user = await repository.updateUser(existingUser.id, mockInput);
 		expect(database.put).toHaveBeenCalledWith({
@@ -224,7 +224,7 @@ describe('Test user update', () => {
 
 	it('Should remain the same if no field was specified', async () => {
 		const { database, repository } = setup();
-		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Item: { ...existingUser } }));
+		awsResponse.mockReturnValueOnce(Promise.resolve({ Item: { ...existingUser } }));
 
 		const user = await repository.updateUser(existingUser.id, {});
 		expect(database.put).toHaveBeenCalledWith({
@@ -258,7 +258,7 @@ describe('Test user delete', () => {
 	};
 
 	it('Should be deleted if user exisits', async () => {
-		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Attributes: { ...existingUser } }));
+		awsResponse.mockReturnValueOnce(Promise.resolve({ Attributes: { ...existingUser } }));
 		const { database, repository } = setup();
 
 		const user = await repository.deleteUser(existingUser.id);
@@ -274,7 +274,7 @@ describe('Test user delete', () => {
 	});
 
 	it('Should return null if not found', async () => {
-		awsSdkPromiseResponse.mockReturnValueOnce(Promise.resolve({ Attributes: null }));
+		awsResponse.mockReturnValueOnce(Promise.resolve({ Attributes: null }));
 		const { database, repository } = setup();
 
 		const user = await repository.deleteUser(uuid());
@@ -310,7 +310,7 @@ describe('Test user list', () => {
 	const mockResponses = (expectedCursor: Maybe<string>) => {
 		const batchGetResponse: BatchGetResponseMap = {};
 		batchGetResponse[process.env[usersTableEnvName] as string] = existingUsers as ItemList;
-		awsSdkPromiseResponse
+		awsResponse
 			.mockReturnValueOnce(
 				Promise.resolve({
 					Items: existingUsers.map((u) => ({
@@ -417,7 +417,7 @@ describe('Test user list', () => {
 		const query = 'Test query';
 		const { repository } = setup();
 
-		awsSdkPromiseResponse.mockReturnValueOnce(
+		awsResponse.mockReturnValueOnce(
 			Promise.resolve({
 				Items: null,
 				LastEvaluatedKey: null,
@@ -433,7 +433,7 @@ describe('Test user list', () => {
 		const query = 'Test query';
 		const { repository } = setup();
 
-		awsSdkPromiseResponse.mockReturnValueOnce(
+		awsResponse.mockReturnValueOnce(
 			Promise.resolve({
 				Items: [],
 				LastEvaluatedKey: null,
@@ -449,7 +449,7 @@ describe('Test user list', () => {
 		const query = 'Test query';
 		const { repository } = setup();
 
-		awsSdkPromiseResponse
+		awsResponse
 			.mockReturnValueOnce(
 				Promise.resolve({
 					Items: existingUsers.map((u) => ({

@@ -1,10 +1,12 @@
-export const awsSdkPromiseResponse = jest.fn().mockReturnValue(Promise.resolve(true));
-const getFn = jest.fn().mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
-const putFn = jest.fn().mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
-const deleteFn = jest.fn().mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
-const queryFn = jest.fn().mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
-const scanFn = jest.fn().mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
-const batchGetFn = jest.fn().mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
+// using this mock function we can mock different return values from AWS calls
+export const awsResponse = jest.fn().mockReturnValue(Promise.resolve(true));
+
+const getFn = jest.fn().mockImplementation(() => ({ promise: awsResponse }));
+const putFn = jest.fn().mockImplementation(() => ({ promise: awsResponse }));
+const deleteFn = jest.fn().mockImplementation(() => ({ promise: awsResponse }));
+const queryFn = jest.fn().mockImplementation(() => ({ promise: awsResponse }));
+const scanFn = jest.fn().mockImplementation(() => ({ promise: awsResponse }));
+const batchGetFn = jest.fn().mockImplementation(() => ({ promise: awsResponse }));
 
 export class DocumentClient {
 	get = getFn;
