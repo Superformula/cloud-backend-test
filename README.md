@@ -113,7 +113,7 @@ Unfortunately, it is currently not possible to run this solution totally locally
 - First, [download and install Node.js LTS](https://nodejs.org/en/download/), if you haven't already;
 - [Download and install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli), if you haven't already;
 - [Download and install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html), if you haven't already;
-- You will also need to have an [AWS account](https://aws.amazon.com/free/) and a [valid access key](https://console.aws.amazon.com/iam/home?#/security_credentials);
+- You will also need to have an [AWS account](https://aws.amazon.com/free/) and a [valid access key](https://console.aws.amazon.com/iam/home?#/security_credentials) with the due permissions to create and manage AWS resources;
 - You can set the AWS credentials via AWS CLI (by executing `aws configure` in your terminal), via [credentials file](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html), or via [environment variables](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-environment.html);
 - [Set your AWS](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-region.html) region to `us-east-1`;
 - In the folder `/infra`, run the command `terraform init` to initialize Terraform and download its necessary dependencies for this project;
@@ -121,10 +121,6 @@ Unfortunately, it is currently not possible to run this solution totally locally
 - Now in the folder `/src/fetch-location-lambda`, run `npm install` or `yarn install` as well to install the dependencies of our Fetch Location Lambda.
 
 By doing this, your initial setup is complete, and you probably won't be repeating this whole process again.
-
-### Running unit tests
-
-In order to run the unit tests of the solution, in the root directory, simply run `npm test` or `yarn test`.
 
 ### Building and bundling for deploy
 
@@ -150,3 +146,11 @@ As our GraphQL API is available in the path `/graphql`, add it to the end of the
 It is worth mentioning that, instead of bundling and deploying the Backend Lambda every time you want to test after little changes, it is possible to run **only the dev-server** locally, and note that it will only work if the rest of the resources are already deployed and running; in other words, you can only run the dev-server after the command `terraform apply` has been executed.
 
 Without further ado, to run the dev-server, just go to the root directory of the project, and execute the command `npm run dev` or `yarn run dev`.
+
+### Running unit tests
+
+In order to run the unit tests of the solution, in the root directory, simply run `npm test` or `yarn test`.
+
+## GraphQL documentation and playground
+
+Even though you can deploy on your own this solution, which will come with a GraphQL playground and with the due schema/documentation, a live playground with the complete documentation of the GraphQL schema of this solution can already be accessed [through this link](https://fwocmzbxg9.execute-api.us-east-1.amazonaws.com/dev/graphql).
