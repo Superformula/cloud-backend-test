@@ -129,7 +129,9 @@ Before deploying the infrastructure with Terraform, it is necessary to build and
 - In the root of the project, run the command `npm run bundle:trace-pkg` or `yarn run bundle:trace-pkg` to build and bundle the Backend Lambda;
 - Now in the folder `/src/fetch-location-lambda`, run `npm run bundle:trace-pkg` or `yarn run bundle:trace-pkg` as well to build and bundle the Fetch Location Lambda.
 
-After these two steps, the generated bundles will be in the folder `/lambda-zips`. Note that every time you modify the code and want to deploy it again, you will have to execute these two steps before it again.
+After these two steps, the bundles will be generated in the folder `/lambda-zips` by our devDependency `trace-pkg`, a zip application bundler that is excellent for this case, since it is fast and "tree shakes" unused code by default, optimizing the size of the bundles.
+
+Note that every time you modify the code and want to deploy it again, you will have to execute these two steps before it again.
 
 ### Deploying the solution
 
