@@ -3,5 +3,6 @@
 	"compilerOptions": {
 		"outDir": "dist"
 	},
-	"exclude": ["**/*.test.ts", "**/__mocks__/*", "node_modules/**", "dist"]
+	"include": ["./lambda.ts"],
+	"exclude": ["node_modules/**", "dist"]
 }
