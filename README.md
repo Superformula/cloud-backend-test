@@ -1,6 +1,18 @@
 # Superformula Cloud Backend Test - Bruno Rodrigues
 
-## Tech stack
+## Table of contents
+
+- [Tech stack](#tech-stack);
+- [The architecture of the solution](#architecture);
+- [Top-level repository structure](#repo-structure);
+- [Structure of the folder "/src/server"](#structure-of-server-folder);
+- [Useful Environment Variables](#env-variables);
+- [Setting up your environment and building/running/testing the solution](#setting-up);
+- [GraphQL documentation and playground](#graphql-docs-and-playground);
+- [Description of some of the frameworks/tools used in the solution](#frameworks-and-tools);
+- [Further improvements](#further-improvements);
+
+## <a id="tech-stack"></a> Tech stack
 
 To implement this solution for the Superformula Cloud Backend Test, the following tech stack was used:
 
@@ -11,7 +23,7 @@ To implement this solution for the Superformula Cloud Backend Test, the followin
 - [**DynamoDB**](https://aws.amazon.com/dynamodb/) as database;
 - [**Terraform**](https://www.terraform.io/) as IaC tool;
 
-## The architecture of the solution
+## <a id="architecture"></a> The architecture of the solution
 
 As it is possible to see in the image below, the overall architecture is composed of an API Gateway, an AWS Lambda for our backend, DynamoDB, CloudWatch, and another AWS Lambda to fetch locations from Mapbox API. Their roles are as follows:
 
@@ -35,7 +47,7 @@ When a data source gets the transformed input, it can fetch or manipulate data f
 
 Finally, the resolver passes the data to a model converter once again, so that it transforms it to an API model, which is, a format that complies with the signatures established in our GraphQL definitions of queries and mutations.
 
-## Top-level repository structure
+## <a id="repo-structure"></a> Top-level repository structure
 
 This repository is structured as follows:
 
@@ -65,7 +77,7 @@ When we run the unit tests of this project, this folder will be created and all 
 
 This folder stores assets such as images and etc.
 
-## Structure of the folder `/src/server`
+## <a id="structure-of-server-folder"></a> Structure of the folder `/src/server`
 
 At the very root of this folder, besides all its other folders, we have the two possible entry points of our application: `backend-lambda.ts` and `dev-server.ts`. The first one is meant to run in an AWS Lambda, and the second one to run locally (even though it will try to use resources at AWS anyways, such as DynamoDB). The _Apollo_ setup that is shared between these two files is also in this folder (`apollo-server-config.ts`).
 
@@ -97,14 +109,14 @@ In this folder are the model converters, which are classes responsible for the c
 
 This folder holds the type definitions that are common to the application but are neither data source models nor GraphQL API models.
 
-## Useful Environment Variables
+## <a id="env-variables"></a> Useful Environment Variables
 
 - **AWS variables in general**: as this solution is highly dependant on AWS, you can use AWS's credentials and config environment variables such as AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION, and AWS_SDK_LOAD_CONFIG (in case you want the app to use your configs from `.aws\config`) to set up your environment for the application;
 - **TF_VAR_MAPBOX_ACCESS_TOKEN**: this variable, which is your access token to use the Mapbox API, will be sent by Terraform to the environment of our Fetch Location Lambda when our AWS infrastructure is deployed. Even though this value must be set, if you do not set it via env. variable, Terraform will ask for it when you try to `apply`;
 - **TF_VAR_MAPBOX_GEOCODING_PLACES_API_URL**: this is the URL that will be used when fetching data from Mapbox API. Its default value is `"https://api.mapbox.com/geocoding/v5/mapbox.places"`;
 - **TF_VAR_API_DEPLOYMENT_STAGE_NAME**: this will be the stage name of the deployment of our API when you execute `terraform apply`. Its default value is `"test"`.
 
-## Setting up your environment and building/running/testing the solution
+## <a id="setting-up"></a> Setting up your environment and building/running/testing the solution
 
 Unfortunately, it is currently not possible to run this solution totally locally, so we will have to set the environment to be able to deploy the application and then use it.
 
@@ -153,13 +165,15 @@ Without further ado, to run the dev-server, just go to the root directory of the
 
 In order to run the unit tests of the solution, in the root directory, simply run `npm test` or `yarn test`. All the reports about code coverage will be generated automatically at the folder `/coverage`.
 
-## GraphQL documentation and playground
+## <a id="graphql-docs-and-playground"></a> GraphQL documentation and playground
 
 Even though you can deploy on your own this solution, which will already come with a GraphQL playground and with the due schema/documentation (accessible through `<base_url>/graphql`), a live playground with the complete documentation of the GraphQL schema of this solution can already be accessed [through this link](https://6qecj0duqf.execute-api.us-east-1.amazonaws.com/dev/graphql).
 
 Besides that, if you wish to use Insomnia, you can find an Insomnia v4 data file called `cloud_backend_test_insomnia_v4.json` inside the folder `/assets`. Just import it and there will be a collection with all the requests available for our solution.
 
-## Further improvements
+## <a id="frameworks-and-tools"></a> Description of some of the frameworks/tools used in the solution
+
+## <a id="further-improvements"></a> Further improvements
 
 - **Make it possible to run everything locally**: currently, only the backend can run locally, but other resources, such as DynamoDB, still need to be deployed so that the solution can work properly;
 - **Improve the user pagination and filtering**: besides making a "dummy" filtering at Users table (by only checking if the user name contains the filter string), the process of listing in general truly needs a performance improvement. Plugging [Amazon Elasticsearch Service](https://aws.amazon.com/elasticsearch-service/the-elk-stack/what-is-elasticsearch/) into this solution would be a good option for this issue since it was built for this use case of storing data and will be searched for later;
