@@ -66,7 +66,7 @@ To deploy the application, you will need to have a Mapbox access token, you can 
 
 As mentioned above a GraphQL Playground was embedded into the application, you can access it by following the Deployment section.
 
-Also, an Insomnia collection is provided on insmonia.json file in this folder.
+Also, an Insomnia collection is provided on the insomnia.json file in this folder.
 
 ## Achieved Requirements
 
