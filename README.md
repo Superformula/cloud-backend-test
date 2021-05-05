@@ -149,7 +149,7 @@ Without further ado, to run the dev-server, just go to the root directory of the
 
 ### Running unit tests
 
-In order to run the unit tests of the solution, in the root directory, simply run `npm test` or `yarn test`.
+In order to run the unit tests of the solution, in the root directory, simply run `npm test` or `yarn test`. All the reports about code-coverage will be generated automatically at the folder `/coverage`.
 
 ## GraphQL documentation and playground
 
