@@ -32,8 +32,8 @@ export class UserModelConverter {
 		// no undefined properties will be sent to DynamoDB "update" command,
 		// since method buildSimpleUpdateItemInput from utils.ts won't include them
 		return {
-			name: input.name || undefined,
-			dob: input.dob || undefined,
+			name: input.name || undefined, // this prevents 'name' from receiving null. Since buildSimpleUpdateItemInput won't include undefined properties, we are making sure to only include 'name' if it is not empty.
+			dob: input.dob || undefined, // this prevents 'dob' from receiving null. Since buildSimpleUpdateItemInput won't include undefined properties, we are making sure to only include 'dob' if it is not empty.
 			address: input.address,
 			description: input.description,
 			imageUrl: input.imageUrl,
