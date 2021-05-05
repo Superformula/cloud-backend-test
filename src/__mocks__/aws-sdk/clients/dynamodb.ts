@@ -1,7 +1,7 @@
 // using this mock function we can mock different return values from AWS calls
 export const awsResponse = jest.fn().mockReturnValue(Promise.resolve(true));
 
-const getFn = jest.fn().mockImplementation(() => ({ promise: awsResponse }));
+export const getFn = jest.fn().mockImplementation(() => ({ promise: awsResponse }));
 const putFn = jest.fn().mockImplementation(() => ({ promise: awsResponse }));
 const deleteFn = jest.fn().mockImplementation(() => ({ promise: awsResponse }));
 const queryFn = jest.fn().mockImplementation(() => ({ promise: awsResponse }));

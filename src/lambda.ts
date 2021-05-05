@@ -12,7 +12,7 @@ import { configureMapbox } from './configuration/mapbox';
 import Geocoding from '@mapbox/mapbox-sdk/services/geocoding';
 dotenv.config();
 
-const server = new ApolloServer({
+export const server = new ApolloServer({
 	typeDefs,
 	resolvers: {
 		Query,
