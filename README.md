@@ -114,8 +114,8 @@ Unfortunately, it is currently not possible to run this solution totally locally
 - [Download and install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli), if you haven't already;
 - [Download and install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html), if you haven't already;
 - You will also need to have an [AWS account](https://aws.amazon.com/free/) and a [valid access key](https://console.aws.amazon.com/iam/home?#/security_credentials) with the due permissions to create and manage AWS resources;
-- You can set the AWS credentials via AWS CLI (by executing `aws configure` in your terminal), via [credentials file](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html), or via [environment variables](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-environment.html);
-- [Set your AWS](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-region.html) region to `us-east-1`;
+  - You can set the AWS credentials via AWS CLI (by executing `aws configure` in your terminal), via [credentials file](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html), or via [environment variables](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-environment.html);
+- [Set your AWS region](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-region.html) to `us-east-1`;
 - In the folder `/infra`, run the command `terraform init` to initialize Terraform and download its necessary dependencies for this project;
 - In the root of the project, run `npm install` or `yarn install` to install all the dependencies declared in the root `package.json`;
 - Now in the folder `/src/fetch-location-lambda`, run `npm install` or `yarn install` as well to install the dependencies of our Fetch Location Lambda.
@@ -139,7 +139,7 @@ After building and bundling the lambdas, it is time to deploy the solution:
 
 With the step above, the infrastructure should already be deployed. In your terminal, after running the command above, in the last few lines, terraform should have shown you the base URL of the application; if not, run the command `terraform output`, and it will show it to you again. This is the URL of the solution, which should be up and running!
 
-As our GraphQL API is available in the path `/graphql`, add it to the end of the outputted base URL, and use it to test with GraphQL requests via Postman, Insomnia, or even via browser (accessing this URL and using the available Playground). For example, if the URL shown in the terminal was `https://myamazingurl.execute-api.us-east-1.amazonaws.com/test`, use the URL `https://myamazingurl.execute-api.us-east-1.amazonaws.com/test/graphql`.
+As our GraphQL API is available in the path `/graphql`, add it to the end of the outputted base URL, and use it to test with GraphQL requests via Insomnia, Postman, or even via browser (accessing this URL and using the available Playground). For example, if the URL shown in the terminal was `https://myamazingurl.execute-api.us-east-1.amazonaws.com/test`, use the URL `https://myamazingurl.execute-api.us-east-1.amazonaws.com/test/graphql`.
 
 ### Using the dev-server
 
@@ -156,3 +156,10 @@ In order to run the unit tests of the solution, in the root directory, simply ru
 Even though you can deploy on your own this solution, which will already come with a GraphQL playground and with the due schema/documentation (accessible through `<base_url>/graphql`), a live playground with the complete documentation of the GraphQL schema of this solution can already be accessed [through this link](https://fwocmzbxg9.execute-api.us-east-1.amazonaws.com/dev/graphql).
 
 Besides that, if you wish to use Insomnia, you can find an Insomnia v4 data file called `cloud_backend_test_insomnia_v4.json` inside the folder `/assets`. Just import it and there will be a collection with all the requests available for our solution.
+
+## Further improvements
+
+- **Make it possible to run everything locally**: currently, only the backend can run locally, but other resources, such as DynamoDB, still need to be deployed so that the solution can work properly;
+- **Improve the user pagination and filtering**: besides making a "dummy" filtering at Users table (by only checking if the user name contains the filter string), the process of listing in general truly needs a performance improvement. Plugging [Amazon Elasticsearch Service](https://aws.amazon.com/elasticsearch-service/the-elk-stack/what-is-elasticsearch/) into this solution would be a good option for this issue, since it was built for this use case of storing data and will be searched for later;
+- **Configure Terraform to store the state files**: even though it is a simple task to set up a Terraform Backend to manage the state snapshots, it would make things a little harder for others to use the repo and play with it as they wish.
+- **Plug a distributed cache into the data sources**: right now, the class _UserDataSource_, for example, needs to go to DynamoDB every time it needs to fetch user data. As all our data sources are currently extending from the abstract class _DataSource_ from Apollo, and [since this class makes it possible to plug a key-value cache](https://www.apollographql.com/docs/apollo-server/data/data-sources/#using-memcachedredis-as-a-cache-storage-backend), we could then use Redis, for intance, as distributed cache to increase the performance of our queries;
