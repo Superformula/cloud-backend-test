@@ -10,6 +10,7 @@
 - [Setting up your environment and building/running/testing the solution](#setting-up);
 - [GraphQL documentation and playground](#graphql-docs-and-playground);
 - [Description of some of the frameworks/tools used in the solution](#frameworks-and-tools);
+- [Test bonuses](#bonuses)
 - [Further improvements](#further-improvements);
 
 ## <a id="tech-stack"></a> Tech stack
@@ -161,7 +162,7 @@ It is worth mentioning that, instead of bundling and deploying the Backend Lambd
 
 Without further ado, to run the dev-server, just go to the root directory of the project, and execute the command `npm run dev` or `yarn run dev`.
 
-### Running unit tests
+### <a id="running-unit-tests"></a> Running unit tests
 
 In order to run the unit tests of the solution, in the root directory, simply run `npm test` or `yarn test`. All the reports about code coverage will be generated automatically at the folder `/coverage`.
 
@@ -183,7 +184,7 @@ Besides the ones mentioned in the section "[Tech stack](#tech-stack)", there are
 - **`lodash`**: for now, the only purpose of this package in this solution is to merge all the resolvers when defining our top-level GraphQL schema;
 - **`uuid`**: responsible for providing unique identifiers for situations like creating a new user.
 
-### devDependencies
+### <a id="dev-dependencies"></a> devDependencies
 
 - **`@graphql-codegen` packages**: they are responsible for generating TypeScript types for all the definitions and resolvers of our GraphQL schema so that we can use them throughout our solution;
 - **`@types/*` packages**: they provide type definitions for packages that originally were built for pure JavaScript;
@@ -191,11 +192,37 @@ Besides the ones mentioned in the section "[Tech stack](#tech-stack)", there are
 - **`prettier`**: similarly to `eslint`, `prettier` reinforces rules as well, but it is actually responsible for **formatting** the solution files according to the options defined in the file `.prettierrc`, such as tab size, and etc;
 - **`jest` and `ts-jest`**: a common testing framework used for setting up the tests, mocking, running them, and generating the code coverage reports;
 - **`trace-pkg`**: a fast zip application packager for AWS Lambdas, which comes with tree-shaking by default, optimizing then the size of the outputted bundles. In this solution, it is responsible for bundling Backend Lambda and Fetch Location Lambda into zip files to be sent to AWS;
-- **`ts-node-dev`**: this is basically a combination of `ts-node` and `node-dev`. The first one makes it possible to run node on a `.ts` file directly, and the second one takes care of watching changes on the files of the solution and applying them without the need of restarting it manually;
+- **`ts-node-dev`**: this is basically a combination of `ts-node` and `node-dev`. The first one makes it possible to run node on a `.ts` file directly, and the second one takes care of watching changes on the files of the solution and applying them without the need of restarting it manually.
+
+## <a id="bonuses"></a> Bonuses
+
+Besides the original requisites, some of the bonuses were also implemented:
+
+### Developer Experience
+
+- [ ] E2E Testing;
+- [ ] Integration testing;
+- [x] Code-coverage report generation ([see it here](#running-unit-tests));
+- [ ] Describe your strategy for Lambda error handling, retries, and DLQs;
+- [ ] Describe your cloud-native logging, monitoring, and alarming strategy across all queries/mutations;
+- [x] Online interactive demo with a publicly accessible link to your API ([see it here](#graphql-docs-and-playground));
+- [x] Brief description of the frameworks/tools used in the solution ([see it here](#frameworks-and-tools));
+- [x] Optimized lambda build ([see it here](#dev-dependencies), at the item `"trace-pkg"`);
+- [ ] Commit linting;
+- [ ] Semantic release.
+
+### API Consumer Experience
+
+- [x] Document how consumers can quickly prototype against your APIs ([see it here](#graphql-docs-and-playground));
+  - [x] GraphQL Playground setup;
+  - [x] Insomnia setup;
+- [x] GraphQL Documentation Generation (the playground that comes with Apollo Server already exposes the GraphQL docs of our schema);
+- [ ] Client API generation.
 
 ## <a id="further-improvements"></a> Further improvements
 
 - **Make it possible to run everything locally**: currently, only the backend can run locally, but other resources, such as DynamoDB, still need to be deployed so that the solution can work properly;
 - **Improve the user pagination and filtering**: besides making a "dummy" filtering at Users table (by only checking if the user name contains the filter string), the process of listing in general truly needs a performance improvement. Plugging [Amazon Elasticsearch Service](https://aws.amazon.com/elasticsearch-service/the-elk-stack/what-is-elasticsearch/) into this solution would be a good option for this issue since it was built for this use case of storing data and will be searched for later;
-- **Configure Terraform to store the state files**: even though it is a simple task to set up a Terraform Backend to manage the state snapshots, it would make things a little harder for others to use the repo and play with it as they wish.
+- **Configure Terraform to store the state files**: even though it is a simple task to set up a Terraform Backend to manage the state snapshots, it would make things a little harder for others to use the repo and play with it as they wish;
 - **Plug a distributed cache into the data sources**: right now, the class _UserDataSource_, for example, needs to go to DynamoDB every time it needs to fetch user data. As all our data sources are currently extending from the abstract class _DataSource_ from Apollo, and [since this class makes it possible to plug a key-value cache](https://www.apollographql.com/docs/apollo-server/data/data-sources/#caching), we could then use Redis, for instance, as a distributed cache to increase the performance of our queries;
+- **Implement all the unchecked bonuses from the [section above](#bonuses)**.
