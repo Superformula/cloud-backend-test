@@ -153,7 +153,7 @@ In order to run the unit tests of the solution, in the root directory, simply ru
 
 ## GraphQL documentation and playground
 
-Even though you can deploy on your own this solution, which will already come with a GraphQL playground and with the due schema/documentation (accessible through `<base_url>/graphql`), a live playground with the complete documentation of the GraphQL schema of this solution can already be accessed [through this link](https://fwocmzbxg9.execute-api.us-east-1.amazonaws.com/dev/graphql).
+Even though you can deploy on your own this solution, which will already come with a GraphQL playground and with the due schema/documentation (accessible through `<base_url>/graphql`), a live playground with the complete documentation of the GraphQL schema of this solution can already be accessed [through this link](https://6qecj0duqf.execute-api.us-east-1.amazonaws.com/dev/graphql).
 
 Besides that, if you wish to use Insomnia, you can find an Insomnia v4 data file called `cloud_backend_test_insomnia_v4.json` inside the folder `/assets`. Just import it and there will be a collection with all the requests available for our solution.
 
