@@ -12,11 +12,11 @@ GraphQL requests reach an AWS API Gateway that triggers a Lambda Function respon
 
 ## Lambda Function
 
-The lambda function was implemented using NodeJS and Typescript. It uses Apollo Server (more specifically, the 'apollo-server-lambda' npm package) to handle GraphQL requests.
+The lambda function was implemented using NodeJS and Typescript. It uses Apollo Server (more specifically, the [apollo-server-lambda](https://www.npmjs.com/package/@landingexp/apollo-server-lambda) npm package) to handle GraphQL requests.
 
 Calls to DynamoDB are performed using DocumentClient from AWS SDK for NodeJS.
 
-Application integration with Mapbox APIs was achieved with the @mapbox/mapbox-sdk npm package
+Application integration with Mapbox APIs was achieved with the [@mapbox/mapbox-sdk](https://www.npmjs.com/package/@mapbox/mapbox-sdk) npm package
 
 ## DynamoDB
 
@@ -62,6 +62,12 @@ To deploy the application, you will need to have a Mapbox access token, you can 
 4. Run: `terraform apply`
 5. Your application should be set to go, an output should be provided with the base_url of your API gateway.
 
+## Prototyping against the API
+
+As mentioned above a GraphQL Playground was embedded into the application, you can access it by following the Deployment section.
+
+Also, an Insomnia collection is provided on insmonia.json file in this folder.
+
 ## Achieved Requirements
 
 ### Tech stack
@@ -74,13 +80,12 @@ To deploy the application, you will need to have a Mapbox access token, you can 
 
 ### Developer Experience
 
-- Unit tests are written for business logic. (refer to README.md present on ./src folder)
-- Commit messages written through each step of development with clear messages.
-- Documentation provided in this file and on [src/README.md](./src/README.md) and [src/README.md](./terraform/README.md).
+- Unit tests are written for business logic. (refer to [src/README.md](./src/README.md))
+- Documentation provided in this file, on [src/README.md](./src/README.md), and on [terraform/README.md](./terraform/README.md).
 
 ### API Consumer Experience
 
-- GraphQL documentation provided in [src/README.md](./src/README.md)
+- GraphQL documentation provided in [src/README.md](./src/README.md) and in GraphQL playground
 - All operations required by the mockups and description provided.
   - User list with a parameter for filtering results
   - User detail query (by id) implemented
@@ -90,7 +95,7 @@ To deploy the application, you will need to have a Mapbox access token, you can 
 
 - Code coverage reports can be generated. The process is described on [src/README.md](./src/README.md) file
 - Monitoring using CloudWatch
-- Lambda package generation using trace-pkg packager. This package performs tree shaking before packaging to achieve smaller package sizes.
+- Lambda package generation using [trace-pkg](https://www.npmjs.com/package/trace-pkg) packager. This package performs tree shaking before packaging to achieve smaller package sizes.
 - Playground can be used as described on [src/README.md](./src/README.md)
 
 ## Considerations
@@ -101,3 +106,10 @@ The current architecture's users query by a search term uses a secondary index o
 - Using user's names as partition keys might lead to the hot partition issue. Which would reduce database throughput.
 
 To improve the current architecture, we would probably want to use our DynamoDB table as a source for a search engine such as ElasticSearch. This not only would prevent the above problems but would also provide a richer user experience when querying the users by a search term. we could search for other fields besides the name, such as the address, the description, and so on.
+
+## Next Steps
+
+- Improve tests: E2E and integration tests
+- Improve user search API: Use Elastic Search, as mentioned above
+- Add GraphQL documentation Generation
+- Commit linting and semantic versioning
