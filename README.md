@@ -151,7 +151,7 @@ Without further ado, to run the dev-server, just go to the root directory of the
 
 ### Running unit tests
 
-In order to run the unit tests of the solution, in the root directory, simply run `npm test` or `yarn test`. All the reports about code-coverage will be generated automatically at the folder `/coverage`.
+In order to run the unit tests of the solution, in the root directory, simply run `npm test` or `yarn test`. All the reports about code coverage will be generated automatically at the folder `/coverage`.
 
 ## GraphQL documentation and playground
 
@@ -162,6 +162,6 @@ Besides that, if you wish to use Insomnia, you can find an Insomnia v4 data file
 ## Further improvements
 
 - **Make it possible to run everything locally**: currently, only the backend can run locally, but other resources, such as DynamoDB, still need to be deployed so that the solution can work properly;
-- **Improve the user pagination and filtering**: besides making a "dummy" filtering at Users table (by only checking if the user name contains the filter string), the process of listing in general truly needs a performance improvement. Plugging [Amazon Elasticsearch Service](https://aws.amazon.com/elasticsearch-service/the-elk-stack/what-is-elasticsearch/) into this solution would be a good option for this issue, since it was built for this use case of storing data and will be searched for later;
+- **Improve the user pagination and filtering**: besides making a "dummy" filtering at Users table (by only checking if the user name contains the filter string), the process of listing in general truly needs a performance improvement. Plugging [Amazon Elasticsearch Service](https://aws.amazon.com/elasticsearch-service/the-elk-stack/what-is-elasticsearch/) into this solution would be a good option for this issue since it was built for this use case of storing data and will be searched for later;
 - **Configure Terraform to store the state files**: even though it is a simple task to set up a Terraform Backend to manage the state snapshots, it would make things a little harder for others to use the repo and play with it as they wish.
-- **Plug a distributed cache into the data sources**: right now, the class _UserDataSource_, for example, needs to go to DynamoDB every time it needs to fetch user data. As all our data sources are currently extending from the abstract class _DataSource_ from Apollo, and [since this class makes it possible to plug a key-value cache](https://www.apollographql.com/docs/apollo-server/data/data-sources/#using-memcachedredis-as-a-cache-storage-backend), we could then use Redis, for intance, as distributed cache to increase the performance of our queries;
+- **Plug a distributed cache into the data sources**: right now, the class _UserDataSource_, for example, needs to go to DynamoDB every time it needs to fetch user data. As all our data sources are currently extending from the abstract class _DataSource_ from Apollo, and [since this class makes it possible to plug a key-value cache](https://www.apollographql.com/docs/apollo-server/data/data-sources/#using-memcachedredis-as-a-cache-storage-backend), we could then use Redis, for instance, as a distributed cache to increase the performance of our queries;
