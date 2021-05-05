@@ -109,4 +109,11 @@ resource "aws_lambda_function" "backend_lambda" {
   source_code_hash = filebase64sha256(local.backendZipFile)
 
   runtime = "nodejs14.x"
+
+  environment {
+    variables = {
+      # we are using preffix "TF_VAR" here to share the same declared env var between terraform and the dev-server (which is not deployed)
+      TF_VAR_API_DEPLOYMENT_STAGE_NAME = var.API_DEPLOYMENT_STAGE_NAME
+    }
+  }
 }
