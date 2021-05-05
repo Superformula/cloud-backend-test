@@ -153,4 +153,4 @@ In order to run the unit tests of the solution, in the root directory, simply ru
 
 ## GraphQL documentation and playground
 
-Even though you can deploy on your own this solution, which will come with a GraphQL playground and with the due schema/documentation, a live playground with the complete documentation of the GraphQL schema of this solution can already be accessed [through this link](https://fwocmzbxg9.execute-api.us-east-1.amazonaws.com/dev/graphql).
+Even though you can deploy on your own this solution, which will already come with a GraphQL playground and with the due schema/documentation (accessible through `<base_url>/graphql`), a live playground with the complete documentation of the GraphQL schema of this solution can already be accessed [through this link](https://fwocmzbxg9.execute-api.us-east-1.amazonaws.com/dev/graphql).
