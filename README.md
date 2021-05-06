@@ -68,6 +68,13 @@ As mentioned above a GraphQL Playground was embedded into the application, you c
 
 Also, an Insomnia collection is provided on the insomnia.json file in this folder.
 
+## Logging and Monitoring
+
+A simple logging mechanism was implemented using Apollo plugins. By hooking to the `didEncounterErrors` event, error details were logged to CloudWatch.
+The current implementation uses a console.error to output the error details, future implementations should use a logging library with better capabilities.
+
+Also, the correct permissions were given to the Lambda function in order for it to correctly connect to CloudWatch, this enables all the base monitoring functions of CloudWatch.
+
 ## Achieved Requirements
 
 ### Tech stack
@@ -94,13 +101,14 @@ Also, an Insomnia collection is provided on the insomnia.json file in this folde
 ### Bonus
 
 - Code coverage reports can be generated. The process is described on [src/README.md](./src/README.md) file
-- Monitoring using CloudWatch
+- Integration tests implemented
+- Monitoring and logging using CloudWatch
 - Lambda package generation using [trace-pkg](https://www.npmjs.com/package/trace-pkg) packager. This package performs tree shaking before packaging to achieve smaller package sizes.
 - Playground can be used as described on [src/README.md](./src/README.md)
 
 ## Considerations
 
-The current architecture's users query by a search term uses a secondary index on the users table to find a user with a given name. This approach is not ideal for some reasons:
+The current architecture's user list query by a search term uses a secondary index on the users table to find a user with a given name. This approach is not ideal for some reasons:
 
 - It only enables querying for exact matches: DynamoDB can only query a partition key using exact matches. It can scan the whole table but this operation would be very costly.
 - Using user's names as partition keys might lead to the hot partition issue. Which would reduce database throughput.
@@ -112,6 +120,7 @@ To improve the current architecture, we would probably want to use our DynamoDB 
 - Add E2E
 - More integration tests - some integration tests were implemented but more are needed for a better coverage.
 - Improve user search API: Use Elastic Search, as mentioned above
+- Improve Logging.
 - Add GraphQL documentation Generation
 - Commit linting and semantic versioning
 - Upload user image - Right now the application is returning a random picture from [Lorem Picsum](https://picsum.photos/), on a URL based on their IDs, we probably want to create a upload endpoint so that the users can upload their pictures.
