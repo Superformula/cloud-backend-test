@@ -1,11 +1,12 @@
 import { createTestClient } from 'apollo-server-testing';
 import { server } from '../../lambda';
-import { putFn } from '../../__mocks__/aws-sdk/clients/dynamodb';
+import { awsResponse, putFn } from '../../__mocks__/aws-sdk/clients/dynamodb';
 import { accessTokenEnvName } from '../../dist/configuration/mapbox';
 import { usersTableEnvName } from '../../configuration/users-db';
 import { v4 as uuid } from 'uuid';
 import moment from 'moment';
 import { UserInput } from '../../graphql/types/schema-types';
+import { UserModel } from '../../data-access/models/user';
 
 describe('Mutate user', () => {
 	const mockUserInput: UserInput = {
@@ -13,6 +14,15 @@ describe('Mutate user', () => {
 		dob: '1995-09-03',
 		name: 'Test user',
 		description: 'Test description',
+	};
+
+	const existingUser: UserModel = {
+		id: '1234',
+		address: 'Rio de Janeiro, Brazil',
+		dob: '1995-09-04T00:00:00.000Z',
+		name: 'Test user 2',
+		description: 'Test description 2',
+		createdAt: '2021-05-01T17:52:48.299Z',
 	};
 
 	beforeEach(() => {
@@ -122,5 +132,57 @@ describe('Mutate user', () => {
 		expect(result.data).toBeNull();
 
 		expect(putFn).toHaveBeenCalledTimes(0);
+	});
+
+	it('Should update user with valid input', async () => {
+		const {
+			testclient: { mutate },
+			now,
+		} = setup();
+
+		awsResponse.mockReturnValueOnce(Promise.resolve({ Item: { ...existingUser } }));
+		const mockUserId = '12345';
+		const result = await mutate({
+			mutation: `
+                mutation {
+                    updateUser(id: "${mockUserId}", data: {
+                        name: "${mockUserInput.name}"
+                        address: "${mockUserInput.address}"
+                        description: "${mockUserInput.description}"
+                        dob: "${mockUserInput.dob}"
+                     }){
+                        id
+                        name
+                        address
+                        dob
+                        description
+                        createdAt
+                        updatedAt
+                        imageUrl
+                    }
+                }
+            `,
+		});
+
+		const modifiedUserModel = {
+			...existingUser,
+			dob: moment(mockUserInput.dob).toISOString(),
+			name: mockUserInput.name,
+			description: mockUserInput.description,
+			address: mockUserInput.address,
+			updatedAt: now.toISOString(),
+		};
+
+		const expectedReturnedUser = {
+			...modifiedUserModel,
+			imageUrl: `https://picsum.photos/seed/${existingUser.id}/200/300`,
+		};
+		expect(result.errors).toBeUndefined();
+		expect(result.data.updateUser).toEqual(expectedReturnedUser);
+
+		expect(putFn).toHaveBeenCalledWith({
+			TableName: process.env[usersTableEnvName],
+			Item: modifiedUserModel,
+		});
 	});
 });
