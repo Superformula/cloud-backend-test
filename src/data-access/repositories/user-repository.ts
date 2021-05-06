@@ -68,10 +68,7 @@ export class DynamoDBUserRepository implements UserRepository {
 		user.description = data.description || user.description;
 		user.updatedAt = moment().toISOString();
 
-		// TODO: assess if it is worth to change this code to a update operation.
-		// It might be faster but will require a more complex code for building the queries,
-		// but will allow concurrent writes on different attributes to be isolated.
-		// From a cost perspective, with an update I can cut out the previous read operation.
+		// TODO: Change this code to use a update operation
 		await this.database
 			.put({
 				TableName: this.config.tableName,
