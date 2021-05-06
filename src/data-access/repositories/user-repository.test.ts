@@ -4,7 +4,6 @@ import { UserInput } from '../../graphql/types/schema-types';
 import { UserModel } from '../models/user';
 import { DynamoDBUserRepository, UserRepository } from './user-repository';
 import { v4 as uuid } from 'uuid';
-import { AttributeValue } from 'aws-sdk/clients/directoryservice';
 import { WithIndexSignature } from '../../utils/types';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import dotenv from 'dotenv';
@@ -288,7 +287,7 @@ describe('Test user delete', () => {
 });
 
 describe('Test user list', () => {
-	const existingUsers: WithIndexSignature<UserModel, AttributeValue>[] = [
+	const existingUsers: WithIndexSignature<UserModel, string>[] = [
 		{
 			id: '1234',
 			address: 'Brasilia, Brazil',
