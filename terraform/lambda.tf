@@ -43,6 +43,15 @@ resource "aws_iam_role_policy" "lambda_policy" {
           aws_dynamodb_table.users_table.arn,
           "${aws_dynamodb_table.users_table.arn}/index/${var.user_name_index}"
         ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Resource = "*"
       }
     ]
   })
