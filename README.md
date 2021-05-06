@@ -109,7 +109,9 @@ To improve the current architecture, we would probably want to use our DynamoDB 
 
 ## Next Steps
 
-- Improve tests: E2E and integration tests
+- Add E2E
+- More integration tests - some integration tests were implemented but more are needed for a better coverage.
 - Improve user search API: Use Elastic Search, as mentioned above
 - Add GraphQL documentation Generation
 - Commit linting and semantic versioning
+- Upload user image - Right now the application is returning a random picture from [Lorem Picsum](https://picsum.photos/), on a URL based on their IDs, we probably want to create a upload endpoint so that the users can upload their pictures.
