@@ -178,7 +178,8 @@ input UserInput {
 
 Unit tests were implemented on all business logic classes and functions using [jest](https://www.npmjs.com/package/jest) package.
 
-Integration tests were implemented using [apollo-server-testing](https://www.npmjs.com/package/apollo-server-testing) package. This is a work in progress, more tests must be implemented in the future to exercise Geolocation queries.
+Integration tests were implemented using [apollo-server-testing](https://www.npmjs.com/package/apollo-server-testing) package. This is a work in progress, more tests must be implemented in the future to exercise Geolocation queries
+You can find the tests on the [tests folder](./tests)
 
 ### Running the tests
 
