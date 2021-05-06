@@ -10,6 +10,7 @@ import { MapboxGeolocationRepository } from './data-access/repositories/geolocat
 import { configureUsersDB } from './configuration/users-db';
 import { configureMapbox } from './configuration/mapbox';
 import Geocoding from '@mapbox/mapbox-sdk/services/geocoding';
+import { handleErrorsPlugin } from './utils/apollo-plugins';
 dotenv.config();
 
 export const server = new ApolloServer({
@@ -18,6 +19,7 @@ export const server = new ApolloServer({
 		Query,
 		Mutation,
 	},
+	plugins: [handleErrorsPlugin],
 	playground: {
 		endpoint: `/${process.env.STAGE_NAME || 'dev'}/graphql`,
 	},
