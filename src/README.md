@@ -157,11 +157,28 @@ The query parameter can be any address, like '221B Baker Street, London, England
 
 ### User mutations
 
-Mutation for the user were provided in order to enable user cration, update and deletion.
+Mutation for the user were provided in order to enable user creation, update and deletion.
+
+```
+type Mutation {
+  createUser(data: UserInput!): User!
+  updateUser(id: ID!, data: UserInput!): User!
+  deleteUser(id: ID!): User
+}
+
+input UserInput {
+  name: String
+  address: String
+  description: String
+  dob: String   # This date must be on 'YYYY-MM-DD' notation
+}
+```
 
 ## Tests
 
 Unit tests were implemented on all business logic classes and functions using [jest](https://www.npmjs.com/package/jest) package.
+
+Integration tests were implemented using [apollo-server-testing](https://www.npmjs.com/package/apollo-server-testing) package. This is a work in progress, more tests must be implemented in the future to exercise Geolocation queries.
 
 ### Running the tests
 

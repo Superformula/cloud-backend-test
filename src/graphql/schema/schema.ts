@@ -38,6 +38,7 @@ export const typeDefs = gql`
 		name: String
 		address: String
 		description: String
+		# This date must be in 'YYYY-MM-DD' notation
 		dob: String
 	}
 `;
