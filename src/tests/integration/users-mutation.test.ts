@@ -92,7 +92,6 @@ describe('Mutate user', () => {
 	it('Should return error with invalid input', async () => {
 		const {
 			testclient: { mutate },
-			now,
 		} = setup();
 
 		const result = await mutate({
