@@ -15,6 +15,10 @@ describe('Mutate user', () => {
 		description: 'Test description',
 	};
 
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
+
 	const setup = () => {
 		process.env[usersTableEnvName] = 'test-table';
 		process.env[accessTokenEnvName] = 'test-access-token';
@@ -26,7 +30,28 @@ describe('Mutate user', () => {
 		};
 	};
 
-	it('Should create user and return if found', async () => {
+	const getExpectedResults = (now: moment.Moment) => {
+		const createdUserModel = {
+			...mockUserInput,
+			createdAt: now.toISOString(),
+			// This uuid is mocked
+			id: uuid(),
+			dob: moment(mockUserInput.dob).toISOString(),
+		};
+
+		const expectedReturnedUser = {
+			...createdUserModel,
+			updatedAt: null,
+			imageUrl: `https://picsum.photos/seed/${uuid()}/200/300`,
+		};
+
+		return {
+			createdUserModel,
+			expectedReturnedUser,
+		};
+	};
+
+	it('Should create user and return if correct input', async () => {
 		const {
 			testclient: { mutate },
 			now,
@@ -54,20 +79,7 @@ describe('Mutate user', () => {
             `,
 		});
 
-		const createdUserModel = {
-			...mockUserInput,
-			createdAt: now.toISOString(),
-			// This uuid is mocked
-			id: uuid(),
-			dob: moment(mockUserInput.dob).toISOString(),
-		};
-
-		const expectedReturnedUser = {
-			...createdUserModel,
-			updatedAt: null,
-			imageUrl: `https://picsum.photos/seed/${uuid()}/200/300`,
-		};
-
+		const { expectedReturnedUser, createdUserModel } = getExpectedResults(now);
 		expect(result.errors).toBeUndefined();
 		expect(result.data.createUser).toEqual(expectedReturnedUser);
 
@@ -75,5 +87,41 @@ describe('Mutate user', () => {
 			TableName: process.env[usersTableEnvName],
 			Item: createdUserModel,
 		});
+	});
+
+	it('Should return error with invalid input', async () => {
+		const {
+			testclient: { mutate },
+			now,
+		} = setup();
+
+		const result = await mutate({
+			mutation: `
+                mutation {
+                    createUser(data: {
+                        name: "${mockUserInput.name}"
+                        address: "${mockUserInput.address}"
+                        description: "${mockUserInput.description}"
+                        dob: "03-09-1995"
+                     }){
+                        id
+                        name
+                        address
+                        dob
+                        description
+                        createdAt
+                        updatedAt
+                        imageUrl
+                    }
+                }
+            `,
+		});
+
+		expect(result.errors).toBeDefined();
+		expect(result.errors?.length).toBe(1);
+		expect(result.errors?.[0].message).toBe('An invalid date of birth was provided');
+		expect(result.data).toBeNull();
+
+		expect(putFn).toHaveBeenCalledTimes(0);
 	});
 });
