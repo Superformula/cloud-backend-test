@@ -6,7 +6,7 @@
   "scripts": {
     "deploy": "serverless deploy",
     "destroy": "serverless remove",
-    "dev": "serverless offline --apiKey your-api-key-that-is-at-least-characters-long",
+    "dev": "serverless offline --apiKey super-formula-api-key-token",
     "lint": "tslint -p tsconfig.json -c tslint.json"
   },
   "dependencies": {
