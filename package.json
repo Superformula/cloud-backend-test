@@ -22,6 +22,7 @@
     "serverless-dotenv-plugin": "^3.0.0",
     "serverless-offline": "^6.5.0",
     "serverless-plugin-typescript": "^1.1.9",
+    "serverless-dynamodb-local": "^0.2.18",
     "ts-loader": "^5.3.3",
     "tslint": "^5.20.0",
     "tslint-config-airbnb": "^5.11.2",
