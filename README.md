@@ -1,4 +1,4 @@
-# Superformula Full Stack Developer Test
+# Superformula Cloud Backend Test
 
 This repository contains an implementation for Superformula's cloud backend test. The following sections will describe the architecture and technologies used to fulfill the provided requirements.
 
