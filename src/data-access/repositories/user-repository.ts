@@ -115,6 +115,10 @@ export class DynamoDBUserRepository implements UserRepository {
 			ExclusiveStartKey: cursor ? JSON.parse(cursor) : undefined,
 		};
 
+		// First we will get the page of users using a query operation
+		// and then retrieve the users using a batch get.
+		// As stated on the comment above this would be later changed in production
+		// to use a search engine.
 		let queryResult: QueryOutput | ScanOutput;
 		if (query) {
 			queryResult = await this.database
