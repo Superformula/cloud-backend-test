@@ -62,7 +62,6 @@ export class ModelMetadata {
                 ExpressionAttributeNames:{}
             });
 
-        console.log(expression);
         return Promise.resolve(expression);
 
     }

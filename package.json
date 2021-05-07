@@ -12,6 +12,7 @@
     "docker:local-db": "cd ./dynamodb && docker-compose up -d && cd .."
   },
   "dependencies": {
+    "@mapbox/mapbox-sdk": "^0.12.1",
     "@types/uuid": "^8.3.0",
     "apollo-server-lambda": "^2.16.1",
     "graphql": "^15.3.0",

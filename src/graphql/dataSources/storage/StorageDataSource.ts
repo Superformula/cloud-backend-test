@@ -4,17 +4,10 @@ import { ModelMetadata } from '../../../common/ModelMetadata';
 import { v1 as uuidv1 } from 'uuid'; 
 import { dbClient } from './dynamodb';
 import {
-	AttributeValue,
-	DeleteItemInput,
-	GetItemInput,
 	PutItemInput,
-	PutItemInputAttributeMap,
 	ScanInput,
 	DocumentClient,
 	ScanOutput,
-	ItemList,
-	AttributeMap,
-  QueryInput
 } from 'aws-sdk/clients/dynamodb'
 import AWS from 'aws-sdk';
 import { ApolloError } from 'apollo-server-errors';
@@ -58,7 +51,6 @@ export class StorageDataSource extends DataSource {
             };
             result = await this.db.scan(params).promise();
 
-            console.log(accumulated, result);
             ExclusiveStartKey = result.LastEvaluatedKey;
             accumulated = [...accumulated, ...result.Items];
 
