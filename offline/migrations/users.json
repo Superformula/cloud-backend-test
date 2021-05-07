@@ -1,6 +1,6 @@
 {
     "Table": {
-        "TableName": "serverless-rest-api-with-dynamodb-dev",
+        "TableName": "superformula-cloud-backend-test-user-dev",
         "KeySchema": [
             {
                 "AttributeName": "id",

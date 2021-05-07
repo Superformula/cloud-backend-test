@@ -22,6 +22,7 @@ custom:
     migration:
       dir: offline/migrations
   user_dynamodb_table_name: user
+  othermodel_dynamodb_table_name: othermodel
 
 provider:
   name: aws
@@ -31,7 +32,8 @@ provider:
     - name: lambdaApolloKey
       value: ${env:APOLLO_LAMBDA_KEY}
   environment:
-    USER_DYNAMODB_TABLE: ${self:service}-${self:custom.user_dynamodb_table_name}-${opt:stage, self:provider.stage}
+    USER_DYNAMODB_TABLE: ${self:service.name}-${self:custom.user_dynamodb_table_name}-${opt:stage, self:provider.stage}
+    OTHERMODEL_DYNAMODB_TABLE: ${self:service.name}-${self:custom.othermodel_dynamodb_table_name}-${opt:stage, self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:

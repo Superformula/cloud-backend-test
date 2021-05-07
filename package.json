@@ -7,12 +7,16 @@
     "deploy": "serverless deploy",
     "destroy": "serverless remove",
     "dev": "serverless offline --apiKey super-formula-api-key-token",
-    "lint": "tslint -p tsconfig.json -c tslint.json"
+    "local": "serverless offline start --apiKey super-formula-api-key-token",
+    "lint": "tslint -p tsconfig.json -c tslint.json",
+    "docker:local-db": "cd ./dynamodb && docker-compose up -d && cd .."
   },
   "dependencies": {
+    "@types/uuid": "^8.3.0",
     "apollo-server-lambda": "^2.16.1",
     "graphql": "^15.3.0",
-    "source-map-support": "^0.5.10"
+    "source-map-support": "^0.5.10",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",

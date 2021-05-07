@@ -7,14 +7,14 @@ type Query {
   }
   
   type Mutation {
-    createUser(userInput: UserInput!): User!
-    updateUser(_id: String!, userInput: UserInput!): User!
-    deleteUser(_id: String!): Boolean!
+    createUser(attributes: UserInputInsert!): User!
+    updateUser(id: String!, attributes: UserInputUpdate!): User!
+    deleteUser(id: String!): Boolean!
   }
   
   
   type User {
-      _id: ID!
+      id: ID!
       name: String!
       dob: String
       address: GeolocalizedAddress
@@ -31,12 +31,20 @@ type Query {
   }
   
   
-  input UserInput {
-      name: String
-      dob: String
-      address: AddressInput
-      description: String
-      imageUrl: String
+  input UserInputInsert {
+      name: String!
+      dob: String!
+      address: AddressInput!
+      description: String!
+      imageUrl: String!
+  }
+
+  input UserInputUpdate {
+    name: String
+    dob: String
+    address: AddressInput
+    description: String
+    imageUrl: String
   }
   
   input AddressInput {

@@ -1,20 +1,31 @@
-enum Model {
+import { ModelMetadata } from "./ModelMetadata"
+
+enum ModelEnum {
     user = "user",
     anotherModel = "anotherModel"
 }
 
-enum userFields {
-    _id = "_id",
-    createdAt = "createdAt"
+const ModelMetadatas = {
+    [ModelEnum.user]: new ModelMetadata(
+        process.env.USER_DYNAMODB_TABLE || '',
+        {
+            id: "id",
+            name: "dob",
+            address: "address",
+            description: "description",
+            createdAt: "createdAt",
+            updatedAt: "updatedAt",
+            imageUrl: "imageUrl",
+        }),
+    [ModelEnum.anotherModel]: new ModelMetadata(
+        process.env.OTHERMODEL_DYNAMODB_TABLE || '',
+        {
+            id: "id",
+        }),
 }
 
-
-enum anotherModelFields {
-    _id= "_id"
-}
 
 export {
-    Model,
-    userFields,
-    anotherModelFields
+    ModelEnum,
+    ModelMetadatas
 }

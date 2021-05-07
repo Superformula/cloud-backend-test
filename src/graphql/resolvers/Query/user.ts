@@ -22,7 +22,6 @@ export const user = {
     },
   
     async geolocate(parent: any, args: any, context: any, info: any) {
-        console.log(parent, args, context, info);
       
   
         return Promise.resolve([{}]);
