@@ -16,7 +16,7 @@ The lambda function was implemented using NodeJS and Typescript. It uses Apollo 
 
 Calls to DynamoDB are performed using DocumentClient from AWS SDK for NodeJS.
 
-Application integration with Mapbox APIs was achieved with the [@mapbox/mapbox-sdk](https://www.npmjs.com/package/@mapbox/mapbox-sdk) npm package
+Application integration with Mapbox APIs was done using the [@mapbox/mapbox-sdk](https://www.npmjs.com/package/@mapbox/mapbox-sdk) npm package
 
 ## DynamoDB
 
@@ -24,7 +24,7 @@ The application depends on a DynamoDB Table to store its users. The users are st
 
 ```
 {
-    id: string;
+	id: string;
 	name: string;
 	dob: string;
 	address: string;
@@ -64,9 +64,11 @@ To deploy the application, you will need to have a Mapbox access token, you can 
 
 ## Prototyping against the API
 
-As mentioned above a GraphQL Playground was embedded into the application, you can access it by following the Deployment section.
+GraphQL Playground was embedded into the application, you can access it by following the `base_url` ouputted provided in Deployment section.
 
 Also, an Insomnia collection is provided on the insomnia.json file in this folder.
+
+A live demo is available [here](https://rqkzkakl1b.execute-api.us-east-1.amazonaws.com/dev/graphql).
 
 ## Logging and Monitoring
 
@@ -104,23 +106,25 @@ Also, the correct permissions were given to the Lambda function in order for it 
 - Integration tests implemented
 - Monitoring and logging using CloudWatch
 - Lambda package generation using [trace-pkg](https://www.npmjs.com/package/trace-pkg) packager. This package performs tree shaking before packaging to achieve smaller package sizes.
-- Playground can be used as described on [src/README.md](./src/README.md)
+- Playground can be used as described on [src/README.md](./src/README.md). A live example is provided [here](https://rqkzkakl1b.execute-api.us-east-1.amazonaws.com/dev/graphql).
 
 ## Considerations
 
 The current architecture's user list query by a search term uses a secondary index on the users table to find a user with a given name. This approach is not ideal for some reasons:
 
-- It only enables querying for exact matches: DynamoDB can only query a partition key using exact matches. It can scan the whole table but this operation would be very costly.
+- It only enables querying for exact matches: DynamoDB can only query a partition key using exact matches. Alternatively, It can scan the whole table but this operation would be very costly.
 - Using user's names as partition keys might lead to the hot partition issue. Which would reduce database throughput.
 
 To improve the current architecture, we would probably want to use our DynamoDB table as a source for a search engine such as ElasticSearch. This not only would prevent the above problems but would also provide a richer user experience when querying the users by a search term. we could search for other fields besides the name, such as the address, the description, and so on.
 
 ## Next Steps
 
-- Add E2E
+- Add E2E tests
 - More integration tests - some integration tests were implemented but more are needed for a better coverage.
 - Improve user search API: Use Elastic Search, as mentioned above
 - Improve Logging.
 - Add GraphQL documentation Generation
 - Commit linting and semantic versioning
 - Upload user image - Right now the application is returning a random picture from [Lorem Picsum](https://picsum.photos/), on a URL based on their IDs, we probably want to create a upload endpoint so that the users can upload their pictures.
+- Improve user update method - right now a put operation is being used, this would not be ideal in production.
+- Research if an IOC container is a good approach to manage code dependencies in this app.
