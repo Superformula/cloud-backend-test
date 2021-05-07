@@ -2,7 +2,7 @@ import { gql } from "apollo-server-lambda";
 
 const typeDefs = gql`
 type Query {
-    users: [User!]!
+    users(id: String, limit: Int, lastEvaluatedKey: String): UserOutput!
     geolocate: [GeolocalizedAddress!]
   }
   
@@ -12,7 +12,12 @@ type Query {
     deleteUser(id: String!): Boolean!
   }
   
-  
+  type UserOutput {
+      items: [User],
+      count: Int,
+      lastEvaluatedKey: String
+  }
+
   type User {
       id: ID!
       name: String!

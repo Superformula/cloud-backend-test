@@ -1,24 +1,10 @@
+import { ModelEnum } from "../../../common/globalModel";
+import { StorageDataSource } from "../../dataSources/storage/StorageDataSource";
 
 
 export const user = {
-    async users(parent: any, args: any, context: any, info: any) {
-        
-
-        return Promise.resolve([{
-          _id: "test",
-          name: "test",
-          dob: "test",
-          address: {
-            place: "test",
-            latitude: 20,
-            longitude: 12
-          },
-          description: "test",
-          createdAt: "test",
-          updatedAt: "test",
-          imageUrl: "test",
-
-        }]);
+    async users(parent: any, args: any, context: { dataSources: { storage: StorageDataSource}}, info: any) {
+      return await context.dataSources.storage.read(ModelEnum.user, args);
     },
   
     async geolocate(parent: any, args: any, context: any, info: any) {

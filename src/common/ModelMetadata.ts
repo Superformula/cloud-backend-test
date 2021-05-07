@@ -1,10 +1,39 @@
 export class ModelMetadata {
     constructor(public tableName: string, public attributes: any){}
 
+    public async getAttributesForScan(args: any) : Promise<any>{
+
+        let ExclusiveStartKey, FilterExpression, Limit, ExpressionAttributeValues;
+        
+        if (args["id"]){
+            FilterExpression = `id = :hashKey`;
+            ExpressionAttributeValues = {
+                ':hashKey': args["id"]
+            }
+        }
+        else{
+            Limit = args["limit"] || 10; //Default to 10 items
+
+            if (args["lastEvaluatedKey"]){
+                ExclusiveStartKey = { "id": args["lastEvaluatedKey"] };
+            }
+        }
+        
+        
+        const expression = {
+            FilterExpression,
+            ExpressionAttributeValues,
+            Limit,
+            ExclusiveStartKey
+        };
+
+        return Promise.resolve(expression);
+    }
+
     public async getAttributesForInsert(args: any) : Promise<any>{
 
         const attrbutes = Object.assign({}, args.attributes);
-        const attrubutes = Object.keys(attrbutes)
+        const expression = Object.keys(attrbutes)
             .reduce( (object, key) => {
                 if (this.attributes[key]){
                     object[key] = attrbutes[key];
@@ -12,7 +41,7 @@ export class ModelMetadata {
                 return object
             }, {});
 
-        return Promise.resolve(attrubutes);
+        return Promise.resolve(expression);
 
     }
 

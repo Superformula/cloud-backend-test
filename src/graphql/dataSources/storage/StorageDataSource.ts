@@ -13,7 +13,8 @@ import {
 	DocumentClient,
 	ScanOutput,
 	ItemList,
-	AttributeMap
+	AttributeMap,
+  QueryInput
 } from 'aws-sdk/clients/dynamodb'
 import AWS from 'aws-sdk';
 import { ApolloError } from 'apollo-server-errors';
@@ -26,6 +27,55 @@ export class StorageDataSource extends DataSource {
         this.db = dbClient;
     }
 
+    public async read(model: ModelEnum, args: any): Promise<any>{
+
+      const modelMetadata = (ModelMetadatas[model] as ModelMetadata);
+      let result: ScanOutput;
+      let accumulated = [];
+      let ExclusiveStartKey;
+
+      const attributesForScan = await modelMetadata.getAttributesForScan(args);
+      ExclusiveStartKey = attributesForScan['ExclusiveStartKey'];
+
+      try{
+        // Search by ID
+        if (attributesForScan['FilterExpression']){
+          const params: ScanInput = {
+            TableName: modelMetadata.tableName,
+            ... await modelMetadata.getAttributesForScan(args),
+          };
+          result = await this.db.scan(params).promise();
+          accumulated = [...result.Items];
+
+        }
+        // Paginated list
+        else {
+          do {
+            const params: ScanInput = {
+              TableName: modelMetadata.tableName,
+              Limit: attributesForScan['Limit'],
+              ExclusiveStartKey
+            };
+            result = await this.db.scan(params).promise();
+
+            console.log(accumulated, result);
+            ExclusiveStartKey = result.LastEvaluatedKey;
+            accumulated = [...accumulated, ...result.Items];
+
+          } while((accumulated.length < attributesForScan['Limit']) && (result.Items.length || result.LastEvaluatedKey))
+        }
+
+        return Promise.resolve({
+          items: [...accumulated],
+          count: result.Count,
+          lastEvaluatedKey: result.LastEvaluatedKey? result.LastEvaluatedKey.id : undefined
+        });
+
+      }
+      catch(ex){
+        return Promise.reject(new ApolloError(ex));
+      }
+    }
     
     public async create(model: ModelEnum, args: any): Promise<any>{
 
