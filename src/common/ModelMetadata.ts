@@ -27,6 +27,7 @@ export class ModelMetadata {
             ExclusiveStartKey
         };
 
+        console.log(expression);
         return Promise.resolve(expression);
     }
 

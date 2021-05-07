@@ -35,7 +35,7 @@ export class StorageDataSource extends DataSource {
         if (attributesForScan['FilterExpression']){
           const params: ScanInput = {
             TableName: modelMetadata.tableName,
-            ... await modelMetadata.getAttributesForScan(args),
+            ... attributesForScan,
           };
           result = await this.db.scan(params).promise();
           accumulated = [...result.Items];
@@ -44,6 +44,7 @@ export class StorageDataSource extends DataSource {
         // Paginated list
         else {
           do {
+            console.log('pase', ExclusiveStartKey);
             const params: ScanInput = {
               TableName: modelMetadata.tableName,
               Limit: attributesForScan['Limit'],
@@ -54,7 +55,8 @@ export class StorageDataSource extends DataSource {
             ExclusiveStartKey = result.LastEvaluatedKey;
             accumulated = [...accumulated, ...result.Items];
 
-          } while((accumulated.length < attributesForScan['Limit']) && (result.Items.length || result.LastEvaluatedKey))
+            
+          } while((accumulated.length < attributesForScan['Limit']) && (result.Items.length > 0  && ExclusiveStartKey !== undefined ))
         }
 
         return Promise.resolve({
