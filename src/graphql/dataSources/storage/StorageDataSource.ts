@@ -25,29 +25,31 @@ export class StorageDataSource extends DataSource {
       const modelMetadata = (ModelMetadatas[model] as ModelMetadata);
       let result: ScanOutput;
       let accumulated = [];
-      let ExclusiveStartKey;
+      // let ExclusiveStartKey;
 
-      const attributesForScan = await modelMetadata.getAttributesForScan(args);
-      ExclusiveStartKey = attributesForScan['ExclusiveStartKey'];
+      let { FilterExpression, ExpressionAttributeValues, Limit, ExclusiveStartKey }= await modelMetadata.getAttributesForScan(args);
+      // ExclusiveStartKey = attributesForScan['ExclusiveStartKey'];
 
       try{
-        // Search by ID
-        if (attributesForScan['FilterExpression']){
-          const params: ScanInput = {
-            TableName: modelMetadata.tableName,
-            ... attributesForScan,
-          };
-          result = await this.db.scan(params).promise();
-          accumulated = [...result.Items];
+        // // Search by ID
+        // if (attributesForScan['FilterExpression']){
+        //   const params: ScanInput = {
+        //     TableName: modelMetadata.tableName,
+        //     ... attributesForScan,
+        //   };
+        //   result = await this.db.scan(params).promise();
+        //   accumulated = [...result.Items];
 
-        }
-        // Paginated list
-        else {
+        // }
+        // // Paginated list
+        // else {
           do {
             console.log('pase', ExclusiveStartKey);
             const params: ScanInput = {
               TableName: modelMetadata.tableName,
-              Limit: attributesForScan['Limit'],
+              FilterExpression,
+              ExpressionAttributeValues,
+              Limit,
               ExclusiveStartKey
             };
             result = await this.db.scan(params).promise();
@@ -56,8 +58,8 @@ export class StorageDataSource extends DataSource {
             accumulated = [...accumulated, ...result.Items];
 
             
-          } while((accumulated.length < attributesForScan['Limit']) && (result.Items.length > 0  && ExclusiveStartKey !== undefined ))
-        }
+          } while(!FilterExpression && accumulated.length < Limit && (result.Items.length > 0  && ExclusiveStartKey !== undefined ))
+        // }
 
         return Promise.resolve({
           items: [...accumulated],
