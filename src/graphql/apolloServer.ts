@@ -22,9 +22,9 @@ const apolloServer = new ApolloServer({
         geo: new GeoDataSource()
     },
     event,
-    context,
-    headers: event.headers,
-    functionName: context.functionName,
+    ...context,
+    // headers: event.headers,
+    // functionName: context.functionName,
   }),
   tracing: true,
 });

@@ -3,12 +3,7 @@ import { ModelEnum, ModelMetadatas } from '../../../common/globalModel';
 import { ModelMetadata } from '../../../common/ModelMetadata';
 import { v1 as uuidv1 } from 'uuid'; 
 import { dbClient } from './dynamodb';
-import {
-	PutItemInput,
-	ScanInput,
-	DocumentClient,
-	ScanOutput,
-} from 'aws-sdk/clients/dynamodb'
+import { PutItemInput, ScanInput, DocumentClient, ScanOutput } from 'aws-sdk/clients/dynamodb'
 import AWS from 'aws-sdk';
 import { ApolloError } from 'apollo-server-errors';
 
@@ -25,41 +20,25 @@ export class StorageDataSource extends DataSource {
       const modelMetadata = (ModelMetadatas[model] as ModelMetadata);
       let result: ScanOutput;
       let accumulated = [];
-      // let ExclusiveStartKey;
-
       let { FilterExpression, ExpressionAttributeValues, Limit, ExclusiveStartKey }= await modelMetadata.getAttributesForScan(args);
-      // ExclusiveStartKey = attributesForScan['ExclusiveStartKey'];
 
       try{
-        // // Search by ID
-        // if (attributesForScan['FilterExpression']){
-        //   const params: ScanInput = {
-        //     TableName: modelMetadata.tableName,
-        //     ... attributesForScan,
-        //   };
-        //   result = await this.db.scan(params).promise();
-        //   accumulated = [...result.Items];
+        do {
+          console.log('pase', ExclusiveStartKey);
+          const params: ScanInput = {
+            TableName: modelMetadata.tableName,
+            FilterExpression,
+            ExpressionAttributeValues,
+            Limit,
+            ExclusiveStartKey
+          };
+          result = await this.db.scan(params).promise();
 
-        // }
-        // // Paginated list
-        // else {
-          do {
-            console.log('pase', ExclusiveStartKey);
-            const params: ScanInput = {
-              TableName: modelMetadata.tableName,
-              FilterExpression,
-              ExpressionAttributeValues,
-              Limit,
-              ExclusiveStartKey
-            };
-            result = await this.db.scan(params).promise();
+          ExclusiveStartKey = result.LastEvaluatedKey;
+          accumulated = [...accumulated, ...result.Items];
 
-            ExclusiveStartKey = result.LastEvaluatedKey;
-            accumulated = [...accumulated, ...result.Items];
-
-            
-          } while(!FilterExpression && accumulated.length < Limit && (result.Items.length > 0  && ExclusiveStartKey !== undefined ))
-        // }
+          
+        } while(!FilterExpression && accumulated.length < Limit && (result.Items.length > 0  && ExclusiveStartKey !== undefined ))
 
         return Promise.resolve({
           items: [...accumulated],
@@ -94,8 +73,6 @@ export class StorageDataSource extends DataSource {
         return Promise.reject(new ApolloError(ex));
       }
     }
-
-    
 
     public async update(model: ModelEnum, args: any) : Promise<any>{
       try{
