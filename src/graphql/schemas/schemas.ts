@@ -2,7 +2,7 @@ import { gql } from "apollo-server-lambda";
 
 const typeDefs = gql`
 type Query {
-    users(id: String, limit: Int, lastEvaluatedKey: String): UserOutput!
+    users(id: String, name: String, limit: Int, lastEvaluatedKey: String): UserOutput!
     geolocate(address: String): [GeolocalizedAddress!]
   }
   

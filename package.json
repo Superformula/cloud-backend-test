@@ -16,7 +16,7 @@
     "local": "serverless offline start --apiKey super-formula-api-key-token",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "docker:local-db": "cd ./dynamodb && docker-compose up -d && cd ..",
-    "test": "npx jest --watchAll --coverage"
+    "test": "npx jest  --coverage --watchAll"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.12.1",

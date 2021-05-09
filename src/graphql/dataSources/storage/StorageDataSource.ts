@@ -1,11 +1,12 @@
 import { DataSource } from 'apollo-datasource';
 import { ModelEnum, ModelMetadatas } from '../../../common/globalModel';
 import { ModelMetadata } from '../../../common/ModelMetadata';
-import uuid from 'uuid';
+import { v1 } from 'uuid';
 import { dbClient as dynamobClient } from './dynamodb';
 import { PutItemInput, ScanInput, DocumentClient, ScanOutput } from 'aws-sdk/clients/dynamodb'
 import AWS from 'aws-sdk';
 import { ApolloError } from 'apollo-server-errors';
+import { link } from 'fs';
 
 export class StorageDataSource extends DataSource {
     
@@ -22,7 +23,7 @@ export class StorageDataSource extends DataSource {
       const modelMetadata = (ModelMetadatas[model] as ModelMetadata);
       let result: ScanOutput;
       let accumulated = [];
-      let { FilterExpression, ExpressionAttributeValues, Limit, ExclusiveStartKey }= await modelMetadata.getAttributesForScan(args);
+      let { FilterExpression, ExpressionAttributeValues, Limit, ExclusiveStartKey, ExpressionAttributeNames } = await modelMetadata.getAttributesForScan(args);
 
       try{
         do {
@@ -31,7 +32,8 @@ export class StorageDataSource extends DataSource {
             FilterExpression,
             ExpressionAttributeValues,
             Limit,
-            ExclusiveStartKey
+            ExclusiveStartKey,
+            ExpressionAttributeNames
           };
           result = await this.db.scan(params).promise();
 
@@ -39,12 +41,23 @@ export class StorageDataSource extends DataSource {
           accumulated = [...accumulated, ...result.Items];
 
           
-        } while(!FilterExpression && accumulated.length < Limit && (result.Items.length > 0  && ExclusiveStartKey !== undefined ))
+        } while((!FilterExpression || !FilterExpression['id'])
+            && accumulated.length < Limit
+            && (result.Items.length > 0  || ExclusiveStartKey !== undefined ))
+
+        // remove the exceeding items and adjusting the lastEvaluatedKey
+        let itemsMatches = [...accumulated];
+        let lastEvaluatedKey = result.LastEvaluatedKey? result.LastEvaluatedKey.id : undefined;
+        if (accumulated.length > 0 && accumulated.length > Limit){
+          itemsMatches = [...accumulated.slice(0, Limit)];
+          lastEvaluatedKey = itemsMatches[itemsMatches.length - 1]['id'];
+        }
+        
 
         return Promise.resolve({
-          items: [...accumulated],
+          items: itemsMatches,
           count: result.Count,
-          lastEvaluatedKey: result.LastEvaluatedKey? result.LastEvaluatedKey.id : undefined
+          lastEvaluatedKey: lastEvaluatedKey
         });
 
       }
@@ -60,7 +73,7 @@ export class StorageDataSource extends DataSource {
         const params: PutItemInput = {
             TableName: modelMetadata.tableName,
             Item: {
-              id: uuid.v1(),
+              id: v1(),
               ... await modelMetadata.getAttributesForInsert(args)
             },
             ReturnValues: 'ALL_OLD'

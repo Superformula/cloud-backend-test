@@ -1,6 +1,7 @@
 import { StorageDataSource } from '../storage/StorageDataSource';
 import { ModelEnum } from '../../../common/globalModel';
 import { ApolloError } from 'apollo-server-lambda';
+import { v1 } from 'uuid';
 
 
 //#region Mocks
@@ -140,6 +141,7 @@ const mockedReadLimitedListResponse = {
 };
 
 jest.mock('uuid', () => ({ v1: () => mockedDocumentId }));
+// jest.mock('v1', () => mockedDocumentId );
 
 //#endregion Mocks
 

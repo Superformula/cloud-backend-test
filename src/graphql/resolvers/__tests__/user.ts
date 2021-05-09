@@ -155,7 +155,7 @@ const dataStorage = new StorageDataSource(mock.db);
 describe('[Resolvers - Mutations]', () => {
   
 
-  describe('createUser', () => {
+  describe('user', () => {
     
 
     it('read one by Id - success', async () => {

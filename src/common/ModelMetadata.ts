@@ -3,13 +3,15 @@ export class ModelMetadata {
 
     public async getAttributesForScan(args: any) : Promise<any>{
 
-        let ExclusiveStartKey, FilterExpression, Limit, ExpressionAttributeValues;
+        let ExclusiveStartKey, FilterExpression, Limit, ExpressionAttributeValues, ExpressionAttributeNames;
         
         if (args["id"]){
-            FilterExpression = `id = :hashKey`;
-            ExpressionAttributeValues = {
-                ':hashKey': args["id"]
-            }
+            ExpressionAttributeNames = {};
+            ExpressionAttributeValues = {};
+
+            FilterExpression = `#id = :hashKey`;
+            ExpressionAttributeValues[':hashKey'] = args["id"];
+            ExpressionAttributeNames[`#id`] = 'id';
         }
         else{
             Limit = args["limit"] || 10; //Default to 10 items
@@ -17,15 +19,35 @@ export class ModelMetadata {
             if (args["lastEvaluatedKey"]){
                 ExclusiveStartKey = { "id": args["lastEvaluatedKey"] };
             }
+
+            delete args['limit'];
+            delete args['lastEvaluatedKey'];
+
+            if ( Object.keys(args).length > 0){
+                let filterExp = [];
+                ExpressionAttributeValues = {};
+                ExpressionAttributeNames = {};
+
+                Object.keys(args).forEach(key => {
+                    filterExp.push(`contains(#${key}, :${key})`);
+                    // filterExp.push(`#${key} = :${key}`);
+                    ExpressionAttributeValues[`:${key}`] = args[key];
+                    ExpressionAttributeNames[`#${key}`] = key;
+                });
+                FilterExpression = filterExp.join(', ');
+            }
         }
         
         
         const expression = {
             FilterExpression,
             ExpressionAttributeValues,
+            ExpressionAttributeNames,
             Limit,
             ExclusiveStartKey
         };
+
+        // console.log('scan exp', expression);
 
         return Promise.resolve(expression);
     }
