@@ -22,6 +22,7 @@
     "@mapbox/mapbox-sdk": "^0.12.1",
     "@types/uuid": "^8.3.0",
     "apollo-datasource-rest": "^0.13.0",
+    "apollo-link-http": "^1.5.17",
     "apollo-server-lambda": "^2.16.1",
     "apollo-server-testing": "^2.24.0",
     "graphql": "^15.3.0",
@@ -54,8 +55,18 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
     "collectCoverage": true,
-    "coverageReporters": ["json", "html"]
+    "coverageReporters": [
+      "json",
+      "html"
+    ]
   }
 }

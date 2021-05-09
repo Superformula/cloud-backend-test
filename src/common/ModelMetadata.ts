@@ -30,7 +30,6 @@ export class ModelMetadata {
 
                 Object.keys(args).forEach(key => {
                     filterExp.push(`contains(#${key}, :${key})`);
-                    // filterExp.push(`#${key} = :${key}`);
                     ExpressionAttributeValues[`:${key}`] = args[key];
                     ExpressionAttributeNames[`#${key}`] = key;
                 });

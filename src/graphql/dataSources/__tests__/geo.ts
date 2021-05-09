@@ -138,6 +138,7 @@ const mockedGeocodeResponse = [
 
 const dataStorage = new GeoDataSource(mock.geoClient);
 
+
 //#endregion Initializations
 
 describe('[DataSource - GeoLlocalization]', () => {

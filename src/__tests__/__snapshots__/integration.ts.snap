@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Queries user - read one by Id - success 1`] = `
+Object {
+  "data": Object {
+    "users": Object {
+      "items": Array [
+        Object {
+          "id": "fa8d7da0-af85-11eb-9859-577507baa6d7",
+          "name": "New name",
+        },
+      ],
+      "lastEvaluatedKey": null,
+    },
+  },
+  "errors": undefined,
+  "extensions": undefined,
+  "http": Object {
+    "headers": Headers {
+      Symbol(map): Object {},
+    },
+  },
+}
+`;
