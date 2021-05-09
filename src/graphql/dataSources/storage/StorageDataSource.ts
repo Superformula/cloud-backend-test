@@ -1,8 +1,8 @@
 import { DataSource } from 'apollo-datasource';
 import { ModelEnum, ModelMetadatas } from '../../../common/globalModel';
 import { ModelMetadata } from '../../../common/ModelMetadata';
-import { v1 as uuidv1 } from 'uuid'; 
-import { dbClient } from './dynamodb';
+import uuid from 'uuid';
+import { dbClient as dynamobClient } from './dynamodb';
 import { PutItemInput, ScanInput, DocumentClient, ScanOutput } from 'aws-sdk/clients/dynamodb'
 import AWS from 'aws-sdk';
 import { ApolloError } from 'apollo-server-errors';
@@ -10,10 +10,12 @@ import { ApolloError } from 'apollo-server-errors';
 export class StorageDataSource extends DataSource {
     
     private db: AWS.DynamoDB.DocumentClient;
-    constructor() {
+    constructor(dbClient?) {
         super();
-        this.db = dbClient;
+        this.db = dbClient? dbClient : dynamobClient;
     }
+
+   
 
     public async read(model: ModelEnum, args: any): Promise<any>{
 
@@ -24,7 +26,6 @@ export class StorageDataSource extends DataSource {
 
       try{
         do {
-          console.log('pase', ExclusiveStartKey);
           const params: ScanInput = {
             TableName: modelMetadata.tableName,
             FilterExpression,
@@ -48,7 +49,7 @@ export class StorageDataSource extends DataSource {
 
       }
       catch(ex){
-        return Promise.reject(new ApolloError(ex));
+        return Promise.reject(new ApolloError(ex.message));
       }
     }
     
@@ -59,7 +60,7 @@ export class StorageDataSource extends DataSource {
         const params: PutItemInput = {
             TableName: modelMetadata.tableName,
             Item: {
-              id: uuidv1(),
+              id: uuid.v1(),
               ... await modelMetadata.getAttributesForInsert(args)
             },
             ReturnValues: 'ALL_OLD'
@@ -70,11 +71,12 @@ export class StorageDataSource extends DataSource {
 
       }
       catch(ex){
-        return Promise.reject(new ApolloError(ex));
+        return Promise.reject(new ApolloError(ex.message));
       }
     }
 
     public async update(model: ModelEnum, args: any) : Promise<any>{
+      
       try{
         const modelMetadata = (ModelMetadatas[model] as ModelMetadata);
         const params: DocumentClient.UpdateItemInput = {
@@ -108,7 +110,7 @@ export class StorageDataSource extends DataSource {
             ConditionExpression: 'attribute_exists(id)',
           };
 
-        await this.db.delete(params).promise();
+        const result = await this.db.delete(params).promise();
         return Promise.resolve(true);
 
       }

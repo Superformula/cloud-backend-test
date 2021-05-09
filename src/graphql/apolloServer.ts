@@ -23,8 +23,6 @@ const apolloServer = new ApolloServer({
     },
     event,
     ...context,
-    // headers: event.headers,
-    // functionName: context.functionName,
   }),
   tracing: true,
 });

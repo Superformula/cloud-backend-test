@@ -4,9 +4,9 @@ import geo from '@mapbox/mapbox-sdk/services/geocoding';
 export class GeoDataSource extends DataSource {
 
     private geoClient;
-    constructor(){
+    constructor(geoClient?){
         super();
-        this.geoClient = geo({ accessToken: process.env.MAPBOX_ACCESS_TOKEN});
+        this.geoClient = geoClient? geoClient : geo({ accessToken: process.env.MAPBOX_ACCESS_TOKEN});
     }
 
     public async geocode(address: string) : Promise<any> {
@@ -17,6 +17,8 @@ export class GeoDataSource extends DataSource {
             types: ['address'],
         })
         .send();
+
+        
 
         return Promise.resolve(result.body.features.map(item => ({
             place: item.place_name,

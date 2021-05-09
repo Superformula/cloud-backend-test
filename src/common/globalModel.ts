@@ -10,7 +10,8 @@ const ModelMetadatas = {
         process.env.USER_DYNAMODB_TABLE || '',
         {
             id: "id",
-            name: "dob",
+            name: "name",
+            bob: "bob",
             address: "address",
             description: "description",
             createdAt: "createdAt",

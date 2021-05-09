@@ -27,23 +27,21 @@ export class ModelMetadata {
             ExclusiveStartKey
         };
 
-        console.log(expression);
         return Promise.resolve(expression);
     }
 
     public async getAttributesForInsert(args: any) : Promise<any>{
 
-        const attrbutes = Object.assign({}, args.attributes);
-        const expression = Object.keys(attrbutes)
+        const attr = Object.assign({}, args.attributes);
+        const expression = Object.keys(attr)
             .reduce( (object, key) => {
                 if (this.attributes[key]){
-                    object[key] = attrbutes[key];
+                    object[key] = attr[key];
                 }
-                return object
+                return object;
             }, {});
 
         return Promise.resolve(expression);
-
     }
 
     public async getAttributesForUpdate(args: any) : Promise<any>{
@@ -52,18 +50,22 @@ export class ModelMetadata {
         const expression = Object.keys(attributes)
             .reduce( (object, key) => {
                 if (this.attributes[key]){
-                    object.UpdateExpression = object.UpdateExpression.concat(` #${key} = :${key}`);
-                    object.ExpressionAttributeValues[`:${key}`] = attributes[key];
-                    object.ExpressionAttributeNames[`#${key}`] = key;
+                    object.updateExpression.push(`#${key} = :${key}`);
+                    object.expressionAttributeValues[`:${key}`] = attributes[key];
+                    object.expressionAttributeNames[`#${key}`] = key;
                 }
                 return object;
             }, {
-                UpdateExpression: "set",
-                ExpressionAttributeValues: {},
-                ExpressionAttributeNames:{}
+                updateExpression: [],
+                expressionAttributeValues: {},
+                expressionAttributeNames:{}
             });
 
-        return Promise.resolve(expression);
+        return Promise.resolve({
+            UpdateExpression: `set ${expression.updateExpression.join(', ')}`,
+            ExpressionAttributeValues: expression.expressionAttributeValues,
+            ExpressionAttributeNames: expression.expressionAttributeNames
+        });
 
     }
 }
