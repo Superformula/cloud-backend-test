@@ -2,26 +2,30 @@
 
 ## About
 
+
+
+
 ### Document Poursepose
 
-The current document contains information related to developers that would like to run, test and even extend it.
+The current document contains information related to developers that would like to run, test and even extend this project.
 
-Having in consideration that the present proyect is the result of the Superformula hiring process, I sent the corresponding "Design & Architecrure" document to [Chloe Knapper](https://www.linkedin.com/in/chloeknapper/) by email. The document includes a dedicated section to each requirement bullet in addition to a DEMO link. 
+Having in consideration that the present proyect is the result of the Superformula hiring process, I sent the corresponding "Design & Architecrure" document to [Chloe Knapper](https://www.linkedin.com/in/chloeknapper/) by email. The document includes a dedicated sections to each requirement bullet in addition to a DEMO link. 
 
-### Proyect description
+## Project description
 
-GraphQL service based on Apollo Server v2 running in serverless mode. Specifically, the api runs as AWS lambda with a corresponding API Gateway.
+GraphQL service based on Apollo Server v2 running in serverless mode. Specifically, the api runs as AWS lambda with a corresponding API Gateway, a Dynamodb as storage and an integration to Mapbox plaform.
+
 The services provides CRUD oprations for the 'user' entity and a geocode query function to tranlate and direaction string into a geolocalized address.
 
-### Design aspects
+## Design aspects
 
-#### Reusability by Abstraction of the scenarios
+### Reusability
 
-The crud services were developed in a generic way, to speed up the extension of this service by adding support for other models CRUDs operation without having the develop the similar resolvers over and over again.
+The crud services were developed in a generic way, to speed up the extension of this service by adding support for other models CRUDs operation without having the develop the identical resolvers over and over again.
 
 For instance, to extend the service to support crud operation of a new model, the existing CRUDs services can be reused by copy and pasting the existing ones
 
-| *NOTE* Mutation/user.ts
+| *Mutation/user.ts*
 ```js
   export const user = {
     async createUser(parent: any, args: any, context: { dataSources: { storage: StorageDataSource}}, info: any) {
@@ -38,7 +42,7 @@ For instance, to extend the service to support crud operation of a new model, th
   }
   ```
 
-| *NOTE* Query/user.ts
+| *Query/user.ts* 
 
 ```js
   async users(parent: any, args: any, context: { dataSources: { storage: StorageDataSource}}, info: any) {
@@ -48,67 +52,38 @@ For instance, to extend the service to support crud operation of a new model, th
 
 and changin "ModelEnum.user" by "ModelEnum.newModel"
 
-#### GraphQL Philosophy
+### GraphQL Philosophy
 
 One of the great purposes of GraphQL is to create endpoint to support as much as possible client apps UI use cases, without demanding them to receive all models attributes if some of those just need a few.
 
 Following this concept, I built a query named "users' to support the following use cases:
-Markup :  - [x] User list (with and without paging)
-          - [x] Get one user by id
-          - [x] Get users by name (paging suport as well).
+- [x] User list (with and without paging)
+- [x] Get one user by id
+- [x] Get users by name (paging suport as well).
 
 
-##### Paging
+### Paging
 
 The 'users' query returns an extra parameters named "lastEvaluatedKey". This parameter must by combined with the 'Limit' one to use paging functionality.
 Receiving an non null value in "lastEvaluatedKey", means that there are more items matching to the executed serach query. This must be included on the following query execution to receive the next item list page.
 
 
-### Prerequisites
+## Prerequisites
 
-Markup : * Development and local testing
-              * Docker
-              * Node.js environment (v14.x or above is preferred)
-              * Mapbox account and access_token. [Mapbox](https://mapbox.com)
-              * yarn
-              * npm
-              * npx
-          * Extras for deploy to AWS
-              * aws developer account
-              * aws cli
-
-#### Development
+* Development and local testing
+    * Docker
+    * Node.js environment (v14.x or above is preferred)
+    * Mapbox account and access_token. [Mapbox](https://mapbox.com)
+    * yarn
+    * npm
+    * npx
+* Extras for deployments to AWS
+    * aws developer account
+    * aws cli
 
 
-### Tools
 
-- Typescript
-- Node
-- Serverless
-- Yarn
-- [Lerna](https://lerna.js.org/)
-- Jest
-- [Graphql Codegen](https://www.graphql-code-generator.com/)
-- AWS API Gateway v1 & v2
-- AWS Lambda
-- AWS DynamoDB
-- AWS DynamoDB Stream
-- Terraform
-- ESLint
-- Prettier
-- Commitlint
-
-### Project structure
-
-Project heavily depends on [aws-lambda-graphql](https://github.com/michalkvasnicak/aws-lambda-graphql#readme) in the architectural perspective.
-
-[Cloud Architecture](https://github.com/michalkvasnicak/aws-lambda-graphql#infrastructure)
-
-- [packages/api](packages/api) - `Node`/`Graphql`/`Serverless`/`Typescript` application and deployment scripts with `Terraform`
-- [packages/app](packages/app) - `React`/`Typescript` frontend application created by [create-react-app](https://create-react-app.dev/docs/adding-typescript/#installation)
-- [packages/core](packages/core) - shared library code between `api` and `app`
-
-## Local Development
+## Development
 
 ### Setup
 
@@ -117,78 +92,80 @@ Project heavily depends on [aws-lambda-graphql](https://github.com/michalkvasnic
 - **Install dependencies**
 
   ```bash
-  yarn
+  yarn install
   ```
 
-### Preparation for e2e testing and running the service locally
-#### Dynamodb deployment in local docker environment
+- **Preparation for e2e testing and running the service locally**
+  Dynamodb deployment in local docker environment
 
-```bash
-npm run docker:local-db
-```
+  ```bash
+  npm run docker:local-db
+  ```
 
-| *NOTE* Before running this command, ensure you have installed and running docker in your machine.
+  | *NOTE* Before running this command, ensure you have installed and running docker in your machine.
 
-### Unit Test
-```bash
-npm run test:unit
-```
-### Integration Test
-```bash
-npm run test:integration
-```
+- **Unit Test**
 
-### e2e Test
-```bash
-npm run test:e2e
-```
-| *NOTE* There is an existing issue related to the background services after running the e2e are not killed properly. So, the work aroud, until the bug is fixed, will requires to kill it manually or restarting the machine. 
+  ```bash
+  npm run test:unit
+  ```
+- **Integration Test**
+
+  ```bash
+  npm run test:integration
+  ```
+
+- **e2e Test**
+  ```bash
+  npm run test:e2e
+  ```
+  | *NOTE* There is an existing issue related to the background services after running the e2e are not killed properly. So, the work aroud, until the bug is fixed, will requires to kill it manually or restarting the machine. 
 
 
-## Deployments
+### Deployments
 
-### local
+- **local**
 
-```bash
-npm run local
-```
+  ```bash
+  npm run local
+  ```
 
 - **Explorer and play with the service**
 
-The GraphQL Playgraound is enabled in non prod environment to lets you explore the schema and execute queries a mutations
-After executing "npm run local" you will be able to access to the Playgroind tool on http://localhost:3000/dev/playground
+  The GraphQL Playgraound is enabled in non prod environment to lets you explore the schema and execute queries a mutations
+  After executing "npm run local" you will be able to access to the Playgroind tool on http://localhost:3000/dev/playground
 
-| *NOTE* Add the following header attribute on the "HATTP HEADERS" secition of the Playgraoung tool . 
-```js
-    {
-      "x-api-key": "super-formula-api-key-token"
-    }
-```
+  | *NOTE* Add the following header attribute on the "HATTP HEADERS" secition of the Playgraoung tool . 
+  ```js
+      {
+        "x-api-key": "super-formula-api-key-token"
+      }
+  ```
 
-### aws
+- **aws**
 
-#### aws cli setup
+  - **aws cli setup**
 
-```bash
-aws configure
-```
+    ```bash
+    aws configure
+    ```
 
-| *NOTE* Please configure your aws cli in this way only avoing to include the key in this proyect code.
+    | *NOTE* Please configure your aws cli in this way only avoing to include the key in this proyect code.
 
-#### deploy
+  - **deploy**
 
-The following command will create and s3 in aws. package your and upload your service to it, create the api gateway and the Dynamdb database. This also connects these resources to aws cloudwatch monitoring service
+    The following command will create and s3 in aws. package your and upload your service to it, create the api gateway and the Dynamdb database. This also connects these resources to aws cloudwatch monitoring service
 
-```bash
-npm run deploy
-```
+    ```bash
+    npm run deploy
+    ```
 
-At the end of the process you will see the url for the api gateway that epxose this graphql lambda service. Remeber to add the header key
+    At the end of the process you will see the url for the api gateway that epxose this graphql lambda service. Remeber to add the header key
 
-#### destroy
-```bash
-npm run deploy
-```
+  - **destroy**
+    ```bash
+    npm run deploy
+    ```
 
 ## Monitoring
 
@@ -200,11 +177,11 @@ The service can be monitored by Apollo Studio
 
 You need to add the Apollo keys to the env varables in ./serverless.yml file
 
-Markup : ```javascript
-          APOLLO_KEY: "[YOUR_KEY]"
-          APOLLO_GRAPH_VARIANT: [YOUR_ENVIRONMENT]
-          APOLLO_SCHEMA_REPORTING: true
-         ```
+```javascript
+  APOLLO_KEY: "[YOUR_KEY]"
+  APOLLO_GRAPH_VARIANT: [YOUR_ENVIRONMENT]
+  APOLLO_SCHEMA_REPORTING: true
+```
 
 | *NOTE* To obtaing a graph API key go [here](https://www.apollographql.com/docs/studio/setup-analytics/#pushing-traces-from-apollo-server).
 
