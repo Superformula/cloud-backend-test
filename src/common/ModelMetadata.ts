@@ -14,7 +14,7 @@ export class ModelMetadata {
             ExpressionAttributeNames[`#id`] = 'id';
         }
         else{
-            // Limit = args["limit"]? (args["limit"] > 0)? args["limit"] : 10 : 10; //Default to 10 items
+            Limit = args["limit"]? (args["limit"] > 0)? args["limit"] : 10 : undefined;
 
             if (args["lastEvaluatedKey"]){
                 ExclusiveStartKey = { "id": args["lastEvaluatedKey"] };
