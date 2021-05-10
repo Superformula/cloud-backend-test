@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Queries user - read one by Id - success 1`] = `
+exports[`Integration Queries users - read one by Id - success 1`] = `
 Object {
   "data": Object {
     "users": Object {
       "items": Array [
         Object {
           "id": "fa8d7da0-af85-11eb-9859-577507baa6d7",
-          "name": "New name",
+          "name": "Mario Ruiz Diaz",
         },
       ],
       "lastEvaluatedKey": null,

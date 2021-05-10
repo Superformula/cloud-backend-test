@@ -14,7 +14,7 @@
   "include": [
     "src/**/*",
     "declarations.d.ts"
-  ],
+, "jestGlobalSetup.ts"  ],
   "exclude": [
     "node_modules/**/*",
     ".serverless/**/*",

@@ -1,8 +1,8 @@
 import { user as userMutations } from '../Mutation/user';
 import { user as userQueries } from '../Query/user';
-import { ModelEnum } from '../../../common/globalModel';
 import { ApolloError } from 'apollo-server-lambda';
 import { StorageDataSource } from '../../dataSources/storage/StorageDataSource';
+
 
 
 //#region Mocks
@@ -141,8 +141,6 @@ const mockedReadLimitedListResponse = {
   lastEvaluatedKey: '071a61a0-af86-11eb-acd0-7790705c88db'
 };
 
-jest.mock('uuid', () => ({ v1: () => mockedDocumentId }));
-
 //#endregion Mocks
 
 //#region Initializations
@@ -151,101 +149,106 @@ const dataStorage = new StorageDataSource(mock.db);
 
 //#endregion Initializations
 
+describe('Unit', () => {
 
-describe('[Resolvers - Mutations]', () => {
-  
-
-  describe('user', () => {
+  describe('[Resolvers - Mutations]', () => {
     
 
-    it('read one by Id - success', async () => {
-      mock.db.scan.mockReturnValueOnce({
-        promise: () => Promise.resolve(mockedReadByIdDbResponse)
+    describe('user', () => {
+      
+
+      it('read one by Id - success', async () => {
+        mock.db.scan.mockReturnValueOnce({
+          promise: () => Promise.resolve(mockedReadByIdDbResponse)
+        });
+        const getNewId = jest.fn().mockImplementation(() => mockedDocumentId);
+        dataStorage.getNewId = getNewId.bind(dataStorage); 
+
+        await expect(userQueries.users(null, mockedReadByIdInputArgs, { dataSources: { storage: dataStorage}}, null)).resolves.toEqual(mockedReadByResponse);
       });
 
-      await expect(userQueries.users(null, mockedReadByIdInputArgs, { dataSources: { storage: dataStorage}}, null)).resolves.toEqual(mockedReadByResponse);
-    });
+      it('read one by Id - failure', async () => {
+        mock.db.scan.mockReturnValueOnce({
+          promise: () => Promise.reject(new Error("read failed"))
+        });
 
-    it('read one by Id - failure', async () => {
-      mock.db.scan.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error("read failed"))
+        await expect(userQueries.users(null, mockedReadByIdInputArgs, { dataSources: { storage: dataStorage}}, null)).rejects.toEqual(new ApolloError("read failed"));
       });
 
-      await expect(userQueries.users(null, mockedReadByIdInputArgs, { dataSources: { storage: dataStorage}}, null)).rejects.toEqual(new ApolloError("read failed"));
-    });
+      it('read limited list - success', async () => {
+        mock.db.scan.mockReturnValueOnce({
+          promise: () => Promise.resolve(mockedReadLimitedListDbResponse)
+        });
 
-    it('read limited list - success', async () => {
-      mock.db.scan.mockReturnValueOnce({
-        promise: () => Promise.resolve(mockedReadLimitedListDbResponse)
+        await expect(userQueries.users(null, mockedReadLimitedListInputArgs, { dataSources: { storage: dataStorage}}, null)).resolves.toEqual(mockedReadLimitedListResponse);
       });
 
-      await expect(userQueries.users(null, mockedReadLimitedListInputArgs, { dataSources: { storage: dataStorage}}, null)).resolves.toEqual(mockedReadLimitedListResponse);
-    });
+      it('read limited list - failure', async () => {
+        mock.db.scan.mockReturnValueOnce({
+          promise: () => Promise.reject(new Error("read failed"))
+        });
 
-    it('read limited list - failure', async () => {
-      mock.db.scan.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error("read failed"))
+        await expect(userQueries.users(null, mockedReadLimitedListInputArgs, { dataSources: { storage: dataStorage}}, null)).rejects.toEqual(new ApolloError("read failed"));
       });
-
-      await expect(userQueries.users(null, mockedReadLimitedListInputArgs, { dataSources: { storage: dataStorage}}, null)).rejects.toEqual(new ApolloError("read failed"));
     });
-  });
-  
-  describe('create service', () => {
-    it('success', async () => {
-      mock.db.put.mockReturnValueOnce({
-        promise: () => Promise.resolve()
-      });
-
-      await expect(userMutations.createUser(null, mockedCreateInputArgs, { dataSources: { storage: dataStorage}}, null)).resolves.toEqual(mockedCreateResponse);
-    });
-
-    it('failure', async () => {
-      mock.db.put.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error("creation failed"))
-      });
-
-      await expect(userMutations.createUser(null, mockedCreateInputArgs, { dataSources: { storage: dataStorage}}, null)).rejects.toEqual(new ApolloError("creation failed"));
-    });
-  });
-
-  describe('update service', () => {
-    it('success', async () => {
-      mock.db.update.mockReturnValueOnce({
-        promise: () => Promise.resolve(mockedUpdateResponse)
-      });
-
-      await expect(userMutations.updateUser(null, mockedUpdateInputArgs, { dataSources: { storage: dataStorage}}, null)).resolves.toEqual(mockedUpdateResponse.Attributes);
-    });
-
-    it('failure', async () => {
-      mock.db.update.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error("Document not found"))
-      });
-
-      await expect(userMutations.updateUser(null, mockedUpdateInputArgs, { dataSources: { storage: dataStorage}}, null)).rejects.toEqual(new ApolloError("Document not found"));
-    });
-  });
-
-  describe('delete service', () => {
-
     
+    describe('create service', () => {
+      it('success', async () => {
+        mock.db.put.mockReturnValueOnce({
+          promise: () => Promise.resolve()
+        });
 
-    it('Existing id', async () => {
-      mock.db.delete.mockReturnValueOnce({
-        promise: () => Promise.resolve()
+        await expect(userMutations.createUser(null, mockedCreateInputArgs, { dataSources: { storage: dataStorage}}, null)).resolves.toEqual(mockedCreateResponse);
       });
 
-      await expect(userMutations.deleteUser(null, { id: "Non_Existing" }, { dataSources: { storage: dataStorage}}, null)).resolves.toBe(true);
+      it('failure', async () => {
+        mock.db.put.mockReturnValueOnce({
+          promise: () => Promise.reject(new Error("creation failed"))
+        });
+
+        await expect(userMutations.createUser(null, mockedCreateInputArgs, { dataSources: { storage: dataStorage}}, null)).rejects.toEqual(new ApolloError("creation failed"));
+      });
     });
 
-    it('Unexisting id', async () => {
-      mock.db.delete.mockReturnValueOnce({
-        promise: () => Promise.reject()
+    describe('update service', () => {
+      it('success', async () => {
+        mock.db.update.mockReturnValueOnce({
+          promise: () => Promise.resolve(mockedUpdateResponse)
+        });
+
+        await expect(userMutations.updateUser(null, mockedUpdateInputArgs, { dataSources: { storage: dataStorage}}, null)).resolves.toEqual(mockedUpdateResponse.Attributes);
       });
 
-      await expect(userMutations.deleteUser(null, { id: "Non_Existing" }, { dataSources: { storage: dataStorage}}, null)).rejects.toEqual(new ApolloError("Document not found", "404"));
+      it('failure', async () => {
+        mock.db.update.mockReturnValueOnce({
+          promise: () => Promise.reject(new Error("Document not found"))
+        });
+
+        await expect(userMutations.updateUser(null, mockedUpdateInputArgs, { dataSources: { storage: dataStorage}}, null)).rejects.toEqual(new ApolloError("Document not found"));
+      });
+    });
+
+    describe('delete service', () => {
+
+      
+
+      it('Existing id', async () => {
+        mock.db.delete.mockReturnValueOnce({
+          promise: () => Promise.resolve()
+        });
+
+        await expect(userMutations.deleteUser(null, { id: "Non_Existing" }, { dataSources: { storage: dataStorage}}, null)).resolves.toBe(true);
+      });
+
+      it('Unexisting id', async () => {
+        mock.db.delete.mockReturnValueOnce({
+          promise: () => Promise.reject()
+        });
+
+        await expect(userMutations.deleteUser(null, { id: "Non_Existing" }, { dataSources: { storage: dataStorage}}, null)).rejects.toEqual(new ApolloError("Document not found", "404"));
+      });
     });
   });
+
 });
 

@@ -1,10 +1,10 @@
 import { StorageDataSource } from '../storage/StorageDataSource';
 import { ModelEnum } from '../../../common/globalModel';
 import { ApolloError } from 'apollo-server-lambda';
-import { v1 } from 'uuid';
 
 
 //#region Mocks
+
 
 const mock = {
   db: {
@@ -140,8 +140,7 @@ const mockedReadLimitedListResponse = {
   lastEvaluatedKey: '071a61a0-af86-11eb-acd0-7790705c88db'
 };
 
-jest.mock('uuid', () => ({ v1: () => mockedDocumentId }));
-// jest.mock('v1', () => mockedDocumentId );
+
 
 //#endregion Mocks
 
@@ -151,95 +150,101 @@ const dataStorage = new StorageDataSource(mock.db);
 
 //#endregion Initializations
 
-describe('[DataSource - Storage]', () => {
+describe('Unit', () => {
+  describe('[DataSource - Storage]', () => {
 
-  describe('read service', () => {
-    it('read one by Id - success', async () => {
-      mock.db.scan.mockReturnValueOnce({
-        promise: () => Promise.resolve(mockedReadByIdDbResponse)
+    describe('read service', () => {
+      it('read one by Id - success', async () => {
+        mock.db.scan.mockReturnValueOnce({
+          promise: () => Promise.resolve(mockedReadByIdDbResponse)
+        });
+
+        const getNewId = jest.fn().mockImplementation(() => mockedDocumentId);
+        dataStorage.getNewId = getNewId.bind(dataStorage); 
+
+        await expect(dataStorage.read(ModelEnum.user, mockedReadByIdInputArgs)).resolves.toEqual(mockedReadByResponse);
       });
 
-      await expect(dataStorage.read(ModelEnum.user, mockedReadByIdInputArgs)).resolves.toEqual(mockedReadByResponse);
+      it('read one by Id - failure', async () => {
+        mock.db.put.mockReturnValueOnce({
+          promise: () => Promise.reject(new Error("read failed"))
+        });
+
+        await expect(dataStorage.create(ModelEnum.user, mockedReadByIdInputArgs)).rejects.toEqual(new ApolloError("read failed"));
+      });
+
+      it('read limited list - success', async () => {
+        mock.db.scan.mockReturnValueOnce({
+          promise: () => Promise.resolve(mockedReadLimitedListDbResponse)
+        });
+
+        await expect(dataStorage.read(ModelEnum.user, mockedReadLimitedListInputArgs)).resolves.toEqual(mockedReadLimitedListResponse);
+      });
+
+      it('read limited list - failure', async () => {
+        mock.db.put.mockReturnValueOnce({
+          promise: () => Promise.reject(new Error("read failed"))
+        });
+
+        await expect(dataStorage.create(ModelEnum.user, mockedReadLimitedListInputArgs)).rejects.toEqual(new ApolloError("read failed"));
+      });
+    });
+    
+    describe('create service', () => {
+      it('success', async () => {
+        mock.db.put.mockReturnValueOnce({
+          promise: () => Promise.resolve()
+        });
+
+        await expect(dataStorage.create(ModelEnum.user, mockedCreateInputArgs)).resolves.toEqual(mockedCreateResponse);
+      });
+
+      it('failure', async () => {
+        mock.db.put.mockReturnValueOnce({
+          promise: () => Promise.reject(new Error("creation failed"))
+        });
+
+        await expect(dataStorage.create(ModelEnum.user, mockedCreateInputArgs)).rejects.toEqual(new ApolloError("creation failed"));
+      });
     });
 
-    it('read one by Id - failure', async () => {
-      mock.db.put.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error("read failed"))
+    describe('update service', () => {
+      it('success', async () => {
+        mock.db.update.mockReturnValueOnce({
+          promise: () => Promise.resolve(mockedUpdateResponse)
+        });
+
+        await expect(dataStorage.update(ModelEnum.user, mockedUpdateInputArgs)).resolves.toEqual(mockedUpdateResponse.Attributes);
       });
 
-      await expect(dataStorage.create(ModelEnum.user, mockedReadByIdInputArgs)).rejects.toEqual(new ApolloError("read failed"));
+      it('failure', async () => {
+        mock.db.update.mockReturnValueOnce({
+          promise: () => Promise.reject(new Error("Document not found"))
+        });
+
+        await expect(dataStorage.update(ModelEnum.user, mockedUpdateInputArgs)).rejects.toEqual(new ApolloError("Document not found"));
+      });
     });
 
-    it('read limited list - success', async () => {
-      mock.db.scan.mockReturnValueOnce({
-        promise: () => Promise.resolve(mockedReadLimitedListDbResponse)
+    describe('delete service', () => {
+
+      it('Unexisting id', async () => {
+        mock.db.delete.mockReturnValueOnce({
+          promise: () => Promise.reject()
+        });
+
+        await expect(dataStorage.delete(ModelEnum.user, { id: "Non_Existing" })).rejects.toEqual(new ApolloError("Document not found", "404"));
       });
 
-      await expect(dataStorage.read(ModelEnum.user, mockedReadLimitedListInputArgs)).resolves.toEqual(mockedReadLimitedListResponse);
-    });
+      it('Existing id', async () => {
+        mock.db.delete.mockReturnValueOnce({
+          promise: () => Promise.resolve()
+        });
 
-    it('read limited list - failure', async () => {
-      mock.db.put.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error("read failed"))
+        await expect(dataStorage.delete(ModelEnum.user, { id: "Non_Existing" })).resolves.toBe(true);
       });
-
-      await expect(dataStorage.create(ModelEnum.user, mockedReadLimitedListInputArgs)).rejects.toEqual(new ApolloError("read failed"));
     });
   });
-  
-  describe('create service', () => {
-    it('success', async () => {
-      mock.db.put.mockReturnValueOnce({
-        promise: () => Promise.resolve()
-      });
 
-      await expect(dataStorage.create(ModelEnum.user, mockedCreateInputArgs)).resolves.toEqual(mockedCreateResponse);
-    });
-
-    it('failure', async () => {
-      mock.db.put.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error("creation failed"))
-      });
-
-      await expect(dataStorage.create(ModelEnum.user, mockedCreateInputArgs)).rejects.toEqual(new ApolloError("creation failed"));
-    });
-  });
-
-  describe('update service', () => {
-    it('success', async () => {
-      mock.db.update.mockReturnValueOnce({
-        promise: () => Promise.resolve(mockedUpdateResponse)
-      });
-
-      await expect(dataStorage.update(ModelEnum.user, mockedUpdateInputArgs)).resolves.toEqual(mockedUpdateResponse.Attributes);
-    });
-
-    it('failure', async () => {
-      mock.db.update.mockReturnValueOnce({
-        promise: () => Promise.reject(new Error("Document not found"))
-      });
-
-      await expect(dataStorage.update(ModelEnum.user, mockedUpdateInputArgs)).rejects.toEqual(new ApolloError("Document not found"));
-    });
-  });
-
-  describe('delete service', () => {
-
-    it('Unexisting id', async () => {
-      mock.db.delete.mockReturnValueOnce({
-        promise: () => Promise.reject()
-      });
-
-      await expect(dataStorage.delete(ModelEnum.user, { id: "Non_Existing" })).rejects.toEqual(new ApolloError("Document not found", "404"));
-    });
-
-    it('Existing id', async () => {
-      mock.db.delete.mockReturnValueOnce({
-        promise: () => Promise.resolve()
-      });
-
-      await expect(dataStorage.delete(ModelEnum.user, { id: "Non_Existing" })).resolves.toBe(true);
-    });
-  });
 });
 

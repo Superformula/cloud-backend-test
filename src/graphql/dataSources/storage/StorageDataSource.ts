@@ -1,12 +1,11 @@
 import { DataSource } from 'apollo-datasource';
 import { ModelEnum, ModelMetadatas } from '../../../common/globalModel';
 import { ModelMetadata } from '../../../common/ModelMetadata';
-import { v1 } from 'uuid';
+import * as uuid from 'uuid';
 import { dbClient as dynamobClient } from './dynamodb';
 import { PutItemInput, ScanInput, DocumentClient, ScanOutput } from 'aws-sdk/clients/dynamodb'
 import AWS from 'aws-sdk';
 import { ApolloError } from 'apollo-server-errors';
-import { link } from 'fs';
 
 export class StorageDataSource extends DataSource {
     
@@ -16,7 +15,10 @@ export class StorageDataSource extends DataSource {
         this.db = dbClient? dbClient : dynamobClient;
     }
 
-   
+   public async getNewId() : Promise<string> {
+      return uuid.v1();
+
+   }
 
     public async read(model: ModelEnum, args: any): Promise<any>{
 
@@ -41,9 +43,9 @@ export class StorageDataSource extends DataSource {
           accumulated = [...accumulated, ...result.Items];
 
           
-        } while((!FilterExpression || !FilterExpression['id'])
+        } while((FilterExpression && !FilterExpression['id'])
             && accumulated.length < Limit
-            && (result.Items.length > 0  || ExclusiveStartKey !== undefined ))
+            && (result.Items.length > 0  && ExclusiveStartKey !== undefined ))
 
         // remove the exceeding items and adjusting the lastEvaluatedKey
         let itemsMatches = [...accumulated];
@@ -73,7 +75,7 @@ export class StorageDataSource extends DataSource {
         const params: PutItemInput = {
             TableName: modelMetadata.tableName,
             Item: {
-              id: v1(),
+              id: await this.getNewId(),
               ... await modelMetadata.getAttributesForInsert(args)
             },
             ReturnValues: 'ALL_OLD'

@@ -141,28 +141,32 @@ const dataStorage = new GeoDataSource(mock.geoClient);
 
 //#endregion Initializations
 
-describe('[DataSource - GeoLlocalization]', () => {
+describe('Unit', () => {
 
-  describe('geocode service', () => {
-    it('success', async () => {
-      mock.geoClient.forwardGeocode.mockReturnValueOnce({
-        send: () => Promise.resolve(mockedGeocodeRESTapiResponse)
+  describe('[DataSource - GeoLlocalization]', () => {
+
+    describe('geocode service', () => {
+      it('success', async () => {
+        mock.geoClient.forwardGeocode.mockReturnValueOnce({
+          send: () => Promise.resolve(mockedGeocodeRESTapiResponse)
+        });
+
+        await expect(dataStorage.geocode(mockedGeocodeInputArgs)).resolves.toEqual(mockedGeocodeResponse);
       });
 
-      await expect(dataStorage.geocode(mockedGeocodeInputArgs)).resolves.toEqual(mockedGeocodeResponse);
-    });
+      it('read one by Id - failure', async () => {
+        mock.geoClient.forwardGeocode.mockReturnValueOnce({
+          send: () => Promise.reject(new Error("Service down"))
+        });
 
-    it('read one by Id - failure', async () => {
-      mock.geoClient.forwardGeocode.mockReturnValueOnce({
-        send: () => Promise.reject(new Error("Service down"))
+        await expect(dataStorage.geocode(mockedGeocodeInputArgs)).rejects.toEqual(new ApolloError("Service down"));
       });
 
-      await expect(dataStorage.geocode(mockedGeocodeInputArgs)).rejects.toEqual(new ApolloError("Service down"));
+      
     });
-
+    
     
   });
-  
-  
+
 });
 

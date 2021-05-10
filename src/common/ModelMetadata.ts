@@ -14,7 +14,7 @@ export class ModelMetadata {
             ExpressionAttributeNames[`#id`] = 'id';
         }
         else{
-            Limit = args["limit"] || 10; //Default to 10 items
+            Limit = args["limit"]? (args["limit"] > 0)? args["limit"] : 10 : 10; //Default to 10 items
 
             if (args["lastEvaluatedKey"]){
                 ExclusiveStartKey = { "id": args["lastEvaluatedKey"] };
@@ -46,7 +46,6 @@ export class ModelMetadata {
             ExclusiveStartKey
         };
 
-        // console.log('scan exp', expression);
 
         return Promise.resolve(expression);
     }

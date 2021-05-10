@@ -1,4 +1,3 @@
-import { HttpLink } from 'apollo-link-http';
 import fetch from 'node-fetch';
 import { execute, toPromise } from 'apollo-link';
 import { ApolloServer } from 'apollo-server-lambda';
@@ -6,8 +5,11 @@ import { GeoDataSource } from '../graphql/dataSources/geo/GeoDataSource';
 import { StorageDataSource } from '../graphql/dataSources/storage/StorageDataSource';
 import resolvers from '../graphql/resolvers';
 import typeDefs from '../graphql/schemas/schemas';
+import { spawn } from 'child_process';
+import cwd from 'cwd';
+import { GraphQLClient } from "graphql-request";
 
-module.exports.toPromise = toPromise;
+export const toPromiseExecution = toPromise;
 
 export const mockedContext = {
     geoClient: {
@@ -50,23 +52,75 @@ export const constructTestServer = () => {
  * e2e Testing Utils
  */
 
-export const startTestServer = async server => {
+ const localLambdaUrl = 'http://localhost:3000/dev/graphql';
 
-  const httpServer = await server.listen({ port: 0 });
+ export const launchLambdaLocally = async () => {
+   process.stdout.write('Starting Cloud backend GraphQL servide for e2e tests');
+ 
+   // Run this command in shell.
+   // Every argument needs to be a separate string in an an array.
+   const command = 'npm';
+   const args = [
+     'run', 
+     'local'
+   ];
+   const options = { 
+     shell: true, 
+     cwd: cwd() 
+   };
+ 
+   const server = spawn(
+     command, 
+     args,
+     options,
+   );
+ 
+   let isUp = false;
+   let response, data;
+ 
+   do{
+     try{
+       response = await fetch(localLambdaUrl);
+       data = await response.json();
+       isUp = response.status === 403 || response.status === 200;
+     }
+     catch{
+       await new Promise(resolve => setTimeout(resolve, 1000));
+     }
+     
+   
+   } while (!isUp);
+ 
+   return Promise.resolve(true);
+ }
+ 
+export const teardown = async () => {
+   var sh = spawn('bash');
+   sh.stdin.write('\x03');
+   await sh.kill('SIGINT');
+   return Promise.resolve(true);
+ 
+ }
 
-  const link = new HttpLink({
-    uri: `http://localhost:${httpServer.port}`,
-    fetch,
-  });
+afterAll(async () => {
+  await teardown();
+});
 
-  const executeOperation = ({ query, variables = {} }) =>
-    execute(link, { query, variables });
+ export const executeOperastion = async (query: string) : Promise<any> => {
+    try{
+      const graphQLClient = new GraphQLClient(localLambdaUrl, {
+        headers: {
+          "x-api-key": "super-formula-api-key-token"
+        }
+      });
+  
+      const result = await graphQLClient.request(query);
+      return Promise.resolve(result);
+    }
+    catch(ex){
+      return Promise.resolve(ex);
+    }
+    
 
-  return {
-    link,
-    stop: () => httpServer.server.close(),
-    graphql: executeOperation,
-  };
-};
 
-// module.exports.startTestServer = startTestServer;
+ }

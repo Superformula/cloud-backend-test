@@ -12,20 +12,25 @@
   "scripts": {
     "deploy": "serverless deploy",
     "destroy": "serverless remove",
-    "dev": "serverless offline --apiKey super-formula-api-key-token",
-    "local": "serverless offline start --apiKey super-formula-api-key-token",
+    "local": "npm run docker:local-db && serverless offline start --apiKey super-formula-api-key-token",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "docker:local-db": "cd ./dynamodb && docker-compose up -d && cd ..",
-    "test": "npx jest  --coverage --watchAll"
+    "test": "npx jest --coverage --watchAll",
+    "test:e2e": "npx jest -t 'Server - e2e'"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.12.1",
+    "@testing-library/jest-dom": "^5.12.0",
+    "@types/cwd": "^0.10.0",
     "@types/uuid": "^8.3.0",
     "apollo-datasource-rest": "^0.13.0",
     "apollo-link-http": "^1.5.17",
     "apollo-server-lambda": "^2.16.1",
     "apollo-server-testing": "^2.24.0",
+    "cwd": "^0.10.0",
     "graphql": "^15.3.0",
+    "graphql-request": "^3.4.0",
+    "node-fetch": "^2.6.1",
     "source-map-support": "^0.5.10",
     "uuid": "^8.3.2"
   },
@@ -67,6 +72,9 @@
     "coverageReporters": [
       "json",
       "html"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/__tests__/__utils.ts"
     ]
   }
 }
