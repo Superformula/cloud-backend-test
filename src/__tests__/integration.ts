@@ -1,8 +1,28 @@
 import { createTestClient } from 'apollo-server-testing';
 import gql from 'graphql-tag';
-
 import { constructTestServer, mockedContext } from './__utils';
 
+
+
+
+describe('Integration', () => {
+  describe('Queries', () => {
+    it('users - read one by Id - success', async () => {
+      
+      const {server, geoDataStorage, storeDataStorage} = constructTestServer();
+
+      mockedContext.db.scan.mockReturnValueOnce({
+        promise: () => Promise.resolve(mockedReadByIdDbResponse)
+      });
+
+      const { query } = createTestClient(server);
+      const res = await query({query: GET_USER_BY_ID});
+      expect(res).toMatchSnapshot();
+    });
+
+    
+  });
+});
 
 const GET_USER_BY_ID = gql`
 query{
@@ -32,22 +52,3 @@ const mockedReadByIdDbResponse = {
   Count: 1,
   ScannedCount: 21
 };
-
-describe('Integration', () => {
-  describe('Queries', () => {
-    it('users - read one by Id - success', async () => {
-      
-      const {server, geoDataStorage, storeDataStorage} = constructTestServer();
-
-      mockedContext.db.scan.mockReturnValueOnce({
-        promise: () => Promise.resolve(mockedReadByIdDbResponse)
-      });
-
-      const { query } = createTestClient(server);
-      const res = await query({query: GET_USER_BY_ID});
-      expect(res).toMatchSnapshot();
-    });
-
-    
-  });
-});

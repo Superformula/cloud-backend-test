@@ -15,8 +15,9 @@
     "local": "npm run docker:local-db && serverless offline start --apiKey super-formula-api-key-token",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "docker:local-db": "cd ./dynamodb && docker-compose up -d && cd ..",
-    "test": "npx jest --coverage --watchAll",
-    "test:e2e": "npx jest -t 'Server - e2e'"
+    "test:unit": "npx jest --coverage -t 'Unit'",
+    "test:integration": "npx jest --coverage -t 'Integration' ",
+    "test:e2e": "npx jest -t 'e2e'"
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.12.1",

@@ -113,7 +113,7 @@ afterAll(async () => {
           "x-api-key": "super-formula-api-key-token"
         }
       });
-  
+
       const result = await graphQLClient.request(query);
       return Promise.resolve(result);
     }

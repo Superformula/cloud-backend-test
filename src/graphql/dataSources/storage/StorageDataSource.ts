@@ -42,6 +42,7 @@ export class StorageDataSource extends DataSource {
           ExclusiveStartKey = result.LastEvaluatedKey;
           accumulated = [...accumulated, ...result.Items];
 
+          // console.log('pase', result);
           
         } while((FilterExpression && !FilterExpression['id'])
             && accumulated.length < Limit
