@@ -1,137 +1,234 @@
 # Superformula Cloud Backend Test
 
-Be sure to read **all** of this document carefully, and follow the guidelines within.
+## About
 
-## What you will be building
+### Document Poursepose
 
-Build a GraphQL API that can `create/read/update/delete` user data from a persistence store.
+The current document contains information related to developers that would like to run, test and even extend it.
 
-### User Model
+Having in consideration that the present proyect is the result of the Superformula hiring process, I sent the corresponding "Design & Architecrure" document to [Chloe Knapper](https://www.linkedin.com/in/chloeknapper/) by email. The document includes a dedicated section to each requirement bullet in addition to a DEMO link. 
 
+### Proyect description
+
+GraphQL service based on Apollo Server v2 running in serverless mode. Specifically, the api runs as AWS lambda with a corresponding API Gateway.
+The services provides CRUD oprations for the 'user' entity and a geocode query function to tranlate and direaction string into a geolocalized address.
+
+### Design aspects
+
+#### Reusability by Abstraction of the scenarios
+
+The crud services were developed in a generic way, to speed up the extension of this service by adding support for other models CRUDs operation without having the develop the similar resolvers over and over again.
+
+For instance, to extend the service to support crud operation of a new model, the existing CRUDs services can be reused by copy and pasting the existing ones
+
+| *NOTE* Mutation/user.ts
+```js
+  export const user = {
+    async createUser(parent: any, args: any, context: { dataSources: { storage: StorageDataSource}}, info: any) {
+      return await context.dataSources.storage.create(ModelEnum.user, args);
+    },
+  
+    async updateUser(parent: any, args: any, context: { dataSources: { storage: StorageDataSource}}, info: any) {
+      return await context.dataSources.storage.update(ModelEnum.user, args);
+    },
+
+    async deleteUser(parent: any, args: any, context: { dataSources: { storage: StorageDataSource}}, info: any) {
+      return await context.dataSources.storage.delete(ModelEnum.user, args);
+    },
+  }
+  ```
+
+| *NOTE* Query/user.ts
+
+```js
+  async users(parent: any, args: any, context: { dataSources: { storage: StorageDataSource}}, info: any) {
+      return await context.dataSources.storage.read(ModelEnum.user, args);
+    },
 ```
-{
-  "id": "xxx",                  // user ID (must be unique)
-  "name": "backend test",       // user name
-  "dob": "",                    // date of birth
-  "address": "",                // user address
-  "description": "",            // user description
-  "createdAt": "",              // user created date
-  "updatedAt": "",              // user updated date
-  "imageUrl": ""                // user avatar image url
-}
+
+and changin "ModelEnum.user" by "ModelEnum.newModel"
+
+#### GraphQL Philosophy
+
+One of the great purposes of GraphQL is to create endpoint to support as much as possible client apps UI use cases, without demanding them to receive all models attributes if some of those just need a few.
+
+Following this concept, I built a query named "users' to support the following use cases:
+Markup :  - [x] User list (with and without paging)
+          - [x] Get one user by id
+          - [x] Get users by name (paging suport as well).
+
+
+##### Paging
+
+The 'users' query returns an extra parameters named "lastEvaluatedKey". This parameter must by combined with the 'Limit' one to use paging functionality.
+Receiving an non null value in "lastEvaluatedKey", means that there are more items matching to the executed serach query. This must be included on the following query execution to receive the next item list page.
+
+
+### Prerequisites
+
+Markup : * Development and local testing
+              * Docker
+              * Node.js environment (v14.x or above is preferred)
+              * Mapbox account and access_token. [Mapbox](https://mapbox.com)
+              * yarn
+              * npm
+              * npx
+          * Extras for deploy to AWS
+              * aws developer account
+              * aws cli
+
+#### Development
+
+
+### Tools
+
+- Typescript
+- Node
+- Serverless
+- Yarn
+- [Lerna](https://lerna.js.org/)
+- Jest
+- [Graphql Codegen](https://www.graphql-code-generator.com/)
+- AWS API Gateway v1 & v2
+- AWS Lambda
+- AWS DynamoDB
+- AWS DynamoDB Stream
+- Terraform
+- ESLint
+- Prettier
+- Commitlint
+
+### Project structure
+
+Project heavily depends on [aws-lambda-graphql](https://github.com/michalkvasnicak/aws-lambda-graphql#readme) in the architectural perspective.
+
+[Cloud Architecture](https://github.com/michalkvasnicak/aws-lambda-graphql#infrastructure)
+
+- [packages/api](packages/api) - `Node`/`Graphql`/`Serverless`/`Typescript` application and deployment scripts with `Terraform`
+- [packages/app](packages/app) - `React`/`Typescript` frontend application created by [create-react-app](https://create-react-app.dev/docs/adding-typescript/#installation)
+- [packages/core](packages/core) - shared library code between `api` and `app`
+
+## Local Development
+
+### Setup
+
+
+- **Clone the repo**
+- **Install dependencies**
+
+  ```bash
+  yarn
+  ```
+
+### Preparation for e2e testing and running the service locally
+#### Dynamodb deployment in local docker environment
+
+```bash
+npm run docker:local-db
 ```
 
-### Requirements
+| *NOTE* Before running this command, ensure you have installed and running docker in your machine.
 
-#### Functionality
+### Unit Test
+```bash
+npm run test:unit
+```
+### Integration Test
+```bash
+npm run test:integration
+```
 
-- The API should follow typical GraphQL API design pattern
-- The data should be saved in the DB
-- Proper error handling should be used
-- Paginating and filtering (by name) users list
-- The API must have a Query to fetch geolocation information based off an address
-
-#### Tech Stack
-  - **Use Typescript**
-  - **Use Infrastructure-as-code tooling** that can be used to deploy all resources to an AWS account. Examples:
-    - **Terraform (preferred)**
-    - CloudFormation / SAM
-    - Serverless Framework
-    - Feel free to use other IaC tooling if you prefer
-  - Use **AWS Lambda + API Gateway (preferred)** or AWS AppSync
-  - Use any AWS Database-as-a-Service persistence store. **DynamoDB is preferred.**
-  - Location query must use [NASA](https://api.nasa.gov/api.html) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs to resolve the coordinate based on the address; use AWS Lambda.
-
-#### Developer Experience 
-- Write unit tests for business logic
-- Write concise and clear commit messages
-- Document and diagram the architecture of your solution
-- Write clear documentation:
-    - Repository structure
-    - Environment variables and any defaults.
-    - How to build/run/test the solution
-    - Deployment guide
-    
-#### API Consumer Experience
-- GraphQL API documentation
-- Ensure your API is able to support all requirements passed to the consumer team
-
-### Bonus
-
-These may be used for further challenges. You can freely skip these; feel free to try out if you feel up to it.
-
-#### Developer Experience (in order)
-
-1. E2E Testing
-1. Integration testing
-1. Code-coverage report generation
-1. Describe your strategy for Lambda error handling, retries, and DLQs
-1. Describe your cloud-native logging, monitoring, and alarming strategy across all queries/mutations
-1. Online interactive demo with a publicly accessible link to your API
-1. Brief description of the frameworks/tools used in the solution
-1. Optimized lambda build.
-1. Commit linting
-1. Semantic release
+### e2e Test
+```bash
+npm run test:e2e
+```
+| *NOTE* There is an existing issue related to the background services after running the e2e are not killed properly. So, the work aroud, until the bug is fixed, will requires to kill it manually or restarting the machine. 
 
 
-#### API Consumer Experience (in order)
+## Deployments
 
-1. Document how consumers can quickly prototype against your APIs
-    - GraphQL Playground setup
-    - Insomnia setup
-    - Feel free to use any other tool/client you might know that enable consumers to prototype against your API
-1. GraphQL Documentation Generation
-1. Client API generation
+### local
 
+```bash
+npm run local
+```
 
-## Client context
+- **Explorer and play with the service**
 
-Assume the GraphQL API you are developing will be used by a hypothetical front-end team to build the following screens:
+The GraphQL Playgraound is enabled in non prod environment to lets you explore the schema and execute queries a mutations
+After executing "npm run local" you will be able to access to the Playgroind tool on http://localhost:3000/dev/playground
 
-![Superformula-front-end-test-mockup](./mockup1.png)
+| *NOTE* Add the following header attribute on the "HATTP HEADERS" secition of the Playgraoung tool . 
+```js
+    {
+      "x-api-key": "super-formula-api-key-token"
+    }
+```
 
-![Superformula-front-end-test-mockup-2](./mockup2.png)
+### aws
 
-> [Source Figma file](https://www.figma.com/file/hd7EgdTxJs2fpTzzSKlNxo/Superformula-full-stack-test)
+#### aws cli setup
 
-- Client will be performing real-time search against this API
-- List of users should be updated automatically after single user is updated
+```bash
+aws configure
+```
 
-## What We Care About
+| *NOTE* Please configure your aws cli in this way only avoing to include the key in this proyect code.
 
-Use any libraries that you would normally use if this were a real production App. Please note: we're interested in your code & the way you solve the problem, not how well you can use a particular library or feature.
+#### deploy
 
-_We're interested in your method and how you approach the problem just as much as we're interested in the end result._
+The following command will create and s3 in aws. package your and upload your service to it, create the api gateway and the Dynamdb database. This also connects these resources to aws cloudwatch monitoring service
 
-Here's what you should strive for:
+```bash
+npm run deploy
+```
 
-- Good use of current Typescript, Node.js, GraphQL & performance best practices.
-- Solid testing approach.
-- Extensible code and architecture.
-- Delightful experience for other backend engineers working in this repository
-- Delightful experience for engineers consuming your APIs
+At the end of the process you will see the url for the api gateway that epxose this graphql lambda service. Remeber to add the header key
 
-## Q&A
-> Where should I send back the result when I'm done?
+#### destroy
+```bash
+npm run deploy
+```
 
-Fork this repo and send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
+## Monitoring
 
-> What if I have a question?
+### Aplollo Studio
 
-Create a new issue in this repo and we will respond and get back to you quickly.
+The service can be monitored by Apollo Studio
 
-> Should I validate inputs?
+![Aplolo Studio Monitoring Dashboard](./images/ApolloStudio.png)
 
-Please assume a hard requirement has not been set by the product owner. We welcome any input validations and your reasoning for why they add value.
+You need to add the Apollo keys to the env varables in ./serverless.yml file
 
-> What is the location format?
+Markup : ```javascript
+          APOLLO_KEY: "[YOUR_KEY]"
+          APOLLO_GRAPH_VARIANT: [YOUR_ENVIRONMENT]
+          APOLLO_SCHEMA_REPORTING: true
+         ```
 
-Examples:
-- Seattle, Washington
-- Digital Nomad
-- New Jersey
-- Northern Bergen County, NJ
+| *NOTE* To obtaing a graph API key go [here](https://www.apollographql.com/docs/studio/setup-analytics/#pushing-traces-from-apollo-server).
 
-> I almost finished, but I don't have time to create everything what is required
+### Datadog
 
-Please provide a plan for the rest of the things that you would do.
+You can send metrics to Datadog platform as well to monitor your service
+
+![Aplolo Studio Monitoring Dashboard](./images/Datadog.png)
+
+| *NOTE* To know how to connect yout Apollo Dashboard to Datadog go [here](https://www.apollographql.com/docs/studio/datadog-integration/#gatsby-focus-wrapper).
+
+## Miscellaneous
+### Commands
+
+- `npm run lint` Runs eslint
+- `npm run test:unit` Execute the unit tests
+- `npm run test:integration` Run the integration tests
+- `npm run test:e2e` Run the e2e tests
+- `npm run docker:local-db` Deploy the Dynamo db in the local docker
+- `npm run local` Deploy the Dynamo db in the local docker and run the lambda locally
+- `npm run deploy` Deploy the services to AWS
+- `npm run destroy` Destroy the related services from AWS
+
+## Pendings
+- More scenarios for unit, integration and e2e tests
+- Fix the problem of killing the childprocess after the e2e testing excution
+- CI/CD by using git actions or circleCi
