@@ -1,0 +1,48 @@
+version: '3'
+services:
+  mysql:
+    image: 'mysql'
+    restart: always
+    platform: linux/x86_64
+    volumes:
+      - ./db-data:/var/lib/mysql
+    expose:
+      - '${DB_PORT}'
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_NAME}'
+      MYSQL_ROOT_HOST: '%'
+  mysql-test:
+    image: 'mysql'
+    restart: always
+    platform: linux/x86_64
+    volumes:
+      - ./db-test-data:/var/lib/mysql
+    ports:
+      - '${DB_PORT_TEST}:${DB_PORT}'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_NAME}'
+      MYSQL_ROOT_HOST: "%"
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     DB_USER: '${DB_USER}'
+  #     DB_PASSWORD: '${DB_PASSWORD}'
+  #     DB_NAME: '${DB_NAME}'
+  #     DB_HOST: 'mysql'
+  #     DB_PORT: '${DB_PORT}'
+  #     ENV_NAME: 'development'
+  #     NODE_ENV: 'development'
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - mysql
+
+volumes:
+  db-data:
+  db-test-data:

@@ -1,0 +1,4 @@
+commitlint.config.js
+.eslintrc.js
+database/**/*.js
+src/**/__tests__/*.ts

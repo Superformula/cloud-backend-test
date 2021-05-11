@@ -1,0 +1,28 @@
+{
+  "errors": {
+    "required_field": "%s is required.",
+    "validation": "Some validation errors were found.",
+    "create": "Error creating %s",
+    "update": "Error updating %s",
+    "delete": "Error deleting %s",
+    "find_all": "Error finding all %s",
+    "find_one": "Error finding %s",
+    "not_found": "%s not found",
+    "internal_server_error": "Internal Server Error",
+    "media_not_supported": "%s is not supported"
+  },
+  "labels": {
+    "user": {
+      "one": "User",
+      "other": "Users"
+    },
+    "file": "File",
+    "name": "Name",
+    "dob": "Date of Birth",
+    "address": "Address",
+    "description": "Description",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "imageUrl": "Image URL"
+  }
+}
