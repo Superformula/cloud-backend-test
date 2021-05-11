@@ -4,7 +4,6 @@
   "include": [
     // repeated from base config's "include" setting
     "src",
-    "tests",
     ".eslintrc.js",
     "commitlint.config.js",
     "./src/**/__tests__/*.test.ts",
