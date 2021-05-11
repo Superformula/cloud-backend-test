@@ -95,6 +95,16 @@ Receiving an non null value in "lastEvaluatedKey", means that there are more ite
   yarn install
   ```
 
+- **Provide you mapbox key**
+  
+  Update the 'MAPBOX_ACCESS_TOKEN' environmet variable in serverless.yml file.
+
+  ```js
+      {
+        "MAPBOX_ACCESS_TOKEN": "YOUR_KEY_HERE"
+      }
+  ```
+
 - **Preparation for e2e testing and running the service locally**
   Dynamodb deployment in local docker environment
 

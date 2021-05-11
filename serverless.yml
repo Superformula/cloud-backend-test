@@ -32,11 +32,11 @@ provider:
     - name: lambdaApolloKey
       value: ${env:APOLLO_LAMBDA_KEY}
   environment:
-    MAPBOX_ACCESS_TOKEN: "pk.eyJ1IjoibWFyaW9ydWl6ZGlheiIsImEiOiJja29lcGgzZGswY2hjMnducTBycmF2Mnh4In0.5AiTnbVzqm0iA-1B8N0leA" #Public token
+    MAPBOX_ACCESS_TOKEN: "YOUR_KEY_HERE" #Public token
     USER_DYNAMODB_TABLE: ${self:service.name}-${self:custom.user_dynamodb_table_name}-${opt:stage, self:provider.stage}
     OTHERMODEL_DYNAMODB_TABLE: ${self:service.name}-${self:custom.othermodel_dynamodb_table_name}-${opt:stage, self:provider.stage}
-    APOLLO_KEY: "service:superformula-backend-test-lambda:_m48nKguOGWzBrU9hUfutw"
-    APOLLO_GRAPH_VARIANT: "current"
+    APOLLO_KEY: "YOUR_KEY_HERE"
+    APOLLO_GRAPH_VARIANT: "staging"
     APOLLO_SCHEMA_REPORTING: true
   iamRoleStatements:
     - Effect: Allow
