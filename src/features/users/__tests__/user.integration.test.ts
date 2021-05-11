@@ -51,10 +51,9 @@ describe('User Service', () => {
     const foundUsers = await userService.findAll()
 
     expect(foundUsers.length).toBeGreaterThan(0)
-    expect(foundUsers[0]['dataValues']).toMatchObject({
-      id: user.id,
-      name: user.name
-    })
+    expect(foundUsers.find(
+      f => f['dataValues'].name === user.name && f['dataValues'].id === user.id)
+    ).toBeTruthy()
   })
 
   it('Get by id', async () => {
