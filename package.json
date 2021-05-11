@@ -2,7 +2,6 @@
   "name": "cloud-backend-test",
   "version": "1.0.0",
   "description": "lucas fonseca project",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lucaslimafons/cloud-backend-test.git"
@@ -16,7 +15,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "yarn run test",
+      "pre-push": "npm run test",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
@@ -33,7 +32,7 @@
     "lint": "cross-env NODE_ENV=production eslint . --quiet",
     "lint:staged": "lint-staged",
     "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
-    "prod:start": "yarn run migrate production && yarn run seeder production && cross-env NODE_ENV=production node ./dist/server/cluster.js",
+    "prod:start": "npm run migrate production && npm run seeder production && cross-env NODE_ENV=production node ./dist/server/server.js",
     "migrate": "cross-env sequelize db:migrate --env",
     "seeder": "cross-env sequelize db:seed:all --env",
     "undo_seeder": "cross-env sequelize db:seed:undo --env",
