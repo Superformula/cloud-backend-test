@@ -2,9 +2,15 @@
 
 Be sure to read **all** of this document carefully, and follow the guidelines within.
 
+## Branching strategy
+
+1. Create a branch from `main` to implement your solution
+2. Once you are done, open a PR from your development branch to `main` and let us know about it
+
 ## What you will be building
 
 Build a GraphQL API that can `create/read/update/delete` user data from a persistence store.
+
 
 ### User Model
 
@@ -40,7 +46,7 @@ Build a GraphQL API that can `create/read/update/delete` user data from a persis
     - Feel free to use other IaC tooling if you prefer
   - Use **AWS Lambda + API Gateway (preferred)** or AWS AppSync
   - Use any AWS Database-as-a-Service persistence store. **DynamoDB is preferred.**
-  - Location query must use [NASA](https://api.nasa.gov/api.html) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs to resolve the coordinate based on the address; use AWS Lambda.
+  - Location query must use [NASA](https://api.nasa.gov/) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs to resolve the coordinate based on the address; use AWS Lambda.
 
 #### Developer Experience 
 - Write unit tests for business logic
@@ -114,11 +120,11 @@ Here's what you should strive for:
 ## Q&A
 > Where should I send back the result when I'm done?
 
-Fork this repo and send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
+Send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
 
 > What if I have a question?
 
-Create a new issue in this repo and we will respond and get back to you quickly.
+Create a new issue [in this repo](https://github.com/Superformula/cloud-backend-test/issues) and we will respond and get back to you quickly.
 
 > Should I validate inputs?
 
