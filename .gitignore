@@ -1,6 +1,6 @@
+src/lambdas/*.js
 .terraform/
-terraform.tfstate.backup
-
+terraform/files
 # Logs
 logs
 *.log
