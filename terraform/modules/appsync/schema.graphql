@@ -1,0 +1,79 @@
+input CreateUserModelInput {
+	id: String!
+	dob: String
+	name: String!
+	address: String
+	imageUrl: String!
+	description: String
+}
+
+input DeleteUserModelInput {
+	id: String!
+	partition_key: String!
+}
+
+type Mutation {
+	createUserModel(input: CreateUserModelInput!): UserModel
+	updateUserModel(input: UpdateUserModelInput!): UserModel
+	deleteUserModel(input: DeleteUserModelInput!): UserModel
+}
+
+type Query {
+	getUserModel(partition_key: String!, id: String!): UserModel
+	listUserModels(name: String!, limit: Int, nextToken: String): UserModelConnection
+}
+
+type Subscription {
+	onCreateUserModel(
+		id: String,
+		name: String,
+		partition_key: String,
+		createdAt: String,
+		imageUrl: String
+	): UserModel
+		@aws_subscribe(mutations: ["createUserModel"])
+	onUpdateUserModel(
+		id: String,
+		name: String,
+		partition_key: String,
+		createdAt: String,
+		imageUrl: String
+	): UserModel
+		@aws_subscribe(mutations: ["updateUserModel"])
+	onDeleteUserModel(
+		id: String,
+		name: String,
+		partition_key: String,
+		createdAt: String,
+		imageUrl: String
+	): UserModel
+		@aws_subscribe(mutations: ["deleteUserModel"])
+}
+
+input UpdateUserModelInput {
+	partition_key: String!
+	id: String!
+	dob: String
+	name: String!
+	address: String
+	imageUrl: String!
+	updatedAt: String
+	description: String
+}
+
+type UserModel {
+	partition_key: String!
+	id: String!
+	dob: String
+	name: String!
+	address: String
+	imageUrl: String!
+	createdAt: String!
+	updatedAt: String
+	description: String
+}
+
+type UserModelConnection {
+	items: [UserModel]
+	nextToken: String
+}
