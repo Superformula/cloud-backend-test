@@ -3,38 +3,33 @@ import cityGenerator from '../utils/cities.list'
 import nameGenerator from '../utils/names.list'
 import { randomDob, randomCreatedAt } from '../utils/date.utils'
 
-const classProperties = [
-	{ name: `id`, type: `string` },
-	{ name: `dob`, type: `string` },
-	{ name: `name`, type: `string` },
-	{ name: `address`, type: `string` },
-	{ name: `imageUrl`, type: `string` },
-	{ name: `createdAt`, type: `string` },
-	{ name: `updatedAt`, type: `string` },
-	{ name: `description`, type: `string` }
-]
 
 /**
  * defines a user object
  */
 export default class UserModel {
-	id: string
-	dob: string
-	name: string
-	address: string
-	imageUrl: string
-	createdAt: string
-	updatedAt: string
-	description: string
+	id: string | null
+	dob: string | null
+	name: string | null
+	address: string | null
+	imageUrl: string | null
+	createdAt: string | null
+	updatedAt: string | null
+	description: string | null
 
 	/**
 	 * default constructor
 	 * @param {Record<string, unknown>} payload an input object to populate the new model
 	 */
-	constructor(payload: Record<string, unknown> = {}) {
-		for (const property of classProperties)
-			if (payload[property.name] && typeof payload[property.name] === property.type)
-				this[property.name] = payload[property.name]
+	constructor(payload: Record<string, string> = {}) {
+		this.id = payload.id || null
+		this.dob = payload.dob || null
+		this.name = payload.name || null
+		this.address = payload.address || null
+		this.imageUrl = payload.imageUrl || null
+		this.createdAt = payload.createdAt || null
+		this.updatedAt = payload.updatedAt || null
+		this.description = payload.description || null
 	}
 
 	/**

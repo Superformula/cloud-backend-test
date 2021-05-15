@@ -9,7 +9,7 @@ test(`Getting a boy name`, () => {
 
 test(`Getting a girl name`, () => {
 	const name: string = getGirlName()
-	const isGirlName: boolean = girlFirstnames.includes(name)
+	const isGirlName: boolean = girlFirstnames.includes(name?.valueOf())
 
 	expect(isGirlName).toBeTruthy()
 })

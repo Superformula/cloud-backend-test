@@ -1,4 +1,5 @@
-src/lambdas/*.js
+src/*.js
+
 .terraform/
 terraform/files
 # Logs
