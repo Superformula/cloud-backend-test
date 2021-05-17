@@ -5,7 +5,7 @@
 
 
 
-### Document Poursepose
+### Document Purpose
 
 The current document contains information related to developers that would like to run, test, and even extend this project.
 
