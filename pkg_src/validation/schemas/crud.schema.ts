@@ -6,17 +6,19 @@ import { validate } from '../joi/joi.validation'
  * @param body the request's payload
  * @returns the request's payload address field, IF validated
  */
-export const validateCreate = (body: string): Record<string, string> =>
+export const validatePut = (body: string): Record<string, string> =>
 {
 	if (!body) throw new Error(`invalid payload`)
 	const schema = {
-		dob: joi.date().required(),
+		id: joi.string().allow(null),
+		dob: joi.date().allow(null),
 		name: joi.string().required(),
 		address: joi.string().allow(null),
 		imageUrl: joi.string().allow(null),
 		description: joi.string().allow(null)
 	}
 	const payload: {
+		id: string,
 		dob: string,
 		name: string,
 		address: string,
