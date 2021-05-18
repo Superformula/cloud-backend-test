@@ -2,6 +2,9 @@ import AWS from 'aws-sdk'
 
 /**
  * a default behaviour for entities stored on DynamoDb
+ * couldn't really get to a well thought out reasoning
+ * for how to test the abstract methods nad still keep the test coverage high without code duplication
+ * that's why I focused in testing only the implementations of this class
  */
 export default abstract class DynamoDbBaseModel
 {
@@ -17,7 +20,7 @@ export default abstract class DynamoDbBaseModel
 	}
 
 	/**
-	 * standard way to take advantage of the DynamoBaseModel abstract class to create batch payloads faster
+	 * standard way to take advantage of the DynamoBaseModel abstract class to create batch payloads with less code
 	 * @param items the list of batch actions to be executed
 	 * @returns a new batch input list wiith the desired items
 	 */
@@ -35,6 +38,7 @@ export default abstract class DynamoDbBaseModel
 	 */
 	load(request: AWS.DynamoDB.DocumentClient.QueryInput, dynamoConn: AWS.DynamoDB.DocumentClient): Promise<AWS.DynamoDB.DocumentClient.QueryOutput>
 	{
+		// for performance evaluation purposes
 		request.ReturnConsumedCapacity = `TOTAL`
 		const promise = new Promise<AWS.DynamoDB.DocumentClient.QueryOutput>((resolve, reject) => {
 			dynamoConn.query(request, (err, data) => {
@@ -57,6 +61,7 @@ export default abstract class DynamoDbBaseModel
 	 */
 	list(request: AWS.DynamoDB.DocumentClient.QueryInput, dynamoConn: AWS.DynamoDB.DocumentClient): Promise<AWS.DynamoDB.DocumentClient.QueryOutput>
 	{
+		// for performance evaluation purposes
 		request.ReturnConsumedCapacity = `TOTAL`
 		const promise = new Promise<AWS.DynamoDB.DocumentClient.QueryOutput>((resolve, reject) => {
 			dynamoConn.query(request, (err, data) => {
@@ -81,6 +86,7 @@ export default abstract class DynamoDbBaseModel
 	 */
 	put(payload: AWS.DynamoDB.DocumentClient.PutItemInput, dynamoConn: AWS.DynamoDB.DocumentClient): Promise<AWS.DynamoDB.DocumentClient.PutItemOutput>
 	{
+		// for performance evaluation purposes
 		payload.ReturnConsumedCapacity = `TOTAL`
 		const promise = new Promise<AWS.DynamoDB.DocumentClient.PutItemOutput>((resolve, reject) => {
 			dynamoConn.put(payload, (err, data) => {
@@ -104,6 +110,7 @@ export default abstract class DynamoDbBaseModel
 	 */
 	delete(payload: AWS.DynamoDB.DocumentClient.DeleteItemInput, dynamoConn: AWS.DynamoDB.DocumentClient): Promise<AWS.DynamoDB.DocumentClient.DeleteItemOutput>
 	{
+		// for performance evaluation purposes
 		payload.ReturnConsumedCapacity = `TOTAL`
 		const promise = new Promise<AWS.DynamoDB.DocumentClient.DeleteItemOutput>((resolve, reject) =>
 		{
@@ -129,6 +136,7 @@ export default abstract class DynamoDbBaseModel
 	 */
 	batchGet(payload: AWS.DynamoDB.DocumentClient.BatchGetItemInput, dynamoConn: AWS.DynamoDB.DocumentClient): Promise<AWS.DynamoDB.DocumentClient.BatchGetItemOutput>
 	{
+		// for performance evaluation purposes
 		payload.ReturnConsumedCapacity = `TOTAL`
 		const promise = new Promise<AWS.DynamoDB.DocumentClient.BatchGetItemOutput>((resolve, reject) => {
 			dynamoConn.batchGet(payload, (err, data) => {
@@ -153,6 +161,7 @@ export default abstract class DynamoDbBaseModel
 	 */
 	batchWrite(payload: AWS.DynamoDB.DocumentClient.BatchWriteItemInput, dynamoConn: AWS.DynamoDB.DocumentClient): Promise<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput>
 	{
+		// for performance evaluation purposes
 		payload.ReturnConsumedCapacity = `TOTAL`
 		const promise = new Promise<AWS.DynamoDB.DocumentClient.BatchWriteItemOutput>((resolve, reject) => {
 			dynamoConn.batchWrite(payload, (err, data) => {
