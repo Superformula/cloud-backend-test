@@ -1,15 +1,15 @@
 input CreateUserModelInput {
-	id: String!
+	pk: String!
+	sk: String!
 	dob: String
-	name: String!
 	address: String
 	imageUrl: String!
 	description: String
 }
 
 input DeleteUserModelInput {
-	id: String!
-	partition_key: String!
+	pk: String!
+	sk: String!
 }
 
 type Mutation {
@@ -19,8 +19,8 @@ type Mutation {
 }
 
 type Query {
-	getUserModel(partition_key: String!, id: String!): UserModel
-	listUserModels(name: String!, limit: Int, nextToken: String): UserModelConnection
+	getItem(pk: String!, sk: String!): UserModel
+	listUsers(pk: String!, limit: Int, nextToken: String): UserModelConnection
 }
 
 type Subscription {
@@ -51,10 +51,9 @@ type Subscription {
 }
 
 input UpdateUserModelInput {
-	partition_key: String!
-	id: String!
+	pk: String!
+	sk: String!
 	dob: String
-	name: String!
 	address: String
 	imageUrl: String!
 	updatedAt: String
@@ -62,10 +61,9 @@ input UpdateUserModelInput {
 }
 
 type UserModel {
-	partition_key: String!
-	id: String!
+	pk: String!
+	sk: String!
 	dob: String
-	name: String!
 	address: String
 	imageUrl: String!
 	createdAt: String!

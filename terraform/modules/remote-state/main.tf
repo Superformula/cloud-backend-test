@@ -14,10 +14,10 @@ resource "aws_s3_bucket" "remote-state" {
 }
 
 resource "aws_dynamodb_table" "lock-table" {
-  name           = "tflock-${aws_s3_bucket.remote-state.bucket}"
-  hash_key       = "LockId"
-  read_capacity  = 5
-  write_capacity = 5
+  name           = "tflock-tfstate-clericuzzi-cloud-developer-test-450001857077"
+  hash_key       = "LockID"
+  read_capacity  = 1
+  write_capacity = 1
 
   point_in_time_recovery {
     enabled = false
@@ -28,7 +28,7 @@ resource "aws_dynamodb_table" "lock-table" {
   }
 
   attribute {
-    name = "LockId"
+    name = "LockID"
     type = "S"
   }
 }

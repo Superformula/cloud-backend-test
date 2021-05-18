@@ -1,16 +1,9 @@
 resource "aws_dynamodb_table" "this" {
   name           = "our-dynamo-table"
-  hash_key       = "partition_key"
-  range_key      = "name"
+  hash_key       = "pk"
+  range_key      = "sk"
   read_capacity  = 3
   write_capacity = 5
-
-  local_secondary_index {
-    name               = "our_lsi"
-    range_key          = "id"
-    projection_type    = "INCLUDE"
-    non_key_attributes = ["address", "description"]
-  }
 
   point_in_time_recovery {
     enabled = false
@@ -21,17 +14,12 @@ resource "aws_dynamodb_table" "this" {
   }
 
   attribute {
-    name = "partition_key"
+    name = "pk"
     type = "S"
   }
 
   attribute {
-    name = "id"
-    type = "S"
-  }
-
-  attribute {
-    name = "name"
+    name = "sk"
     type = "S"
   }
 }

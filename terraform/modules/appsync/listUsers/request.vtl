@@ -1,0 +1,15 @@
+{
+    "version" : "2017-02-28",
+    "operation" : "Query",
+    "query" : {
+        "expression": "pk = :pk",
+        "expressionValues" : {
+            ":pk" : {
+                "S" : "${ctx.args.pk}"
+            }
+        }
+    },
+    
+    "limit": $util.defaultIfNull(${ctx.args.limit}, 6),
+    "nextToken": $util.toJson($util.defaultIfNullOrBlank($ctx.args.nextToken, null))
+}
