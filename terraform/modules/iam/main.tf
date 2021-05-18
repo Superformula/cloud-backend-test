@@ -7,6 +7,27 @@ data "aws_iam_policy_document" "lambda-assume-role" {
       identifiers = ["lambda.amazonaws.com"]
     }
   }
+
+  statement {
+    sid       = "AllowInvokingLambdas"
+    effect    = "Allow"
+    actions   = ["lambda:InvokeFunction"]
+    resources = ["arn:aws:lambda:*:*:function:*"]
+  }
+
+  statement {
+    sid       = "AllowCreatingLogGroups"
+    effect    = "Allow"
+    actions   = ["logs:CreateLogGroup"]
+    resources = ["arn:aws:logs:*:*:*"]
+  }
+
+  statement {
+    sid       = "AllowWritingLogs"
+    effect    = "Allow"
+    actions   = ["logs:CreateLogStreams", "logs:PutLogEvents"]
+    resources = ["arn:aws:logs:*:*:log-group:/aws/lambda/*:*"]
+  }
 }
 
 data "aws_iam_policy_document" "s3" {
@@ -37,7 +58,7 @@ data "aws_iam_policy_document" "s3" {
     sid       = "AllowWritingLogs"
     effect    = "Allow"
     actions   = ["logs:CreateLogStreams", "logs:PutLogEvents"]
-    resources = ["arn:aws:logs:*:*:log-grouop:/aws/lambda/*:*"]
+    resources = ["arn:aws:logs:*:*:log-group:/aws/lambda/*:*"]
   }
 }
 

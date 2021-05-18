@@ -43,6 +43,7 @@ module "appsync" {
 
 module "layer" {
   source      = "./modules/layer"
+  layer_name  = local.layer_name
   layers_path = local.layers_path
 }
 
