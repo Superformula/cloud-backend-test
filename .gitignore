@@ -1,4 +1,4 @@
-src/*.js
+*.js
 
 .terraform/
 terraform/files

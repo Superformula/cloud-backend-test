@@ -1,0 +1,19 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@devclericuzzi/cloud-backend-lib": "^1.0.3",
+    "@joi/date": "^2.1.0",
+    "axios": "^0.21.1",
+    "joi": "^17.4.0",
+    "uuid": "^8.3.2"
+  }
+}
