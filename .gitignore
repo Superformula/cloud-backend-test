@@ -1,4 +1,4 @@
-*.js
+pkg/*.js
 
 .terraform/
 terraform/files
