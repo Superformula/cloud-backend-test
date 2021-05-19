@@ -9,7 +9,7 @@ provider:
   environment:
     NODE_PATH: "./:/opt/node_modules"
     MAP_BOX_ENDPOINT: https://api.mapbox.com/geocoding/v5/mapbox.places/@.json?limit=1&access_token=#
-    MAP_BOX_ACCESS_KEY: pk.eyJ1IjoiY2xlcmljdXp6aSIsImEiOiJja29uM3UzNjIwMTA0Mm9yM2k5Z2s0ZWN1In0.Cc0aeu_0ui30v0zthtJMZA
+    MAP_BOX_ACCESS_KEY: process.env.MAP_BOX_ACCESS_KEY
 
   deploymentBucket:
     name: ${self:provider.stage}-${self:service}-deploy-450001857077
