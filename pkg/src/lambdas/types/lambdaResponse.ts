@@ -3,7 +3,6 @@
  */
 export default class LambdaResponse {
 	body: string
-
 	statusCode: number
 
 	/**
