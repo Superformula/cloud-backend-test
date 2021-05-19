@@ -1,0 +1,15 @@
+{
+  "name": "project_code_layer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@devclericuzzi/cloud-backend-test": "0.0.6"
+  }
+}

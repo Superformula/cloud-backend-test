@@ -1,0 +1,7 @@
+geocoding:
+  handler: handlers/geocoding.handler
+  events:
+    - http:
+        path: /geocoding
+        method: post
+          

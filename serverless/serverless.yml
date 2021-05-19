@@ -1,0 +1,34 @@
+service: devclericuzzi-superformula
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+  runtime: nodejs14.x
+  apiName: ${self:service}-${self:provider.stage}
+  environment:
+    NODE_PATH: "./:/opt/node_modules"
+    MAP_BOX_ENDPOINT: https://api.mapbox.com/geocoding/v5/mapbox.places/@.json?limit=1&access_token=#
+    MAP_BOX_ACCESS_KEY: pk.eyJ1IjoiY2xlcmljdXp6aSIsImEiOiJja29uM3UzNjIwMTA0Mm9yM2k5Z2s0ZWN1In0.Cc0aeu_0ui30v0zthtJMZA
+
+  deploymentBucket:
+    name: ${self:provider.stage}-${self:service}-deploy-450001857077
+    blockPublicAccess: true
+    serverSideEncryption: AES256
+
+layers:
+  ProjectCode:
+    path: project_code_layer
+    description: the project's actual implementation
+
+functions:
+  - ${file(endpoints/crud.endpoint.yml)}
+  - ${file(endpoints/geocoding.endpoint.yml)}
+
+resources:
+  - ${file(handlers/crud.js)}
+  - ${file(handlers/geocoding.js)}
+
+plugins:
+  - serverless-offline
+  - serverless-deployment-bucket

@@ -1,0 +1,9 @@
+users-crud:
+  handler: handlers/crud.handler
+  events:
+    - http:
+        path: /crud
+        method: put
+    - http:
+        path: /crud
+        method: post
