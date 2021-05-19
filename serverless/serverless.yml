@@ -17,9 +17,11 @@ provider:
     serverSideEncryption: AES256
 
 layers:
-  ProjectCode:
+  projectCode:
     path: project_code_layer
     description: the project's actual implementation
+    compatibleRuntimes:
+      - nodejs14.x
 
 functions:
   - ${file(endpoints/crud.endpoint.yml)}
