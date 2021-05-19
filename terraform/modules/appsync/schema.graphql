@@ -1,3 +1,14 @@
+type UserModel {
+	pk: String!
+	sk: String!
+	dob: String
+	address: String
+	imageUrl: String!
+	createdAt: String!
+	updatedAt: String
+	description: String
+}
+
 input CreateUserModelInput {
 	pk: String!
 	sk: String!
@@ -5,49 +16,6 @@ input CreateUserModelInput {
 	address: String
 	imageUrl: String!
 	description: String
-}
-
-input DeleteUserModelInput {
-	pk: String!
-	sk: String!
-}
-
-type Mutation {
-	createUserModel(input: CreateUserModelInput!): UserModel
-	updateUserModel(input: UpdateUserModelInput!): UserModel
-	deleteUserModel(input: DeleteUserModelInput!): UserModel
-}
-
-type Query {
-	getItem(pk: String!, sk: String!): UserModel
-	listUsers(pk: String!, limit: Int, nextToken: String): UserModelConnection
-}
-
-type Subscription {
-	onCreateUserModel(
-		id: String,
-		name: String,
-		partition_key: String,
-		createdAt: String,
-		imageUrl: String
-	): UserModel
-		@aws_subscribe(mutations: ["createUserModel"])
-	onUpdateUserModel(
-		id: String,
-		name: String,
-		partition_key: String,
-		createdAt: String,
-		imageUrl: String
-	): UserModel
-		@aws_subscribe(mutations: ["updateUserModel"])
-	onDeleteUserModel(
-		id: String,
-		name: String,
-		partition_key: String,
-		createdAt: String,
-		imageUrl: String
-	): UserModel
-		@aws_subscribe(mutations: ["deleteUserModel"])
 }
 
 input UpdateUserModelInput {
@@ -60,15 +28,14 @@ input UpdateUserModelInput {
 	description: String
 }
 
-type UserModel {
-	pk: String!
-	sk: String!
-	dob: String
-	address: String
-	imageUrl: String!
-	createdAt: String!
-	updatedAt: String
-	description: String
+type Mutation {
+	createUserModel(input: CreateUserModelInput!): UserModel
+	updateUserModel(input: UpdateUserModelInput!): UserModel
+}
+
+type Query {
+	getItem(pk: String!, sk: String!): UserModel
+	listUsers(pk: String!, limit: Int, nextToken: String): UserModelConnection
 }
 
 type UserModelConnection {
