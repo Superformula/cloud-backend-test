@@ -11,11 +11,14 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     /* Additional Checks */
-    // "noUnusedLocals": true,
-    // "noImplicitReturns": true,
-    // "noUnusedParameters": true,
-    // "noUncheckedIndexedAccess": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true
-  }
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true
+  },
+  "exclude": [
+    "*/**/__tests__"
+  ]
 }
