@@ -12,7 +12,7 @@ export default class MapBox extends GeolocationBase {
 	 */
 	constructor(address: string) {
 		super(address, false)
-		this.apiKey = process.env.MAP_BOX_ACCESS_KEY
+		this.apiKey = process.env[`MAP_BOX_ACCESS_KEY`]
 	}
 
 	/**
@@ -27,7 +27,7 @@ export default class MapBox extends GeolocationBase {
 			if (!Array.isArray(payload.features)) throw defaultInvalidError
 			else if (payload.features.length === 0) throw new Error(`location not found`)
 
-			const { geometry } = payload.features[0]
+			const { geometry } = payload.features[0]!
 			if (!Array.isArray(geometry) || geometry.length !== 2) throw defaultInvalidError
 			else return { lat: geometry[0], lon: geometry[1] }
 		}

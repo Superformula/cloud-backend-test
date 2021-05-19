@@ -44,16 +44,16 @@ export default abstract class GeolocationBase {
 	 * creates the specific request url for this vendor
 	 */
 	createUrl(): string {
-		const endpoint = process.env.MAP_BOX_ENDPOINT
+		const endpoint = process.env[`MAP_BOX_ENDPOINT`]
+		const accessKey = process.env[`MAP_BOX_ACCESS_KEY`]!
 		if (!endpoint) throw Error(`impossible to create a request url without the vendor endpoint`)
 		if (!this.isPublic) {
-			const accessKey = process.env.MAP_BOX_ACCESS_KEY
 			if (!accessKey) throw Error(`impossible to create a request url without the vendor accessKey`)
 
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			return process.env.MAP_BOX_ENDPOINT!.replace(`@`, escape(this.address)).replace(`#`, process.env.MAP_BOX_ACCESS_KEY!)
+			return endpoint.replace(`@`, escape(this.address)).replace(`#`, accessKey)
 		}
-		return process.env.MAP_BOX_ENDPOINT!.replace(`@`, escape(this.address))
+		return endpoint.replace(`@`, escape(this.address))
 	}
 
 	/**

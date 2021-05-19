@@ -2,11 +2,11 @@
 import AWS from 'aws-sdk'
 
 import { v4 } from 'uuid'
-import { getRandomImageUrl } from '../utils/imageUrl.utils'
-import { randomDob, randomCreatedAt } from '../utils/date.utils'
+import { getRandomImageUrl } from '../utils/imageUrl-utils'
+import { randomDob, randomCreatedAt } from '../utils/date-utils'
 
-import cityGenerator from '../utils/cities.list'
-import nameGenerator from '../utils/names.list'
+import cityGenerator from '../utils/cities-list'
+import nameGenerator from '../utils/names-list'
 
 import BaseModel from './abstract.dynamo-model'
 
