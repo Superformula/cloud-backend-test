@@ -35,7 +35,8 @@
     "lint": "eslint --ext .ts .",
     "lint:fix": "eslint --ext .ts . --fix",
     "commit": "git-cz",
-    "update-pkg": "cd ./pkg && npm publish && cd ../serverless && npm uninstall @devclericuzzi/cloud-backend-test && npm i --save-dev @devclericuzzi/cloud-backend-test"
+    "update-pkg": "cd ./pkg && npm publish && cd ../serverless && npm i --save-dev @devclericuzzi/cloud-backend-test@latest",
+    "redeploy-solution": "npm run update-pkg && cd ./serverless && npm run start"
   },
   "repository": {
     "type": "git",
