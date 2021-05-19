@@ -28,8 +28,13 @@ export default class MapBox extends GeolocationBase {
 			else if (payload.features.length === 0) throw new Error(`location not found`)
 
 			const { geometry } = payload.features[0]!
-			if (!Array.isArray(geometry) || geometry.length !== 2) throw defaultInvalidError
-			else return { lat: geometry[0], lon: geometry[1] }
+			if (!geometry) throw defaultInvalidError
+			else
+			{
+				const { coordinates } = geometry
+				if (!Array.isArray(coordinates) || coordinates.length !== 2) throw defaultInvalidError
+				else return { lat: coordinates[0]!, lon: coordinates[1]! }
+			}
 		}
 	}
 }
