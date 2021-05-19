@@ -39,6 +39,7 @@ export default class LambdaRequest
 	 */
 	getQueryParams(): Record<string, string>
 	{
+		// again the ideal implementation would fill those methods, but right now it is only a stub
 		return {}
 	}
 
@@ -49,18 +50,24 @@ export default class LambdaRequest
 	 */
 	getPayloadFromJsonString(): Record<string, unknown>
 	{
+		// again the ideal implementation would fill those methods, but right now it is only a stub
 		return {}
 	}
 
 	/**
 	 * validates an incoming labda request
+	 * the idea behind this method is to be able to map ANY configuration possible
+	 * convert into an object and compare it to the given schema
+	 * BUT, in this scope I'll just handle the body parsing everying else will return an error 500
+	 * in each case we can return the according http error code
 	 * @param e the lambda's request object
 	 * @param schema the payload's schema (if none is provided we'll assume tha it is a GET or a DELETE and return a Record<string, unknstringown>)
 	 */
 	validate(): Record<string, string | unknown>
 	{
-		const queryParams = {}
-		if (queryParams) return this.getQueryParams()
-		else return this.getPayloadFromJsonString()
+		return JSON.parse(this.event.body!)
+		
+		// if (queryParams) return this.getQueryParams()
+		// else return this.getPayloadFromJsonString()
 	}
 }

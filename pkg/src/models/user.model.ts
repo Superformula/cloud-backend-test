@@ -186,6 +186,7 @@ export default class UserModel extends BaseModel {
 	async updateUser(dynamoConn: AWS.DynamoDB.DocumentClient): Promise<void>
 	{
 		await this.deleteUser(dynamoConn)
+		await this.createUser(dynamoConn)
 	}
 	/**
 	 * removes the current user information from the database

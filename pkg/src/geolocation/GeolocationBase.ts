@@ -2,7 +2,7 @@ import axios from 'axios'
 
 /**
  * Geo location abstraction
- * having an address an endpoint and an apiKey,
+ * having an address an endpoint and an this.apiKey,
  * this class is able to calculate latitude and longitude coordinates with a 3rd party service
  */
 export default abstract class GeolocationBase {
@@ -11,6 +11,7 @@ export default abstract class GeolocationBase {
 	lon?: number
 
 	apiKey? = ``
+	endpoint?=``
 
 	isPublic = false
 
@@ -20,7 +21,10 @@ export default abstract class GeolocationBase {
 	 * default constructor
 	 * @param address the addres to have it's coordinates fetched
 	 */
-	constructor(address: string, isPublic = false) {
+	constructor(address: string, isPublic: boolean, apiKey: string, endpoint: string) {
+		this.apiKey = apiKey
+		this.endpoint = endpoint
+
 		this.address = address
 		this.isPublic = isPublic
 	}
@@ -44,16 +48,17 @@ export default abstract class GeolocationBase {
 	 * creates the specific request url for this vendor
 	 */
 	createUrl(): string {
-		const endpoint = process.env[`MAP_BOX_ENDPOINT`]
-		const accessKey = process.env[`MAP_BOX_ACCESS_KEY`]!
-		if (!endpoint) throw Error(`impossible to create a request url without the vendor endpoint`)
+		if (!this.apiKey || this.apiKey === `process.env.MAP_BOX_ACCESS_KEY` || this.apiKey === `MAP_BOX_ACCESS_KEY`)
+			throw new Error(`in order to fetch a geolocation we need an Provider api key`)
+
+		if (!this.endpoint) throw Error(`impossible to create a request url without the vendor endpoint`)
 		if (!this.isPublic) {
-			if (!accessKey) throw Error(`impossible to create a request url without the vendor accessKey`)
+			if (!this.apiKey) throw Error(`impossible to create a request url without the vendor this.apiKey`)
 
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			return endpoint.replace(`@`, escape(this.address)).replace(`#`, accessKey)
+			return this.endpoint.replace(`@`, escape(this.address)).replace(`#`, this.apiKey)
 		}
-		return endpoint.replace(`@`, escape(this.address))
+		return this.endpoint.replace(`@`, escape(this.address))
 	}
 
 	/**

@@ -11,8 +11,7 @@ export default class MapBox extends GeolocationBase {
 	 * @param address the addres to have it's coordinates fetched
 	 */
 	constructor(address: string) {
-		super(address, false)
-		this.apiKey = process.env[`MAP_BOX_ACCESS_KEY`]
+		super(address, false, process.env[`MAP_BOX_ACCESS_KEY`]!, process.env[`MAP_BOX_ENDPOINT`]!)
 	}
 
 	/**
