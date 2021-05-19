@@ -1,10 +1,10 @@
+const { crudPutPost } = require(`@devclericuzzi/cloud-backend-test/dist/lambdas/functions/crud.put-post`)
+
 /**
  * handles a post request
  */
-module.exports.handler = () =>
+module.exports.handler = async (e, context, callback) =>
 {
-	return {
-		statusCode: 200,
-		body: `hello world!`
-	} 
+	const value = await crudPutPost(e, callback)
+	return value
 }

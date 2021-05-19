@@ -12,7 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "@aws-sdk/types": "^3.15.0",
-    "@devclericuzzi/cloud-backend-test": "0.0.8",
+    "@devclericuzzi/cloud-backend-test": "0.0.25",
     "@types/aws-lambda": "^8.10.76",
     "@types/jest": "^26.0.23",
     "@types/joi": "^17.2.3",
