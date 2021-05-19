@@ -1,0 +1,15 @@
+in the project root
+
+npm i
+cd ./pkg
+npm i
+npm run update-pkg
+
+cd ../serverless
+npm i
+serverless deploy --stage=dev (or any other, that's the part that can be changed on the amplify setup, toghether with the environment variables) 
+
+cd ../terraform
+terraform init && terraform plan && terraform apply -auto-approve
+
+Although, this will not entirely cut it, since the lambda layer link with the functions I did by hand :(

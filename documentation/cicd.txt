@@ -1,0 +1,2 @@
+INEXISTENT, but with a simple amplify script we could deploy different enfironments,
+the npm scripts for each section are able to deploy their part of the platform

@@ -1,0 +1,9 @@
+The main coding folders are pkg, serverless, terraform
+
+pkg) this is the actual project implementation, all of the project's typescript is in here. With it, we'll create a github package and
+export it to serve as a lambda layer. With that we shrink the deploy size. If we wanted to help the padronization we'd create a new package
+only with the constants and enums
+
+serverless) a serverless implementation to handle everything lambda related
+
+terraform) terraform files to create the dynamo and appSync resources
