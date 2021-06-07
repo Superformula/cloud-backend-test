@@ -90,7 +90,7 @@ These may be used for further challenges. You can freely skip these; feel free t
 1. Client API generation
 
 
-## Client context
+## Frontend Wireframes/Mockups (Do not implement those screens)
 
 Assume the GraphQL API you are developing will be used by a hypothetical front-end team to build the following screens:
 
