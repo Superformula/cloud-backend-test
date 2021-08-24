@@ -44,7 +44,7 @@ Build a GraphQL API that can `create/read/update/delete` user data from a persis
     - CloudFormation / SAM
     - Serverless Framework
     - Feel free to use other IaC tooling if you prefer
-  - Use **AWS Lambda + API Gateway (preferred)** or AWS AppSync
+  - Use AWS Lambda + API Gateway or AWS AppSync
   - Use any AWS Database-as-a-Service persistence store. **DynamoDB is preferred.**
   - Location query must use [NASA](https://api.nasa.gov/) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs to resolve the coordinate based on the address; use AWS Lambda.
 
