@@ -2,17 +2,9 @@
 
 Be sure to read **all** of this document carefully, and follow the guidelines within.
 
-## Branching strategy
+### Summary
 
-1. Create a branch from `main` to implement your solution
-2. Once you are done, open a PR from your development branch to `main` and let us know about it
-
-## What you will be building
-
-Build a GraphQL API that can `create/read/update/delete` user data from a persistence store.
-
-
-### User Model
+Please build an GraphQL API that manages Users and respects the following data model:
 
 ```
 {
@@ -31,21 +23,22 @@ Build a GraphQL API that can `create/read/update/delete` user data from a persis
 
 #### Functionality
 
-- The API should follow typical GraphQL API design pattern
-- The data should be saved in the DB
-- Proper error handling should be used
-- Paginating and filtering (by name) users list
-- The API must have a Query to fetch geolocation information based off an address
+1. This should be a GraphQL API that can `create`, `read`, `update`, and `delete` a given user
+1. The API should follow typical GraphQL API design patterns
+1. Please store data from all write operations to a persistence database
+1. Proper error handling should be used
+1. Paginating and filtering (by name) users list
+1. The API should have a Query to fetch geolocation information based off an address
 
 #### Tech Stack
-  - **Use Typescript**
-  - **Use Infrastructure-as-code tooling** that can be used to deploy all resources to an AWS account. Examples:
-    - **Terraform (preferred)**
+  - Use of **Typescript** is required 
+  - **Please use Infrastructure-as-code tooling** that can be used to deploy all resources to AWS. 
+    - Terraform (preferred)
     - CloudFormation / SAM
     - Serverless Framework
-    - Feel free to use other IaC tooling if you prefer
-  - Use AWS Lambda + API Gateway or AWS AppSync
-  - Use any AWS Database-as-a-Service persistence store. **DynamoDB is preferred.**
+    - AWS CDK
+  - Use AWS Lambda + API Gateway or AWS AppSync is recommended
+  - Use any AWS Database-as-a-Service persistence store
   - Location query must use [NASA](https://api.nasa.gov/) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs to resolve the coordinate based on the address; use AWS Lambda.
 
 #### Developer Experience 
@@ -57,10 +50,6 @@ Build a GraphQL API that can `create/read/update/delete` user data from a persis
     - Environment variables and any defaults.
     - How to build/run/test the solution
     - Deployment guide
-    
-#### API Consumer Experience
-- GraphQL API documentation
-- Ensure your API is able to support all requirements passed to the consumer team
 
 ### Bonus
 
@@ -84,10 +73,10 @@ These may be used for further challenges. You can freely skip these; feel free t
 
 1. Document how consumers can quickly prototype against your APIs
     - GraphQL Playground setup
-    - Insomnia setup
+    - Insomnia/Postman setup
     - Feel free to use any other tool/client you might know that enable consumers to prototype against your API
 1. GraphQL Documentation Generation
-1. Client API generation
+1. Client API/SDK generation
 
 
 ## Frontend Wireframes/Mockups (Do not implement those screens)
@@ -118,8 +107,11 @@ Here's what you should strive for:
 - Delightful experience for engineers consuming your APIs
 
 ## Q&A
-> Where should I send back the result when I'm done?
 
+> How should I start this code challenge?
+Fork this repo to your own account and make git commits to add your code as you would on any other project.
+
+> Where should I send back the result when I'm done?
 Send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
 
 > What if I have a question?
