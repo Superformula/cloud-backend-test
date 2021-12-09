@@ -109,9 +109,11 @@ Here's what you should strive for:
 ## Q&A
 
 > How should I start this code challenge?
+
 Fork this repo to your own account and make git commits to add your code as you would on any other project.
 
 > Where should I send back the result when I'm done?
+
 Send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
 
 > What if I have a question?
