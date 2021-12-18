@@ -93,5 +93,76 @@ export class ApiStack extends cdk.Stack {
       serviceRoleArn: usersTableRole.roleArn
     });
 
+    // Resolvers
+
+    const getUserResolver = new CfnResolver(this, 'GetUserQueryResolver', {
+      apiId: usersGraphQLApi.attrApiId,
+      typeName: 'Query',
+      fieldName: 'getUser',
+      dataSourceName: dataSource.name,
+      requestMappingTemplate: `{
+        "version": "2017-02-28",
+        "operation": "GetItem",
+        "key": {
+          "PK": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+        }
+      }`,
+      responseMappingTemplate: `$util.toJson($ctx.result)`
+    });
+    getUserResolver.addDependsOn(apiSchema);
+
+    const listUsersResolver = new CfnResolver(this, 'ListUsersQueryResolver', {
+      apiId: usersGraphQLApi.attrApiId,
+      typeName: 'Query',
+      fieldName: 'listUsers',
+      dataSourceName: dataSource.name,
+      requestMappingTemplate: `{
+        "version": "2017-02-28",
+        "operation": "Scan",
+        "limit": $util.defaultIfNull($ctx.args.limit, 20),
+        "nextToken": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.nextToken, null))
+      }`,
+      responseMappingTemplate: `$util.toJson($ctx.result)`
+    });
+    listUsersResolver.addDependsOn(apiSchema);
+
+    const createUserResolver = new CfnResolver(this, 'CreateUserMutationResolver', {
+      apiId: usersGraphQLApi.attrApiId,
+      typeName: 'Mutation',
+      fieldName: 'createUser',
+      dataSourceName: dataSource.name,
+      requestMappingTemplate: `{
+        "version": "2017-02-28",
+        "operation": "PutItem",
+        "key": {
+          "PK": { "S": "$util.autoId()" }
+        },
+        "attributeValues": {
+          "name": $util.dynamodb.toDynamoDBJson($ctx.args.name)
+          "dob": $util.dynamodb.toDynamoDBJson($ctx.args.dob)
+          "address": $util.dynamodb.toDynamoDBJson($ctx.args.address)
+          "description": $util.dynamodb.toDynamoDBJson($ctx.args.description)
+          "imageUrl": $util.dynamodb.toDynamoDBJson($ctx.args.imageUrl)
+        }
+      }`,
+      responseMappingTemplate: `$util.toJson($ctx.result)`
+    });
+    createUserResolver.addDependsOn(apiSchema);
+
+    const deleteUserResolver = new CfnResolver(this, 'DeleteMutationResolver', {
+      apiId: usersGraphQLApi.attrApiId,
+      typeName: 'Mutation',
+      fieldName: 'deleteUser',
+      dataSourceName: dataSource.name,
+      requestMappingTemplate: `{
+        "version": "2017-02-28",
+        "operation": "DeleteItem",
+        "key": {
+          "PK": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+        }
+      }`,
+      responseMappingTemplate: `$util.toJson($ctx.result)`
+    });
+    deleteUserResolver.addDependsOn(apiSchema);
   }
 }
