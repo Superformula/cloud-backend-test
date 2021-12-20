@@ -139,12 +139,12 @@ export class ApiStack extends cdk.Stack {
           "PK": { "S": "$util.autoId()" }
         },
         "attributeValues": {
-          "name": $util.dynamodb.toDynamoDBJson($ctx.args.name)
-          "dob": $util.dynamodb.toDynamoDBJson($ctx.args.dob)
-          "address": $util.dynamodb.toDynamoDBJson($ctx.args.address)
-          "description": $util.dynamodb.toDynamoDBJson($ctx.args.description)
-          "imageUrl": $util.dynamodb.toDynamoDBJson($ctx.args.imageUrl)
-          "createdAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
+          "name": $util.dynamodb.toDynamoDBJson($ctx.args.name),
+          "dob": $util.dynamodb.toDynamoDBJson($ctx.args.dob),
+          "address": $util.dynamodb.toDynamoDBJson($ctx.args.address),
+          "description": $util.dynamodb.toDynamoDBJson($ctx.args.description),
+          "imageUrl": $util.dynamodb.toDynamoDBJson($ctx.args.imageUrl),
+          "createdAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),
           "updatedAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
         }
       }`,
