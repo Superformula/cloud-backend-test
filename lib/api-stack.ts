@@ -33,7 +33,7 @@ export class ApiStack extends cdk.Stack {
         imageUrl: AWSURL
       }
       input UserInput {
-        id: ID!
+        id: ID
         name: String!
         dob: AWSDate
         address: String
