@@ -57,6 +57,7 @@ export class ApiStack extends cdk.Stack {
         mutation: Mutation
       }`
     });
+    // TODO Add updateUser schema and resolver
 
     const usersTable = new Table(this, 'UsersTable', {
       tableName: tableName,
@@ -143,6 +144,8 @@ export class ApiStack extends cdk.Stack {
           "address": $util.dynamodb.toDynamoDBJson($ctx.args.address)
           "description": $util.dynamodb.toDynamoDBJson($ctx.args.description)
           "imageUrl": $util.dynamodb.toDynamoDBJson($ctx.args.imageUrl)
+          "createdAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
+          "updatedAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
         }
       }`,
       responseMappingTemplate: `$util.toJson($ctx.result)`
