@@ -13,7 +13,6 @@ https://learn.hashicorp.com/tutorials/terraform/install-cli
 
 
 ## Building and deploying the resources with TERRAFORM
-3. type the commands bellow to build the AppSync on AWS
 
 1. init teraform
 
@@ -37,16 +36,16 @@ RUN:
 
 
 ## Using AMPLIFY to prototype the API
-5. get the AppSync graphql API id 
+1. list the AppSync graphql APIs to obtain the api-id
 
 1. install amplify
 
-6. get the API key
+2. get the API key
 
 RUN:
-> aws appsync list-api-keys --api-id [YOUR_API_ID_THAT_YOU_GOT_ABOVE]
+> aws appsync list-api-keys --api-id [THE_API_ID_THAT_YOU_GOT_ABOVE]
 
-7. install amplify
+3. install amplify
 
 RUN:
 > npm install -g @aws-amplify/cli
@@ -54,7 +53,7 @@ RUN:
 RUN:
 > amplify init
 
-2. you will be asked to answer a few questions about the environment, it should be similar to the one below:
+4. you will be asked to answer a few questions about the environment, it should be similar to the one below:
 
 Project information
 | Name: `superformula`
@@ -67,24 +66,19 @@ Project information
 | Build Command: `npm.cmd run-script build`
 | Start Command: `npm.cmd run-script start`
 
-3. Enter your AWS credentials in the console (if you choose access key you'll see the text bellow)
+5. Enter your AWS credentials in the console (if you choose access key you'll see the text bellow)
 
 Select the authentication method you want to use: AWS access keys
 ? accessKeyId:  ********************
 ? secretAccessKey:  ****************************************
 ? region:  us-east-1
 
-4. Get the AppSync GraphQL API Key
-
-RUN:
-> aws appsync list-graphql-apis
-
-5. generate the files
+6. generate the files
 
 RUN:
 > amplify add codegen --apiId [THE_API_ID_THAT_YOU_GOT_ABOVE]
 
-6. you will be asked to answer a few questions about you consumer application, it should be similar to the one below:
+7. you will be asked to answer a few questions about you consumer application, it should be similar to the one below:
 
 √ Getting API details
 Successfully added API superformula to your Amplify project
@@ -98,21 +92,25 @@ Successfully added API superformula to your Amplify project
 √ Generated GraphQL operations successfully and saved at src\graphql
 √ Code generated successfully and saved in file src\API.ts
 
-7. The files were generated inside of src/graphql folder and are ready for the consumer
+8. The files were generated inside of src/graphql folder and are ready for the consumer
+
 
 
 ## Running tests
 
-1. Install the dependencies
+## Enabling Logs on AWS
 
-> npm install 
+1. Sign in to the AWS AppSync console.
 
-> npx ts-jest config:init
+2. Choose Settings from the navigation panel.
 
-2. Run the tests.
+3. Under Logging, click the toggle to Enable Logs.
 
-RUN:
-> npx jest
+4. When the console prompts you, provide or create a CloudWatch ARN role.
+
+5. Optionally, Choose to configure the Field resolver log level from the list.
+
+6. Choose Save. The logging is automatically configured for your API.
 
 
 ## Enabling Logs on AWS
