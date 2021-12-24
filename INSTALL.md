@@ -13,6 +13,7 @@ https://learn.hashicorp.com/tutorials/terraform/install-cli
 
 
 ## Building and deploying the resources with TERRAFORM
+3. type the commands bellow to build the AppSync on AWS
 
 1. init teraform
 
@@ -36,8 +37,16 @@ RUN:
 
 
 ## Using AMPLIFY to prototype the API
+5. get the AppSync graphql API id 
 
 1. install amplify
+
+6. get the API key
+
+RUN:
+> aws appsync list-api-keys --api-id [YOUR_API_ID_THAT_YOU_GOT_ABOVE]
+
+7. install amplify
 
 RUN:
 > npm install -g @aws-amplify/cli
