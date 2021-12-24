@@ -36,17 +36,8 @@ RUN:
 
 
 ## Using AMPLIFY to prototype the API
-1. list the AppSync graphql APIs to obtain the api-id
 
-RUN:
-> aws appsync list-graphql-apis
-
-2. get the API key
-
-RUN:
-> aws appsync list-api-keys --api-id [THE_API_ID_THAT_YOU_GOT_ABOVE]
-
-3. install amplify
+1. install amplify
 
 RUN:
 > npm install -g @aws-amplify/cli
@@ -54,7 +45,7 @@ RUN:
 RUN:
 > amplify init
 
-4. you will be asked to answer a few questions about the environment, it should be similar to the one below:
+2. you will be asked to answer a few questions about the environment, it should be similar to the one below:
 
 Project information
 | Name: `superformula`
@@ -67,19 +58,24 @@ Project information
 | Build Command: `npm.cmd run-script build`
 | Start Command: `npm.cmd run-script start`
 
-5. Enter your AWS credentials in the console (if you choose access key you'll see the text bellow)
+3. Enter your AWS credentials in the console (if you choose access key you'll see the text bellow)
 
 Select the authentication method you want to use: AWS access keys
 ? accessKeyId:  ********************
 ? secretAccessKey:  ****************************************
 ? region:  us-east-1
 
-6. generate the files
+4. Get the AppSync GraphQL API Key
 
 RUN:
-> amplify add codegen --apiId [THE_API_ID_THAT_YOU_GOT_BEFORE]
+> aws appsync list-graphql-apis
 
-7. you will be asked to answer a few questions about you consumer application, it should be similar to the one below:
+5. generate the files
+
+RUN:
+> amplify add codegen --apiId [THE_API_ID_THAT_YOU_GOT_ABOVE]
+
+6. you will be asked to answer a few questions about you consumer application, it should be similar to the one below:
 
 √ Getting API details
 Successfully added API superformula to your Amplify project
@@ -93,8 +89,22 @@ Successfully added API superformula to your Amplify project
 √ Generated GraphQL operations successfully and saved at src\graphql
 √ Code generated successfully and saved in file src\API.ts
 
+7. The files were generated inside of src/graphql folder and are ready for the consumer
+
 
 ## Running tests
+
+1. Install the dependencies
+
+> npm install 
+
+> npx ts-jest config:init
+
+2. Run the tests.
+
+RUN:
+> npx jest
+
 
 ## Enabling Logs on AWS
 
