@@ -238,6 +238,9 @@ resource "aws_appsync_resolver" "superformula_createuser_resolver" {
   data_source = aws_appsync_datasource.superformula_dynamodb_datasource_user.name
 
   request_template = <<EOF
+
+$util.qr($ctx.args.input.put("createdAt", $util.time.nowISO8601()))
+
 {
   "version": "2017-02-28",
   "operation": "PutItem",
@@ -272,6 +275,8 @@ resource "aws_appsync_resolver" "superformula_updateuser_resolver" {
   "key": {
     "id": $util.dynamodb.toDynamoDBJson($ctx.args.input.id),
   },
+
+  $util.qr($ctx.args.input.put("updatedAt", $util.time.nowISO8601()))
 
   ## Set up some space to keep track of things we're updating **
   #set( $expNames  = {} )
