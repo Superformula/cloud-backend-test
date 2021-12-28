@@ -62,7 +62,7 @@ export class ApiStack extends cdk.Stack {
     const usersTable = new Table(this, 'UsersTable', {
       tableName: tableName,
       partitionKey: {
-        name: 'PK',
+        name: 'id',
         type: AttributeType.STRING
       },
       billingMode: BillingMode.PAY_PER_REQUEST,
@@ -105,7 +105,7 @@ export class ApiStack extends cdk.Stack {
         "version": "2017-02-28",
         "operation": "GetItem",
         "key": {
-          "PK": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+          "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
         }
       }`,
       responseMappingTemplate: `$util.toJson($ctx.result)`
@@ -136,16 +136,16 @@ export class ApiStack extends cdk.Stack {
         "version": "2017-02-28",
         "operation": "PutItem",
         "key": {
-          "PK": { "S": "$util.autoId()" }
+          "id": { "S": "$util.autoId()" }
         },
         "attributeValues": {
-          "name": $util.dynamodb.toDynamoDBJson($ctx.args.name),
-          "dob": $util.dynamodb.toDynamoDBJson($ctx.args.dob),
-          "address": $util.dynamodb.toDynamoDBJson($ctx.args.address),
-          "description": $util.dynamodb.toDynamoDBJson($ctx.args.description),
-          "imageUrl": $util.dynamodb.toDynamoDBJson($ctx.args.imageUrl),
-          "createdAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),
-          "updatedAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
+          "name"        : $util.dynamodb.toDynamoDBJson($ctx.args.user.name),
+          "dob"         : $util.dynamodb.toDynamoDBJson($ctx.args.user.dob),
+          "address"     : $util.dynamodb.toDynamoDBJson($ctx.args.user.address),
+          "description" : $util.dynamodb.toDynamoDBJson($ctx.args.user.description),
+          "imageUrl"    : $util.dynamodb.toDynamoDBJson($ctx.args.user.imageUrl),
+          "createdAt"   : $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),
+          "updatedAt"   : $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
         }
       }`,
       responseMappingTemplate: `$util.toJson($ctx.result)`
@@ -161,7 +161,7 @@ export class ApiStack extends cdk.Stack {
         "version": "2017-02-28",
         "operation": "DeleteItem",
         "key": {
-          "PK": $util.dynamodb.toDynamoDBJson($ctx.args.id)
+          "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
         }
       }`,
       responseMappingTemplate: `$util.toJson($ctx.result)`
