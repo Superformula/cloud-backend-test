@@ -41,7 +41,7 @@ export class ApiStack extends cdk.Stack {
         imageUrl: AWSURL
       }
       type PaginatedUsers {
-        users: [User!]
+        items: [User!]
         nextToken: String
       }
       type Query {
