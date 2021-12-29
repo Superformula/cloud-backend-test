@@ -1,0 +1,147 @@
+# this is an auto generated file. This will be overwritten
+query GetUser($id: String!) {
+  getUser(id: $id) {
+    address
+    createdAt
+    description
+    dob
+    id
+    imageUrl
+    name
+    updatedAt
+  }
+}
+query ListUsers(
+  $filter: TableUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      address
+      createdAt
+      description
+      dob
+      id
+      imageUrl
+      name
+      updatedAt
+    }
+    nextToken
+  }
+}
+query GetCoordinates($address: String!, $accessToken: String!) {
+  getCoordinates(address: $address, accessToken: $accessToken) {
+    lat
+    lon
+    description
+  }
+}
+mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    address
+    createdAt
+    description
+    dob
+    id
+    imageUrl
+    name
+    updatedAt
+  }
+}
+mutation DeleteUser($input: DeleteUserInput!) {
+  deleteUser(input: $input) {
+    address
+    createdAt
+    description
+    dob
+    id
+    imageUrl
+    name
+    updatedAt
+  }
+}
+mutation UpdateUser($input: UpdateUserInput!) {
+  updateUser(input: $input) {
+    address
+    createdAt
+    description
+    dob
+    id
+    imageUrl
+    name
+    updatedAt
+  }
+}
+subscription OnCreateUser(
+  $address: String
+  $description: String
+  $dob: String
+  $id: String
+  $name: String
+) {
+  onCreateUser(
+    address: $address
+    description: $description
+    dob: $dob
+    id: $id
+    name: $name
+  ) {
+    address
+    createdAt
+    description
+    dob
+    id
+    imageUrl
+    name
+    updatedAt
+  }
+}
+subscription OnDeleteUser(
+  $address: String
+  $description: String
+  $dob: String
+  $id: String
+  $name: String
+) {
+  onDeleteUser(
+    address: $address
+    description: $description
+    dob: $dob
+    id: $id
+    name: $name
+  ) {
+    address
+    createdAt
+    description
+    dob
+    id
+    imageUrl
+    name
+    updatedAt
+  }
+}
+subscription OnUpdateUser(
+  $address: String
+  $description: String
+  $dob: String
+  $id: String
+  $name: String
+) {
+  onUpdateUser(
+    address: $address
+    description: $description
+    dob: $dob
+    id: $id
+    name: $name
+  ) {
+    address
+    createdAt
+    description
+    dob
+    id
+    imageUrl
+    name
+    updatedAt
+  }
+}

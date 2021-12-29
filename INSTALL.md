@@ -123,3 +123,6 @@ RUN:
 7. visit https://docs.aws.amazon.com/appsync/latest/devguide/monitoring.html for more details.
 
 
+## Generating GraphQL Documentation
+
+> amplify-graphql-docs-generator --schema src/graphql/schema.json --output DOCUMENTATION.graphql --language graphql
