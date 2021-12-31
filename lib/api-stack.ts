@@ -2,7 +2,11 @@ import cdk = require('aws-cdk-lib');
 import { CfnGraphQLApi, CfnApiKey, CfnGraphQLSchema, CfnDataSource, CfnResolver } from 'aws-cdk-lib/aws-appsync';
 import { Table, AttributeType, StreamViewType, BillingMode } from 'aws-cdk-lib/aws-dynamodb';
 import { Role, ServicePrincipal, ManagedPolicy } from 'aws-cdk-lib/aws-iam';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
+import { join } from 'path';
+require('dotenv').config()
 
 export class ApiStack extends cdk.Stack {
 
@@ -10,6 +14,25 @@ export class ApiStack extends cdk.Stack {
     super(scope, id, props);
 
     const tableName = 'users'
+
+    const nodeJsFunctionProps: NodejsFunctionProps = {
+      bundling: {
+        externalModules: [
+          'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
+        ],
+      },
+      depsLockFilePath: join(__dirname, 'lambdas', 'package-lock.json'),
+      runtime: Runtime.NODEJS_14_X,
+    }
+
+    const getLocationLambda = new NodejsFunction(this, 'getLocationFunction', {
+      entry: join(__dirname, 'lambdas', 'get-location.ts'),
+      environment: {
+        MAPBOX_API_TOKEN: process.env.MAPBOX_API_TOKEN || '',
+        MAPBOX_API_BASE_URL: process.env.MAPBOX_API_BASE_URL || 'https://api.mapbox.com/geocoding/v5/mapbox.places'
+      },
+      ...nodeJsFunctionProps,
+    })
 
     const usersGraphQLApi = new CfnGraphQLApi(this, 'UsersApi', {
       name: 'users-api',
