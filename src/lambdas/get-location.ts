@@ -33,7 +33,6 @@ export const handler = async (event: any = {}): Promise<any> => {
   if (json.features && json.features.length > 0) {
     response = {
       statusCode: 200,
-      name: json.features[0].place_name,
       coordinates: json.features[0].center
     }
   }

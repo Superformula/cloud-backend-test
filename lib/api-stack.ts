@@ -23,12 +23,12 @@ export class ApiStack extends cdk.Stack {
           'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
         ],
       },
-      depsLockFilePath: join(__dirname, 'lambdas', 'package-lock.json'),
+      depsLockFilePath: join(__dirname, '..', 'src', 'lambdas', 'package-lock.json'),
       runtime: Runtime.NODEJS_14_X,
     }
 
     const getLocationLambda = new NodejsFunction(this, 'getLocationFunction', {
-      entry: join(__dirname, 'lambdas', 'get-location.ts'),
+      entry: join(__dirname, '..', 'src', 'lambdas', 'get-location.ts'),
       environment: {
         MAPBOX_API_TOKEN: process.env.MAPBOX_API_TOKEN || '',
         MAPBOX_API_BASE_URL: process.env.MAPBOX_API_BASE_URL || 'https://api.mapbox.com/geocoding/v5/mapbox.places'
