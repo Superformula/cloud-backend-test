@@ -1,18 +1,17 @@
-import cdk = require('aws-cdk-lib');
-import { CfnGraphQLApi, CfnApiKey, CfnGraphQLSchema, CfnDataSource, CfnResolver } from 'aws-cdk-lib/aws-appsync';
-import { Table, AttributeType, StreamViewType, BillingMode } from 'aws-cdk-lib/aws-dynamodb';
-import { Role, ServicePrincipal, ManagedPolicy } from 'aws-cdk-lib/aws-iam';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
-import { Construct } from 'constructs';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import cdk = require('aws-cdk-lib')
+import { CfnGraphQLApi, CfnApiKey, CfnGraphQLSchema, CfnDataSource, CfnResolver } from 'aws-cdk-lib/aws-appsync'
+import { Table, AttributeType, StreamViewType, BillingMode } from 'aws-cdk-lib/aws-dynamodb'
+import { Role, ServicePrincipal, ManagedPolicy } from 'aws-cdk-lib/aws-iam'
+import { Runtime } from 'aws-cdk-lib/aws-lambda'
+import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs'
+import { Construct } from 'constructs'
+import { join } from 'path'
+import { readFileSync } from 'fs'
 require('dotenv').config()
 
 export class ApiStack extends cdk.Stack {
-
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props);
+    super(scope, id, props)
 
     // Schema.fromAsset() from CDK v1 is no longer available in v2 🤷‍♂️
     const schema = readFileSync(join(__dirname, '..', 'src', 'graphql', 'schema.graphql')).toString()
@@ -31,31 +30,31 @@ export class ApiStack extends cdk.Stack {
       entry: join(__dirname, '..', 'src', 'lambdas', 'get-location.ts'),
       environment: {
         MAPBOX_API_TOKEN: process.env.MAPBOX_API_TOKEN || '',
-        MAPBOX_API_BASE_URL: process.env.MAPBOX_API_BASE_URL || 'https://api.mapbox.com/geocoding/v5/mapbox.places'
+        MAPBOX_API_BASE_URL: process.env.MAPBOX_API_BASE_URL || 'https://api.mapbox.com/geocoding/v5/mapbox.places',
       },
       ...nodeJsFunctionProps,
     })
 
     const usersGraphQLApi = new CfnGraphQLApi(this, 'UsersApi', {
       name: 'users-api',
-      authenticationType: 'API_KEY'
-    });
+      authenticationType: 'API_KEY',
+    })
 
     new CfnApiKey(this, 'UsersApiKey', {
-      apiId: usersGraphQLApi.attrApiId
-    });
+      apiId: usersGraphQLApi.attrApiId,
+    })
 
     const apiSchema = new CfnGraphQLSchema(this, 'UsersSchema', {
       apiId: usersGraphQLApi.attrApiId,
-      definition: schema
-    });
+      definition: schema,
+    })
     // TODO Add updateUser schema and resolver
 
     const usersTable = new Table(this, 'UsersTable', {
       tableName: 'users',
       partitionKey: {
         name: 'id',
-        type: AttributeType.STRING
+        type: AttributeType.STRING,
       },
       billingMode: BillingMode.PAY_PER_REQUEST,
       stream: StreamViewType.NEW_IMAGE,
@@ -65,19 +64,19 @@ export class ApiStack extends cdk.Stack {
       // the new table, and it will remain in your account until manually deleted. By setting the policy to
       // DESTROY, cdk destroy will delete the table (even if it has data in it)
       removalPolicy: cdk.RemovalPolicy.DESTROY, // NOT recommended for production code
-    });
-
-    const usersTableRole = new Role(this, 'UsersDynamoDBRole', {
-      assumedBy: new ServicePrincipal('appsync.amazonaws.com')
-    });
-
-    usersTableRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
-
-    const lambdaRole = new Role(this, 'LambdaRole', {
-      assumedBy: new ServicePrincipal('appsync.amazonaws.com')
     })
 
-    lambdaRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AWSLambda_FullAccess'));
+    const usersTableRole = new Role(this, 'UsersDynamoDBRole', {
+      assumedBy: new ServicePrincipal('appsync.amazonaws.com'),
+    })
+
+    usersTableRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'))
+
+    const lambdaRole = new Role(this, 'LambdaRole', {
+      assumedBy: new ServicePrincipal('appsync.amazonaws.com'),
+    })
+
+    lambdaRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AWSLambda_FullAccess'))
 
     // Data Sources
 
@@ -87,10 +86,10 @@ export class ApiStack extends cdk.Stack {
       type: 'AMAZON_DYNAMODB',
       dynamoDbConfig: {
         tableName: usersTable.tableName,
-        awsRegion: this.region
+        awsRegion: this.region,
       },
-      serviceRoleArn: usersTableRole.roleArn
-    });
+      serviceRoleArn: usersTableRole.roleArn,
+    })
 
     const dataSourceLocationLambda = new CfnDataSource(this, 'LocationDataSource', {
       apiId: usersGraphQLApi.attrApiId,
@@ -99,18 +98,18 @@ export class ApiStack extends cdk.Stack {
       lambdaConfig: {
         lambdaFunctionArn: getLocationLambda.functionArn,
       },
-      serviceRoleArn: lambdaRole.roleArn
+      serviceRoleArn: lambdaRole.roleArn,
     })
 
     // Resolvers
 
-    const getLocationResolver = new CfnResolver(this, "GetLocationQueryResolver", {
+    const getLocationResolver = new CfnResolver(this, 'GetLocationQueryResolver', {
       apiId: usersGraphQLApi.attrApiId,
-      typeName: "Query",
-      fieldName: "getLocation",
+      typeName: 'Query',
+      fieldName: 'getLocation',
       dataSourceName: dataSourceLocationLambda.name,
-    });
-    getLocationResolver.addDependsOn(apiSchema);
+    })
+    getLocationResolver.addDependsOn(apiSchema)
 
     const getUserResolver = new CfnResolver(this, 'GetUserQueryResolver', {
       apiId: usersGraphQLApi.attrApiId,
@@ -124,9 +123,9 @@ export class ApiStack extends cdk.Stack {
           "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
         }
       }`,
-      responseMappingTemplate: `$util.toJson($ctx.result)`
-    });
-    getUserResolver.addDependsOn(apiSchema);
+      responseMappingTemplate: `$util.toJson($ctx.result)`,
+    })
+    getUserResolver.addDependsOn(apiSchema)
 
     const listUsersResolver = new CfnResolver(this, 'ListUsersQueryResolver', {
       apiId: usersGraphQLApi.attrApiId,
@@ -139,9 +138,9 @@ export class ApiStack extends cdk.Stack {
         "limit": $util.defaultIfNull($ctx.args.limit, 20),
         "nextToken": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.nextToken, null))
       }`,
-      responseMappingTemplate: `$util.toJson($ctx.result)`
-    });
-    listUsersResolver.addDependsOn(apiSchema);
+      responseMappingTemplate: `$util.toJson($ctx.result)`,
+    })
+    listUsersResolver.addDependsOn(apiSchema)
 
     const createUserResolver = new CfnResolver(this, 'CreateUserMutationResolver', {
       apiId: usersGraphQLApi.attrApiId,
@@ -164,9 +163,9 @@ export class ApiStack extends cdk.Stack {
           "updatedAt"   : $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
         }
       }`,
-      responseMappingTemplate: `$util.toJson($ctx.result)`
-    });
-    createUserResolver.addDependsOn(apiSchema);
+      responseMappingTemplate: `$util.toJson($ctx.result)`,
+    })
+    createUserResolver.addDependsOn(apiSchema)
 
     const deleteUserResolver = new CfnResolver(this, 'DeleteMutationResolver', {
       apiId: usersGraphQLApi.attrApiId,
@@ -180,8 +179,8 @@ export class ApiStack extends cdk.Stack {
           "id": $util.dynamodb.toDynamoDBJson($ctx.args.id)
         }
       }`,
-      responseMappingTemplate: `$util.toJson($ctx.result)`
-    });
-    deleteUserResolver.addDependsOn(apiSchema);
+      responseMappingTemplate: `$util.toJson($ctx.result)`,
+    })
+    deleteUserResolver.addDependsOn(apiSchema)
   }
 }
