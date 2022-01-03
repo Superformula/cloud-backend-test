@@ -3,10 +3,10 @@ import fetch from 'node-fetch'
 /*
 Return the coordinates of a given address using the MapBox Places API
 
-eg. a query with location = 'Central Park'
+eg. provide an address to query = '1600 Pennsylvania Ave NW, Washington, DC'
 returns {
   name: 'Central Park, New York, New York, United States',
-  coordinates: [ -73.98, 40.77	],
+  coordinates: [ -76.982011, 38.879239 ],
 }
 
 Environment Variables:
@@ -15,15 +15,15 @@ Environment Variables:
 */
 
 export const handler = async (event: any = {}): Promise<any> => {
-  let queryLocation = event.pathParameters?.location
-  if (!queryLocation) {
-    return { statusCode: 400, body: `Error: You are missing the path parameter location`}
+  let queryAddress = event.arguments.address
+  if (!queryAddress) {
+    return { statusCode: 400, body: `Error: You are missing the address argument`}
   }
 
   let response : any = {}
 
   try {
-    response = await fetch(`${process.env.MAPBOX_API_BASE_URL}/${encodeURIComponent(queryLocation)}.json?access_token=${process.env.MAPBOX_API_TOKEN}&limit=1`)
+    response = await fetch(`${process.env.MAPBOX_API_BASE_URL}/${encodeURIComponent(queryAddress)}.json?access_token=${process.env.MAPBOX_API_TOKEN}&limit=1`)
   } catch (error) {
     console.log(JSON.stringify(error))
     return { statusCode: 500, body: `Unable to get location at this time`}
@@ -38,7 +38,7 @@ export const handler = async (event: any = {}): Promise<any> => {
     }
   }
   else {
-    response = { statusCode: 404, body: `Sorry, the address '${queryLocation}' was not found` }
+    response = { statusCode: 404, body: `Sorry, the address '${queryAddress}' was not found` }
   }
 
   return response
