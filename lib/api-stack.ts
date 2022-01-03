@@ -6,6 +6,7 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction, NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Construct } from 'constructs';
 import { join } from 'path';
+import { readFileSync } from 'fs';
 require('dotenv').config()
 
 export class ApiStack extends cdk.Stack {
@@ -13,7 +14,8 @@ export class ApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const tableName = 'users'
+    // Schema.fromAsset() from CDK v1 is no longer available in v2 🤷‍♂️
+    const schema = readFileSync(join(__dirname, '..', 'src', 'graphql', 'schema.graphql')).toString()
 
     const nodeJsFunctionProps: NodejsFunctionProps = {
       bundling: {
@@ -45,54 +47,12 @@ export class ApiStack extends cdk.Stack {
 
     const apiSchema = new CfnGraphQLSchema(this, 'UsersSchema', {
       apiId: usersGraphQLApi.attrApiId,
-      definition: `type User {
-        id: ID!
-        name: String!
-        dob: AWSDate
-        address: String
-        description: String
-        createdAt: AWSDateTime
-        updatedAt: AWSDateTime
-        imageUrl: AWSURL
-      }
-      input UserInput {
-        id: ID
-        name: String!
-        dob: AWSDate
-        address: String
-        description: String
-        imageUrl: AWSURL
-      }
-      type PaginatedUsers {
-        items: [User!]
-        nextToken: String
-      }
-      type Location{
-        coordinates: [Float]
-      }
-      type Query {
-        listUsers(limit: Int, nextToken: String): PaginatedUsers!
-        getUser(id: ID!): User
-        getLocation(address: String!): Location
-      }
-      type Mutation {
-        createUser(user: UserInput!): User
-        deleteUser(id: ID!): User
-      }
-      type Subscription {
-        userUpdated: User
-          @aws_subscribe(mutations: ["createUser", "deleteUser"])
-      }
-      type Schema {
-        query: Query
-        mutation: Mutation
-        subscription: Subscription
-      }`
+      definition: schema
     });
     // TODO Add updateUser schema and resolver
 
     const usersTable = new Table(this, 'UsersTable', {
-      tableName: tableName,
+      tableName: 'users',
       partitionKey: {
         name: 'id',
         type: AttributeType.STRING

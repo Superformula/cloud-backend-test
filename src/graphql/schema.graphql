@@ -1,0 +1,43 @@
+type User {
+  id: ID!
+  name: String!
+  dob: AWSDate
+  address: String
+  description: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  imageUrl: AWSURL
+}
+input UserInput {
+  id: ID
+  name: String!
+  dob: AWSDate
+  address: String
+  description: String
+  imageUrl: AWSURL
+}
+type PaginatedUsers {
+  items: [User!]
+  nextToken: String
+}
+type Location{
+  coordinates: [Float]
+}
+type Query {
+  listUsers(limit: Int, nextToken: String): PaginatedUsers!
+  getUser(id: ID!): User
+  getLocation(address: String!): Location
+}
+type Mutation {
+  createUser(user: UserInput!): User
+  deleteUser(id: ID!): User
+}
+type Subscription {
+  userUpdated: User
+    @aws_subscribe(mutations: ["createUser", "deleteUser"])
+}
+type Schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
