@@ -79,9 +79,14 @@ export class ApiStack extends cdk.Stack {
         createUser(user: UserInput!): User
         deleteUser(id: ID!): User
       }
+      type Subscription {
+        userUpdated: User
+          @aws_subscribe(mutations: ["createUser", "deleteUser"])
+      }
       type Schema {
         query: Query
         mutation: Mutation
+        subscription: Subscription
       }`
     });
     // TODO Add updateUser schema and resolver
