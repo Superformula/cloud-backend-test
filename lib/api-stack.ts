@@ -67,9 +67,13 @@ export class ApiStack extends cdk.Stack {
         items: [User!]
         nextToken: String
       }
+      type Location{
+        coordinates: [Float]
+      }
       type Query {
         listUsers(limit: Int, nextToken: String): PaginatedUsers!
         getUser(id: ID!): User
+        getLocation(address: String!): Location
       }
       type Mutation {
         createUser(user: UserInput!): User
@@ -104,7 +108,13 @@ export class ApiStack extends cdk.Stack {
 
     usersTableRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'));
 
-    // Data Source
+    const lambdaRole = new Role(this, 'LambdaRole', {
+      assumedBy: new ServicePrincipal('appsync.amazonaws.com')
+    })
+
+    lambdaRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AWSLambda_FullAccess'));
+
+    // Data Sources
 
     const dataSource = new CfnDataSource(this, 'UsersDataSource', {
       apiId: usersGraphQLApi.attrApiId,
@@ -117,7 +127,25 @@ export class ApiStack extends cdk.Stack {
       serviceRoleArn: usersTableRole.roleArn
     });
 
+    const dataSourceLocationLambda = new CfnDataSource(this, 'LocationDataSource', {
+      apiId: usersGraphQLApi.attrApiId,
+      name: 'LocationLambdaDataSource',
+      type: 'AWS_LAMBDA',
+      lambdaConfig: {
+        lambdaFunctionArn: getLocationLambda.functionArn,
+      },
+      serviceRoleArn: lambdaRole.roleArn
+    })
+
     // Resolvers
+
+    const getLocationResolver = new CfnResolver(this, "GetLocationQueryResolver", {
+      apiId: usersGraphQLApi.attrApiId,
+      typeName: "Query",
+      fieldName: "getLocation",
+      dataSourceName: dataSourceLocationLambda.name,
+    });
+    getLocationResolver.addDependsOn(apiSchema);
 
     const getUserResolver = new CfnResolver(this, 'GetUserQueryResolver', {
       apiId: usersGraphQLApi.attrApiId,
