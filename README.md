@@ -158,4 +158,5 @@ You can see the full list of cloud resources involved in the project in `cdk.out
 - The Location lambda has the MapBox token as an environment variable as plain text. It would be nice to protect the secret with KMS instead.
 - Typify the events and responses in the lambda functions
 - Add a custom domain to AppSync now that it has been [recently introduced](https://aws.amazon.com/blogs/mobile/introducing-custom-domain-names-for-aws-appsync-apis/)
+- Automate test for the subscription
 - Increase and report test coverage
