@@ -24,11 +24,7 @@ export class ApiStack extends cdk.Stack {
       billingMode: BillingMode.PAY_PER_REQUEST,
       stream: StreamViewType.NEW_IMAGE,
 
-      // TODO Change to RETAIN for production
-      // The default removal policy is RETAIN, which means that cdk destroy will not attempt to delete
-      // the new table, and it will remain in your account until manually deleted. By setting the policy to
-      // DESTROY, cdk destroy will delete the table (even if it has data in it)
-      removalPolicy: cdk.RemovalPolicy.DESTROY, // NOT recommended for production code
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
     })
 
     const usersTableRole = new Role(this, 'UsersDynamoDBRole', {
