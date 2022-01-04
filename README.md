@@ -11,6 +11,10 @@
 
 I know Terraform was the preferred _infrastructure as a code_ tool but AWS recently made the [CDK v2 generally available](https://aws.amazon.com/about-aws/whats-new/2021/12/aws-cloud-development-kit-cdk-generally-available/) on December 2021 and I wanted to try it out.
 
+## Architecture
+
+![Architecture](/assets/architecture.png 'Architecture')
+
 ## Repository Structure
 
 | Path                  | Description                                                  |
