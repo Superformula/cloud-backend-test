@@ -13,42 +13,7 @@ export class ApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
-    // Schema.fromAsset() from CDK v1 is no longer available in v2 🤷‍♂️
-    const schema = readFileSync(join(__dirname, '..', 'src', 'graphql', 'schema.graphql')).toString()
-
-    const nodeJsFunctionProps: NodejsFunctionProps = {
-      bundling: {
-        externalModules: [
-          'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
-        ],
-      },
-      depsLockFilePath: join(__dirname, '..', 'src', 'lambdas', 'package-lock.json'),
-      runtime: Runtime.NODEJS_14_X,
-    }
-
-    const getLocationLambda = new NodejsFunction(this, 'getLocationFunction', {
-      entry: join(__dirname, '..', 'src', 'lambdas', 'get-location.ts'),
-      environment: {
-        MAPBOX_API_TOKEN: process.env.MAPBOX_API_TOKEN || '',
-        MAPBOX_API_BASE_URL: process.env.MAPBOX_API_BASE_URL || 'https://api.mapbox.com/geocoding/v5/mapbox.places',
-      },
-      ...nodeJsFunctionProps,
-    })
-
-    const usersGraphQLApi = new CfnGraphQLApi(this, 'UsersApi', {
-      name: 'users-api',
-      authenticationType: 'API_KEY',
-    })
-
-    new CfnApiKey(this, 'UsersApiKey', {
-      apiId: usersGraphQLApi.attrApiId,
-    })
-
-    const apiSchema = new CfnGraphQLSchema(this, 'UsersSchema', {
-      apiId: usersGraphQLApi.attrApiId,
-      definition: schema,
-    })
-    // TODO Add updateUser schema and resolver
+    // DynamoDB Users Table
 
     const usersTable = new Table(this, 'UsersTable', {
       tableName: 'users',
@@ -72,11 +37,63 @@ export class ApiStack extends cdk.Stack {
 
     usersTableRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonDynamoDBFullAccess'))
 
+    // Lambda Functions
+
+    const nodeJsFunctionProps: NodejsFunctionProps = {
+      bundling: {
+        externalModules: [
+          'aws-sdk', // Use the 'aws-sdk' available in the Lambda runtime
+        ],
+      },
+      depsLockFilePath: join(__dirname, '..', 'src', 'lambdas', 'package-lock.json'),
+      runtime: Runtime.NODEJS_14_X,
+    }
+
+    const getLocationLambda = new NodejsFunction(this, 'getLocationFunction', {
+      entry: join(__dirname, '..', 'src', 'lambdas', 'get-location.ts'),
+      environment: {
+        MAPBOX_API_TOKEN: process.env.MAPBOX_API_TOKEN || '',
+        MAPBOX_API_BASE_URL: process.env.MAPBOX_API_BASE_URL || 'https://api.mapbox.com/geocoding/v5/mapbox.places',
+      },
+      ...nodeJsFunctionProps,
+    })
+
+    const updateUserLambda = new NodejsFunction(this, 'updateUserFunction', {
+      entry: join(__dirname, '..', 'src', 'lambdas', 'user-update.ts'),
+      environment: {
+        TABLE_NAME: usersTable.tableName,
+        PRIMARY_KEY: 'id',
+      },
+      ...nodeJsFunctionProps,
+    })
+
+    // Grant the lambda function access to the users table
+    usersTable.grantReadWriteData(updateUserLambda)
+
     const lambdaRole = new Role(this, 'LambdaRole', {
       assumedBy: new ServicePrincipal('appsync.amazonaws.com'),
     })
 
     lambdaRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AWSLambda_FullAccess'))
+
+    // AppSync GraphQL Api
+
+    const usersGraphQLApi = new CfnGraphQLApi(this, 'UsersApi', {
+      name: 'users-api',
+      authenticationType: 'API_KEY',
+    })
+
+    new CfnApiKey(this, 'UsersApiKey', {
+      apiId: usersGraphQLApi.attrApiId,
+    })
+
+    // Schema.fromAsset() from CDK v1 is no longer available in v2 🤷‍♂️
+    const schema = readFileSync(join(__dirname, '..', 'src', 'graphql', 'schema.graphql')).toString()
+
+    const apiSchema = new CfnGraphQLSchema(this, 'UsersSchema', {
+      apiId: usersGraphQLApi.attrApiId,
+      definition: schema,
+    })
 
     // Data Sources
 
@@ -97,6 +114,16 @@ export class ApiStack extends cdk.Stack {
       type: 'AWS_LAMBDA',
       lambdaConfig: {
         lambdaFunctionArn: getLocationLambda.functionArn,
+      },
+      serviceRoleArn: lambdaRole.roleArn,
+    })
+
+    const dataSourceUpdateUserLambda = new CfnDataSource(this, 'UpdateUserDataSource', {
+      apiId: usersGraphQLApi.attrApiId,
+      name: 'UpdateUserLambdaDataSource',
+      type: 'AWS_LAMBDA',
+      lambdaConfig: {
+        lambdaFunctionArn: updateUserLambda.functionArn,
       },
       serviceRoleArn: lambdaRole.roleArn,
     })
@@ -166,6 +193,14 @@ export class ApiStack extends cdk.Stack {
       responseMappingTemplate: `$util.toJson($ctx.result)`,
     })
     createUserResolver.addDependsOn(apiSchema)
+
+    const updateUserResolver = new CfnResolver(this, 'UpdateMutationResolver', {
+      apiId: usersGraphQLApi.attrApiId,
+      typeName: 'Mutation',
+      fieldName: 'updateUser',
+      dataSourceName: dataSourceUpdateUserLambda.name,
+    })
+    updateUserResolver.addDependsOn(apiSchema)
 
     const deleteUserResolver = new CfnResolver(this, 'DeleteMutationResolver', {
       apiId: usersGraphQLApi.attrApiId,

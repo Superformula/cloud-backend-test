@@ -16,11 +16,19 @@ input UserInput {
   description: String
   imageUrl: AWSURL
 }
+input UserUpdateInput {
+  id: ID!
+  name: String
+  dob: AWSDate
+  address: String
+  description: String
+  imageUrl: AWSURL
+}
 type PaginatedUsers {
   items: [User!]
   nextToken: String
 }
-type Location{
+type Location {
   coordinates: [Float]
 }
 type Query {
@@ -30,11 +38,11 @@ type Query {
 }
 type Mutation {
   createUser(user: UserInput!): User
+  updateUser(user: UserUpdateInput!): User
   deleteUser(id: ID!): User
 }
 type Subscription {
-  userUpdated: User
-    @aws_subscribe(mutations: ["createUser", "deleteUser"])
+  userUpdated: User @aws_subscribe(mutations: ["createUser", "deleteUser", "updateUser"])
 }
 type Schema {
   query: Query
