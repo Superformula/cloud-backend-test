@@ -20,6 +20,7 @@ I know Terraform was the preferred _infrastructure as a code_ tool but AWS recen
 | Path                  | Description                                                  |
 | --------------------- | ------------------------------------------------------------ |
 | `assets`              | Resources for documentation and local testing                |
+| `bin`                 | Entrypoint for CDK                                           |
 | `lib/api-stack.ts`    | Single stack with definition of all cloud resources required |
 | `src/graphql`         | GraphQL schema definition                                    |
 | `src/lambdas`         | Lambda functions source code                                 |
