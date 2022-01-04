@@ -1,137 +1,147 @@
 # Superformula Cloud Backend Test
 
-Be sure to read **all** of this document carefully, and follow the guidelines within.
+> NOTE: The original README.md was moved to [instructions.md](./instructions.md)
 
-### Summary
+## Tech Stack
 
-Please build an GraphQL API that manages Users and respects the following data model:
+- AWS CDK v2
+- AppSync
+- AWS Lambda
+- DynamoDB
 
+I know Terraform was the preferred _infrastructure as a code_ tool but AWS recently made the [CDK v2 generally available](https://aws.amazon.com/about-aws/whats-new/2021/12/aws-cloud-development-kit-cdk-generally-available/) on December 2021 and I wanted to try it out.
+
+## Repository Structure
+
+| Path                  | Description                                                  |
+| --------------------- | ------------------------------------------------------------ |
+| `assets`              | Resources for documentation and local testing                |
+| `lib/api-stack.ts`    | Single stack with definition of all cloud resources required |
+| `src/graphql`         | GraphQL schema definition                                    |
+| `src/lambdas`         | Lambda functions source code                                 |
+| `test`                | Test cases                                                   |
+| `test/infrastructure` | Test the CDK cloud stack                                     |
+
+## Environment Variables
+
+There are 4 environment variables required. Create an `.env` file with the following, replacing the secrets.
+
+```bash
+MAPBOX_API_BASE_URL=https://api.mapbox.com/geocoding/v5/mapbox.places
+MAPBOX_API_TOKEN=pk.secret
+API_URL=https://secret.appsync-api.us-west-2.amazonaws.com/graphql
+API_KEY=da2-secret
 ```
+
+## Testing the API
+
+You can test the GraphQL API with your favorite API Client. For example, if you use Insomnia you can [import the collection](/assets.Insomnia.json) from the assets folder.
+
+![Using Insomnia to test GraphQL endpoints](/assets/insomnia.png 'Testing GraphQL Endpoints in Insomnia')
+
+In Insomnia, in the Manage Environments window (`⌘ + E`), add the following environment variables and replace the secrets with the values given to you:
+
+```json
 {
-  "id": "xxx",                  // user ID (must be unique)
-  "name": "backend test",       // user name
-  "dob": "",                    // date of birth
-  "address": "",                // user address
-  "description": "",            // user description
-  "createdAt": "",              // user created date
-  "updatedAt": "",              // user updated date
-  "imageUrl": ""                // user avatar image url
+  "apiUrl": "https://secret.appsync-api.us-west-2.amazonaws.com",
+  "x-api-key": "da2-secret",
+  "mapbox-key": "pk.secret"
 }
 ```
 
-### Requirements
+## Testing a subscription
 
-#### Functionality
+In our GraphQL Schema we have a subscription for when an user is updated (created or deleted).
 
-1. This should be a GraphQL API that can `create`, `read`, `update`, and `delete` a given user
-1. The API should follow typical GraphQL API design patterns
-1. Please store data from all write operations to a persistence database
-1. Proper error handling should be used
-1. Paginating and filtering (by name) users list
-1. The API should have a Query to fetch geolocation information based off an address
+Let's see how we can use Postman to test it, using the [WebSockets beta feature introduced in
+v8.5](https://blog.postman.com/postman-supports-websocket-apis/).
 
-#### Tech Stack
-  - Use of **Typescript** is required 
-  - **Please use Infrastructure-as-code tooling** that can be used to deploy all resources to AWS. 
-    - Terraform (preferred)
-    - CloudFormation / SAM
-    - Serverless Framework
-    - AWS CDK
-  - Use AWS Lambda + API Gateway or AWS AppSync is recommended
-  - Use any AWS Database-as-a-Service persistence store
-  - Location query must use [NASA](https://api.nasa.gov/) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs to resolve the coordinate based on the address; use AWS Lambda.
+- Create a new WebSocket request
+- Enter the server URL
 
-#### Developer Experience 
-- Write unit tests for business logic
-- Write concise and clear commit messages
-- Document and diagram the architecture of your solution
-- Write clear documentation:
-    - Repository structure
-    - Environment variables and any defaults.
-    - How to build/run/test the solution
-    - Deployment guide
+  ```
+  wss://secret.appsync-realtime-api.us-west-2.amazonaws.com/graphql
+  ```
 
-### Bonus
+- In the _Params_ tab, add a header and a payload.
 
-These may be used for further challenges. You can freely skip these; feel free to try out if you feel up to it.
+  | Key     | Value     |
+  | ------- | --------- |
+  | header  | ewogIC... |
+  | payload | e30=      |
 
-#### Developer Experience (in order)
+  Note: the header must be the base64 encoded value of an object containing the host and api-key.
 
-1. E2E Testing
-1. Integration testing
-1. Code-coverage report generation
-1. Describe your strategy for Lambda error handling, retries, and DLQs
-1. Describe your cloud-native logging, monitoring, and alarming strategy across all queries/mutations
-1. Online interactive demo with a publicly accessible link to your API
-1. Brief description of the frameworks/tools used in the solution
-1. Optimized lambda build.
-1. Commit linting
-1. Semantic release
+  ```json
+  {
+    "host": "secret.appsync-api.us-west-2.amazonaws.com",
+    "x-api-key": "da2-secret
+  }
+  ```
 
+- In the _Headers_ tab, add the following:
+  | Key | Value |
+  | ------- | --------- |
+  | x-api-key | da2-secret |
+  | host | secret.appsync-api.us-west-2.amazonaws.com |
+  | Sec-WebSocket-Protocol | graphql-ws |
 
-#### API Consumer Experience (in order)
+- Connect to the web socket
 
-1. Document how consumers can quickly prototype against your APIs
-    - GraphQL Playground setup
-    - Insomnia/Postman setup
-    - Feel free to use any other tool/client you might know that enable consumers to prototype against your API
-1. GraphQL Documentation Generation
-1. Client API/SDK generation
+- Before we can subscribe to anything, we need to send this message
 
+  `{ "type": "connection_init" }`
 
-## Frontend Wireframes/Mockups (Do not implement those screens)
+- Create a new `start` message with the desired subscription:
 
-Assume the GraphQL API you are developing will be used by a hypothetical front-end team to build the following screens:
+  ```
+  {
+    "id":"replace-with-random-guid",
+    "payload":{
+        "data": "{\"query\":\"subscription onUserUpdated {\\n userUpdated {\\n id\\n }\\n }\",\"variables\":{}}",
+        "extensions":{
+            "authorization": {
+                "x-api-key":"da2-secret",
+                "host":"secret.appsync-api.us-west-2.amazonaws.com"
+            }
+        }
+    },
+    "type":"start"
+  }
+  ```
 
-![Superformula-front-end-test-mockup](./mockup1.png)
+Now that you have your socket listening in, when you trigger a mutation to create an user a new message should appear with the id of the new user.
 
-![Superformula-front-end-test-mockup-2](./mockup2.png)
+![Received message on a subscriptino](/assets/user-updated.png 'Testing the user updated subscription')
 
-> [Source Figma file](https://www.figma.com/file/hd7EgdTxJs2fpTzzSKlNxo/Superformula-full-stack-test)
+## Deploying with the CDK
 
-- Client will be performing real-time search against this API
-- List of users should be updated automatically after single user is updated
+Requirements:
 
-## What We Care About
+- AWS Account ID
+- User with programmatic access (access key and secret)
+- Save your access key and secret locally using `aws configure`
 
-Use any libraries that you would normally use if this were a real production App. Please note: we're interested in your code & the way you solve the problem, not how well you can use a particular library or feature.
+Since this is the first time you will be deploying the CDK stack, you need to [bootstrap](https://docs.aws.amazon.com/cdk/latest/guide/bootstrapping.html) the environment. Bootstrapping is the process of provisioning resources the CDK needs to do the deployments, such as an S3 bucket for storing files and IAM roles that grant permissions needed to perform deployments. More info in the [docs](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html).
 
-_We're interested in your method and how you approach the problem just as much as we're interested in the end result._
+```shell
+cdk bootstrap --trust=ACCOUNT_ID --cloudformation-execution-policies=arn:aws:iam::aws:policy/AdministratorAccess --verbose
+```
 
-Here's what you should strive for:
+With the `--trust` flag we indicate CDK it can use that account ID for deployments.
 
-- Good use of current Typescript, Node.js, GraphQL & performance best practices.
-- Solid testing approach.
-- Extensible code and architecture.
-- Delightful experience for other backend engineers working in this repository
-- Delightful experience for engineers consuming your APIs
+To test you can run `ckd diff` to see all the resources the CDK will create once you deploy.
 
-## Q&A
+```shell
+cdk diff
+```
 
-> How should I start this code challenge?
+Deploy the changes to AWS with:
 
-Fork this repo to your own account and make git commits to add your code as you would on any other project.
+```shell
+cdk deploy
+```
 
-> Where should I send back the result when I'm done?
+Navigate to the AWS Console > AppSync to see the newly created `users-api`.
 
-Send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
-
-> What if I have a question?
-
-Create a new issue [in this repo](https://github.com/Superformula/cloud-backend-test/issues) and we will respond and get back to you quickly.
-
-> Should I validate inputs?
-
-Please assume a hard requirement has not been set by the product owner. We welcome any input validations and your reasoning for why they add value.
-
-> What is the location format?
-
-Examples:
-- Seattle, Washington
-- Digital Nomad
-- New Jersey
-- Northern Bergen County, NJ
-
-> I almost finished, but I don't have time to create everything what is required
-
-Please provide a plan for the rest of the things that you would do.
+You can see the full list of cloud resources involved in the project in `cdk.out/ApiStack.template.json`.
