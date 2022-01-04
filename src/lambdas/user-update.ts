@@ -18,8 +18,9 @@ export const handler = async (event: any = {}): Promise<any> => {
   }
 
   delete editedUser.id
+  editedUser['updatedAt'] = new Date().toISOString()
   let editedUserProps = Object.keys(editedUser)
-  if (!editedUser || editedUserProps.length < 1) {
+  if (!editedUser || editedUserProps.length < 2) {
     return { statusCode: 400, body: 'invalid request, no arguments provided' }
   }
 
@@ -34,8 +35,6 @@ export const handler = async (event: any = {}): Promise<any> => {
     ReturnValues: 'UPDATED_NEW',
   }
   params.ExpressionAttributeValues[`:${firstProperty}`] = editedUser[`${firstProperty}`]
-
-  // TODO timestamp updatedAt
 
   editedUserProps.forEach((property) => {
     params.UpdateExpression += `, ${property} = :${property}`
