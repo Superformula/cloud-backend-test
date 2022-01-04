@@ -15,6 +15,8 @@ I know Terraform was the preferred _infrastructure as a code_ tool but AWS recen
 
 ![Architecture](/assets/architecture.png 'Architecture')
 
+The project is a 3-tier architecture with serverless resources: AppSync, Lambda functions and a DynamoDB table. For the simpler queries and mutations, DynamoDB resolvers are used to simplify and reduce the number of cloud components. On the other hand, where more logic is involved, such as in the update user mutation, a lambda resolver is used.
+
 ## Repository Structure
 
 | Path                  | Description                                                  |
@@ -150,3 +152,10 @@ cdk deploy
 Navigate to the AWS Console > AppSync to see the newly created `users-api`.
 
 You can see the full list of cloud resources involved in the project in `cdk.out/ApiStack.template.json`.
+
+## Next Steps
+
+- The Location lambda has the MapBox token as an environment variable as plain text. It would be nice to protect the secret with KMS instead.
+- Typify the events and responses in the lambda functions
+- Add a custom domain to AppSync now that it has been [recently introduced](https://aws.amazon.com/blogs/mobile/introducing-custom-domain-names-for-aws-appsync-apis/)
+- Increase and report test coverage
