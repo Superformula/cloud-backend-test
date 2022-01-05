@@ -131,6 +131,11 @@ export class ApiStack extends cdk.Stack {
       typeName: 'Query',
       fieldName: 'getLocation',
       dataSourceName: dataSourceLocationLambda.name,
+      responseMappingTemplate: `
+        #if ( $ctx.result.error )
+          $util.error($ctx.result.error.message, $ctx.result.error.type)
+        #end
+        $util.toJson($ctx.result)`,
     })
     getLocationResolver.addDependsOn(apiSchema)
 
@@ -195,6 +200,11 @@ export class ApiStack extends cdk.Stack {
       typeName: 'Mutation',
       fieldName: 'updateUser',
       dataSourceName: dataSourceUpdateUserLambda.name,
+      responseMappingTemplate: `
+        #if ( $ctx.result.error )
+          $util.error($ctx.result.error.message, $ctx.result.error.type)
+        #end
+        $util.toJson($ctx.result)`,
     })
     updateUserResolver.addDependsOn(apiSchema)
 
