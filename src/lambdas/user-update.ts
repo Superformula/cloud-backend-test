@@ -8,6 +8,11 @@ const RESERVED_RESPONSE = `Error: You're using AWS reserved keywords as attribut
 
 const db = new AWS.DynamoDB.DocumentClient()
 
+interface ApiError {
+  code: string
+  message: string
+}
+
 export const handler = async (event: any = {}): Promise<any> => {
   const editedUser: any =
     typeof event.arguments?.user == 'object' ? event.arguments.user : JSON.parse(event.arguments.user)
@@ -54,15 +59,15 @@ export const handler = async (event: any = {}): Promise<any> => {
   try {
     let updatedUser = await db.update(params).promise()
     return updatedUser.Attributes
-  } catch (dbError: any) {
+  } catch (dbError) {
     const customMessage =
-      dbError.code === 'ValidationException' && dbError.message.includes('reserved keyword')
+      (dbError as ApiError).code === 'ValidationException' && (dbError as ApiError).message.includes('reserved keyword')
         ? RESERVED_RESPONSE
         : DYNAMODB_EXECUTION_ERROR
     return {
       error: {
         message: customMessage,
-        type: dbError.code,
+        type: (dbError as ApiError).code,
       },
     }
   }
