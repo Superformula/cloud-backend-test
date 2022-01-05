@@ -14,14 +14,24 @@ export const handler = async (event: any = {}): Promise<any> => {
 
   const userId = event.arguments?.user?.id
   if (!userId) {
-    return { statusCode: 400, body: 'invalid request, you are missing the user.id argument' }
+    return {
+      error: {
+        message: 'The user id is required',
+        type: 'ValidationError',
+      },
+    }
   }
 
   delete editedUser.id
   editedUser['updatedAt'] = new Date().toISOString()
   let editedUserProps = Object.keys(editedUser)
   if (!editedUser || editedUserProps.length < 2) {
-    return { statusCode: 400, body: 'invalid request, no arguments provided' }
+    return {
+      error: {
+        message: 'No properties to update provided',
+        type: 'ValidationError',
+      },
+    }
   }
 
   const firstProperty = editedUserProps.splice(0, 1)
@@ -32,7 +42,7 @@ export const handler = async (event: any = {}): Promise<any> => {
     },
     UpdateExpression: `set ${firstProperty} = :${firstProperty}`,
     ExpressionAttributeValues: {},
-    ReturnValues: 'UPDATED_NEW',
+    ReturnValues: 'ALL_NEW',
   }
   params.ExpressionAttributeValues[`:${firstProperty}`] = editedUser[`${firstProperty}`]
 
@@ -42,14 +52,18 @@ export const handler = async (event: any = {}): Promise<any> => {
   })
 
   try {
-    await db.update(params).promise()
-    // TODO Get updated user from DB, the mutation might ask for other properties
-    return { statusCode: 204, user: event.arguments.user }
+    let updatedUser = await db.update(params).promise()
+    return updatedUser.Attributes
   } catch (dbError: any) {
-    const errorResponse =
+    const customMessage =
       dbError.code === 'ValidationException' && dbError.message.includes('reserved keyword')
         ? RESERVED_RESPONSE
         : DYNAMODB_EXECUTION_ERROR
-    return { statusCode: 500, body: errorResponse, error: dbError.message }
+    return {
+      error: {
+        message: customMessage,
+        type: dbError.code,
+      },
+    }
   }
 }
