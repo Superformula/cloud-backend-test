@@ -8,6 +8,9 @@ type User {
   updatedAt: AWSDateTime
   imageUrl: AWSURL
 }
+"""
+Input schema when creating a new user
+"""
 input UserInput {
   id: ID
   name: String!
@@ -16,6 +19,9 @@ input UserInput {
   description: String
   imageUrl: AWSURL
 }
+"""
+Input schema when updating an user
+"""
 input UserUpdateInput {
   id: ID!
   name: String
