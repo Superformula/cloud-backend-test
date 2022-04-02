@@ -13,7 +13,12 @@ resource "aws_lambda_function" "user_lambda" {
 
   environment {
     variables = {
-      "ENVIRONMENT" = var.environment
+      "USER_TABLE_NAME" = var.user_table_name
+      "ENVIRONMENT"     = var.environment
     }
   }
+
+  depends_on = [
+    aws_dynamodb_table.users_table
+  ]
 }
