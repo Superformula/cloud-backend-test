@@ -4,6 +4,7 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -13,9 +14,101 @@ export type Scalars = {
   Float: number;
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  /** Mutation to create a new user */
+  createUser: User;
+  /** Mutation to delete a user */
+  deleteUser?: Maybe<User>;
+  /** Mutation to update a user with its id */
+  updateUser: User;
+};
+
+
+export type MutationCreateUserArgs = {
+  data: UserInput;
+};
+
+
+export type MutationDeleteUserArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationUpdateUserArgs = {
+  data: UserInput;
+  id: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
-  hello?: Maybe<Scalars['String']>;
+  /** Fetch a user with its id */
+  user: User;
+  /** Fetch all users. If query provided, will return resutls with the provided filters. */
+  users: UserListResult;
+};
+
+
+export type QueryUserArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryUsersArgs = {
+  query?: InputMaybe<UserQueryParams>;
+};
+
+/** User type. */
+export type User = {
+  __typename?: 'User';
+  /** User's address */
+  address?: Maybe<Scalars['String']>;
+  /** User's createdAt timestamp */
+  createdAt: Scalars['String'];
+  /** User's description */
+  description: Scalars['String'];
+  /** User's bithdate */
+  dob: Scalars['String'];
+  id: Scalars['String'];
+  /** User's imageUrl */
+  imageUrl?: Maybe<Scalars['String']>;
+  /** User's name */
+  name: Scalars['String'];
+  /** User's createdAt timestamp */
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+/** Input needed for user create/update opertations. */
+export type UserInput = {
+  /** User's address (optional) */
+  address?: InputMaybe<Scalars['String']>;
+  /** User's description (required) */
+  description: Scalars['String'];
+  /** User's bithdate (required) */
+  dob: Scalars['String'];
+  /** User's imageUrl (optional) */
+  imageUrl?: InputMaybe<Scalars['String']>;
+  /** User's name (required) */
+  name: Scalars['String'];
+};
+
+/** Result of users fetch all. */
+export type UserListResult = {
+  __typename?: 'UserListResult';
+  /** Cursor used for results pagination */
+  cursor?: Maybe<Scalars['String']>;
+  /** List of users found */
+  users?: Maybe<Array<User>>;
+};
+
+/** User listing params */
+export type UserQueryParams = {
+  /** Cursor for pagination (optional) */
+  cursor?: InputMaybe<Scalars['String']>;
+  /** User name filter (optional) */
+  filter?: InputMaybe<Scalars['String']>;
+  /** Query results limit (optional) */
+  limit?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -88,22 +181,62 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
+  Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  User: ResolverTypeWrapper<User>;
+  UserInput: UserInput;
+  UserListResult: ResolverTypeWrapper<UserListResult>;
+  UserQueryParams: UserQueryParams;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
+  Int: Scalars['Int'];
+  Mutation: {};
   Query: {};
   String: Scalars['String'];
+  User: User;
+  UserInput: UserInput;
+  UserListResult: UserListResult;
+  UserQueryParams: UserQueryParams;
+};
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'data'>>;
+  deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
+  updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'data' | 'id'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  hello?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+  users?: Resolver<ResolversTypes['UserListResult'], ParentType, ContextType, Partial<QueryUsersArgs>>;
+};
+
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  address?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  dob?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  imageUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UserListResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['UserListResult'] = ResolversParentTypes['UserListResult']> = {
+  cursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  users?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  User?: UserResolvers<ContextType>;
+  UserListResult?: UserListResultResolvers<ContextType>;
 };
 

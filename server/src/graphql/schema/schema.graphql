@@ -1,3 +1,66 @@
 type Query {
-    hello: String
+  "Fetch a user with its id"
+  user(id: String!): User!
+  "Fetch all users. If query provided, will return resutls with the provided filters."
+  users(query: UserQueryParams): UserListResult!
+}
+
+type Mutation {
+  "Mutation to create a new user"
+  createUser(data: UserInput!): User!
+  "Mutation to update a user with its id"
+  updateUser(id: String!, data: UserInput!): User!
+  "Mutation to delete a user"
+  deleteUser(id: String!): User
+}
+
+"User type."
+type User {
+  id: String!
+  "User's name"
+  name: String!
+  "User's bithdate"
+  dob: String!
+  "User's address"
+  address: String
+  "User's description"
+  description: String!
+    "User's imageUrl"
+  imageUrl: String
+  "User's createdAt timestamp"
+  createdAt: String!
+  "User's createdAt timestamp"
+  updatedAt: String
+}
+
+"Result of users fetch all."
+type UserListResult {
+	"List of users found"
+	users: [User!]
+	"Cursor used for results pagination"
+	cursor: String
+}
+
+"Input needed for user create/update opertations."
+input UserInput {
+  "User's name (required)"
+  name: String!
+  "User's bithdate (required)"
+  dob: String!
+  "User's address (optional)"
+  address: String
+  "User's description (required)"
+  description: String!
+  "User's imageUrl (optional)"
+  imageUrl: String
+}
+
+"User listing params"
+input UserQueryParams {
+	"Cursor for pagination (optional)"
+	cursor: String
+	"Query results limit (optional)"
+	limit: Int
+	"User name filter (optional)"
+	filter: String
 }
