@@ -7,3 +7,8 @@ variable "environment" {
   type    = string
   default = "dev"
 }
+
+variable "user_table_name" {
+  type    = string
+  default = "Users"
+}
