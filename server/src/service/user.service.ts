@@ -128,6 +128,11 @@ export class UserService {
     }
   }
 
+  /**
+   * Deletes a user with its Id.
+   * @param {string} id The id of the user to delete.
+   * @returns A boolean.
+   */
   async deleteUser(id: string): Promise<boolean> {
     try {
       await this.database.delete({
