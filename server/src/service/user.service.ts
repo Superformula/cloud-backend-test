@@ -2,6 +2,7 @@ import { ApolloError, UserInputError } from 'apollo-server-lambda';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { v4 as uuid } from 'uuid';
 import { User, UserInput } from '../graphql/types/types';
+import { mapAttributeToUser } from '../mappers/user.mapper';
 import { dateIsValid, formatDateOnly, getCurrentDateStr } from '../utils/date.util';
 
 export class UserService {
@@ -12,6 +13,26 @@ export class UserService {
   constructor(db: DocumentClient, tableName: string) {
     this.database = db;
     this.tableName = tableName;
+  }
+
+  async getUser(id: string): Promise<User> {
+    try {
+      const user = await this.database.get({
+        TableName: this.tableName,
+        Key: { id },
+      }).promise();
+
+      if (!user || !user.Item) {
+        return Promise.reject(new ApolloError(
+          'The user does not exist',
+          'NOT_FOUND',
+        ));
+      }
+
+      return Promise.resolve(mapAttributeToUser(user.Item));
+    } catch (error) {
+      return Promise.reject(new ApolloError('Error while getting user'));
+    }
   }
 
   async createUser(data: UserInput): Promise<User> {
