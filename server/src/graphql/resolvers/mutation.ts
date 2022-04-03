@@ -10,4 +10,8 @@ export const Mutation: MutationResolvers<AppContext> = {
     const user = await context.userService.updateUser(args.id, args.data);
     return user;
   },
+  deleteUser: async (_parent, args, context) => {
+    const res = await context.userService.deleteUser(args.id);
+    return res;
+  },
 };

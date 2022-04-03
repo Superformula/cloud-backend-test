@@ -43,7 +43,7 @@ export class UserService {
 
       return Promise.resolve(mapAttributeToUser(user.Item));
     } catch (error) {
-      return Promise.reject(new ApolloError('Error while getting user'));
+      return Promise.reject(new ApolloError('Error while getting user.'));
     }
   }
 
@@ -82,7 +82,7 @@ export class UserService {
 
       return Promise.resolve(user);
     } catch (error) {
-      return Promise.reject(new ApolloError('Error while creating user'));
+      return Promise.reject(new ApolloError('Error while creating user.'));
     }
   }
 
@@ -124,7 +124,20 @@ export class UserService {
         return Promise.reject(error);
       }
 
-      return Promise.reject(new ApolloError('Error while updating user'));
+      return Promise.reject(new ApolloError('Error while updating user.'));
+    }
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    try {
+      await this.database.delete({
+        TableName: this.tableName,
+        Key: { id },
+      }).promise();
+
+      return Promise.resolve(true);
+    } catch (error) {
+      return Promise.reject(new ApolloError('Error while deleting user.'));
     }
   }
 }
