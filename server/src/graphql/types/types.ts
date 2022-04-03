@@ -14,6 +14,15 @@ export type Scalars = {
   Float: number;
 };
 
+/** Result of geolocation request. */
+export type GeolocationResult = {
+  __typename?: 'GeolocationResult';
+  /** Latitude that matches the address */
+  latitude: Scalars['Float'];
+  /** Longitude that matches the address */
+  longitude: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Mutation to create a new user */
@@ -42,10 +51,17 @@ export type MutationUpdateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Fetch latitude and longitude from provided address */
+  location?: Maybe<GeolocationResult>;
   /** Fetch a user with its id */
   user: User;
   /** Fetch all users. If query provided, will return resutls with the provided filters. */
   users: UserListResult;
+};
+
+
+export type QueryLocationArgs = {
+  query: Scalars['String'];
 };
 
 
@@ -181,6 +197,8 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
+  GeolocationResult: ResolverTypeWrapper<GeolocationResult>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
@@ -194,6 +212,8 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
+  Float: Scalars['Float'];
+  GeolocationResult: GeolocationResult;
   Int: Scalars['Int'];
   Mutation: {};
   Query: {};
@@ -204,6 +224,12 @@ export type ResolversParentTypes = {
   UserQueryParams: UserQueryParams;
 };
 
+export type GeolocationResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['GeolocationResult'] = ResolversParentTypes['GeolocationResult']> = {
+  latitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  longitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'data'>>;
   deleteUser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
@@ -211,6 +237,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  location?: Resolver<Maybe<ResolversTypes['GeolocationResult']>, ParentType, ContextType, RequireFields<QueryLocationArgs, 'query'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<ResolversTypes['UserListResult'], ParentType, ContextType, Partial<QueryUsersArgs>>;
 };
@@ -234,6 +261,7 @@ export type UserListResultResolvers<ContextType = any, ParentType extends Resolv
 };
 
 export type Resolvers<ContextType = any> = {
+  GeolocationResult?: GeolocationResultResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;

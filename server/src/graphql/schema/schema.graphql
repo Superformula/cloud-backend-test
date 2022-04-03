@@ -3,6 +3,8 @@ type Query {
   user(id: String!): User!
   "Fetch all users. If query provided, will return resutls with the provided filters."
   users(query: UserQueryParams): UserListResult!
+  "Fetch latitude and longitude from provided address"
+  location(query: String!): GeolocationResult
 }
 
 type Mutation {
@@ -39,6 +41,14 @@ type UserListResult {
 	users: [User!]
 	"Cursor used for results pagination"
 	cursor: String
+}
+
+"Result of geolocation request."
+type GeolocationResult{
+  "Latitude that matches the address"
+  latitude: Float!
+  "Longitude that matches the address"
+  longitude: Float!
 }
 
 "Input needed for user create/update opertations."
