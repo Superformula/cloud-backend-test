@@ -53,14 +53,26 @@ export class UserService {
     }
   }
 
+  /**
+   * Get all users.
+   * @param {UserQueryParams} query Query params to apply to users fetch
+   * @returns A list of users.
+   */
   async getAll(query?: InputMaybe<UserQueryParams>): Promise<UserListResult> {
     try {
+      // Set users array as empty.
       let users: User[] = [];
+      // Get limit from query or set default of 20.
+      const limit = query?.limit ?? 20;
 
+      // Execute the scan
       const scanRes = await this.database.scan({
         TableName: this.tableName,
-        Limit: query?.limit ?? 20,
+        // If filter was provided, get all results to apply limit after
+        ...(query?.filter ? {} : { Limit: limit }),
+        // If cursos was provided, setup start key
         ...(query?.cursor ? { ExclusiveStartKey: { id: query.cursor } } : {}),
+        // If filter was provided, apply filter expression
         ...(query?.filter ? {
           FilterExpression: 'contains(#name, :filter)',
           ExpressionAttributeNames: { '#name': 'name' },
@@ -68,14 +80,26 @@ export class UserService {
         } : {}),
       }).promise();
 
+      // If items found, update users array
       if (scanRes.Items) {
         users = scanRes.Items as User[];
       }
 
-      return Promise.resolve({
-        users,
-        cursor: scanRes.LastEvaluatedKey?.id ?? undefined,
-      });
+      // Get cursor from scan results
+      let cursor = scanRes.LastEvaluatedKey?.id ?? undefined;
+
+      // If query was provided, apply limit to match requested results
+      if (query?.filter && users.length > limit) {
+        // Remove extra results
+        while (users.length > limit) {
+          users.pop();
+        }
+
+        // Get new cursor
+        cursor = users[users.length - 1].id;
+      }
+
+      return Promise.resolve({ users, cursor });
     } catch (error) {
       return Promise.reject(new ApolloError('Error while getting users.'));
     }
