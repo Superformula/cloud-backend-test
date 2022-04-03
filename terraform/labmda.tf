@@ -15,6 +15,7 @@ resource "aws_lambda_function" "user_lambda" {
     variables = {
       "USER_TABLE_NAME" = var.user_table_name
       "ENVIRONMENT"     = var.environment
+      "MAPBOX_API_KEY"  = var.mapbox_api_key
     }
   }
 

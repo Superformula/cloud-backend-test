@@ -12,3 +12,8 @@ variable "user_table_name" {
   type    = string
   default = "Users"
 }
+
+variable "mapbox_api_key" {
+  type      = string
+  sensitive = true
+}
