@@ -5,6 +5,9 @@ import { User, UserInput } from '../graphql/types/types';
 import { mapAttributeToUser } from '../mappers/user.mapper';
 import { dateIsValid, formatDateOnly, getCurrentDateStr } from '../utils/date.util';
 
+/**
+ * Service used to execute crud operations for users
+ */
 export class UserService {
   private database: DocumentClient;
 
@@ -15,6 +18,11 @@ export class UserService {
     this.tableName = tableName;
   }
 
+  /**
+   * Fetch a user with its Id.
+   * @param {string} id The id of the user to fetch
+   * @returns A Promise with the user that matches the provided id.
+   */
   async getUser(id: string): Promise<User> {
     try {
       const user = await this.database.get({
@@ -35,6 +43,11 @@ export class UserService {
     }
   }
 
+  /**
+   * Create a new user.
+   * @param {UserInput} data The data to create the user.
+   * @returns A Promise with the created user.
+   */
   async createUser(data: UserInput): Promise<User> {
     try {
       if (!data.dob || !data.description || !data.name) {
@@ -69,6 +82,12 @@ export class UserService {
     }
   }
 
+  /**
+   * Updates an existing user with its Id.
+   * @param {string} id The id of the user to update.
+   * @param {UserInput} data The new data to update the user.
+   * @returns The updated user.
+   */
   async updateUser(id: string, data: UserInput): Promise<User> {
     try {
       // Get user if exists
