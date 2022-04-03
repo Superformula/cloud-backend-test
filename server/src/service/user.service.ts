@@ -68,4 +68,40 @@ export class UserService {
       return Promise.reject(new ApolloError('Error while creating user'));
     }
   }
+
+  async updateUser(id: string, data: UserInput): Promise<User> {
+    try {
+      // Get user if exists
+      const user = await this.getUser(id);
+
+      // Validate date if provided
+      if (data.dob && !dateIsValid(data.dob)) {
+        return Promise.reject(new UserInputError('The provided date of birth is invalid.'));
+      }
+
+      const updatedUser: User = {
+        id: user.id,
+        createdAt: user.createdAt,
+        description: data.description ?? user.description,
+        dob: (data.dob) ? formatDateOnly(data.dob) : user.dob,
+        name: data.name ?? user.name,
+        imageUrl: data.imageUrl ?? user.imageUrl,
+        address: data.address ?? user.address,
+        updatedAt: getCurrentDateStr(),
+      };
+
+      await this.database.put({
+        TableName: this.tableName,
+        Item: updatedUser,
+      }).promise();
+
+      return Promise.resolve(updatedUser);
+    } catch (error) {
+      if (error instanceof ApolloError) {
+        return Promise.reject(error);
+      }
+
+      return Promise.reject(new ApolloError('Error while updating user'));
+    }
+  }
 }
