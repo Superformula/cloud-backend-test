@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "eslint src/**/*.ts --fix",
     "build": "tsc",
+    "test": "jest",
     "build-pack": "yarn build && yarn copy-schema && trace-pkg -c pkg_config.yml",
     "copy-schema": "copyfiles -u 1 src/graphql/schema/schema.graphql dist",
     "generate": "graphql-codegen --config codegen.yml"
@@ -15,16 +16,20 @@
     "@graphql-codegen/introspection": "2.1.1",
     "@graphql-codegen/typescript": "2.4.8",
     "@graphql-codegen/typescript-resolvers": "2.6.1",
+    "@types/jest": "^27.4.1",
     "@types/mapbox__mapbox-sdk": "^0.13.2",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
+    "aws-sdk-mock": "^5.6.2",
     "copyfiles": "^2.4.1",
     "eslint": "^8.12.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
+    "jest": "^27.5.1",
     "trace-pkg": "^0.4.1",
+    "ts-jest": "^27.1.4",
     "typescript": "^4.6.3"
   },
   "dependencies": {
