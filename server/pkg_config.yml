@@ -18,6 +18,11 @@ options:
     'node-fetch':
         - 'encoding'
 
+  dynamic:
+    resolutions:
+      'express/lib/view.js': []
+      'keyv/src/index.js': []
+
 # Each "package" corresponds to an outputted zip file. It can contain an number
 # of traced or straight included files.
 packages:
