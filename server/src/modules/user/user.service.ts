@@ -113,9 +113,13 @@ export class UserService {
   async createUser(data: UserInput): Promise<User> {
     try {
       if (!data.dob || !data.description || !data.name) {
-        return Promise.reject(new UserInputError(
-          'You must include all mandatory fields.',
-        ));
+        return Promise.reject(new UserInputError('You must include all mandatory fields.', {
+          validationErrors: {
+            ...(!data.dob ? { dob: 'Date of birth must be included' } : {}),
+            ...(!data.description ? { description: 'Description must be included' } : {}),
+            ...(!data.name ? { name: 'Name must be included' } : {}),
+          },
+        }));
       }
 
       // Validate provided date
