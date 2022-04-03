@@ -10,4 +10,8 @@ export const Query: QueryResolvers<AppContext> = {
     const users = await context.userService.getAll(args.query);
     return users;
   },
+  location: async (_parent, args, context) => {
+    const coordinates = await context.locationService.getGeolocation(args.query);
+    return coordinates;
+  },
 };
