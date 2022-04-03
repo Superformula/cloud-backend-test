@@ -19,7 +19,7 @@ export type Mutation = {
   /** Mutation to create a new user */
   createUser: User;
   /** Mutation to delete a user */
-  deleteUser?: Maybe<User>;
+  deleteUser: Scalars['Boolean'];
   /** Mutation to update a user with its id */
   updateUser: User;
 };
@@ -206,7 +206,7 @@ export type ResolversParentTypes = {
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'data'>>;
-  deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
+  deleteUser?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'data' | 'id'>>;
 };
 

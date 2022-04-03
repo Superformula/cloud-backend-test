@@ -11,7 +11,7 @@ type Mutation {
   "Mutation to update a user with its id"
   updateUser(id: String!, data: UserInput!): User!
   "Mutation to delete a user"
-  deleteUser(id: String!): User
+  deleteUser(id: String!): Boolean!
 }
 
 "User type."
