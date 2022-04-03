@@ -15,6 +15,7 @@
     "@graphql-codegen/introspection": "2.1.1",
     "@graphql-codegen/typescript": "2.4.8",
     "@graphql-codegen/typescript-resolvers": "2.6.1",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "copyfiles": "^2.4.1",
@@ -29,6 +30,7 @@
     "apollo-server-lambda": "^3.6.7",
     "aws-sdk": "^2.1106.0",
     "dotenv": "^16.0.0",
-    "graphql": "^16.3.0"
+    "graphql": "^16.3.0",
+    "uuid": "^8.3.2"
   }
 }
