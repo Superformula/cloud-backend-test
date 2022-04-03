@@ -6,4 +6,8 @@ export const Query: QueryResolvers<AppContext> = {
     const user = await context.userService.getUser(args.id);
     return user;
   },
+  users: async (_parent, args, context) => {
+    const users = await context.userService.getAll(args.query);
+    return users;
+  },
 };

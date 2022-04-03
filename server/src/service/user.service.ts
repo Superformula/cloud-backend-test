@@ -1,7 +1,13 @@
 import { ApolloError, UserInputError } from 'apollo-server-lambda';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { v4 as uuid } from 'uuid';
-import { User, UserInput } from '../graphql/types/types';
+import {
+  InputMaybe,
+  User,
+  UserInput,
+  UserListResult,
+  UserQueryParams,
+} from '../graphql/types/types';
 import { mapAttributeToUser } from '../mappers/user.mapper';
 import { dateIsValid, formatDateOnly, getCurrentDateStr } from '../utils/date.util';
 
@@ -44,6 +50,34 @@ export class UserService {
       return Promise.resolve(mapAttributeToUser(user.Item));
     } catch (error) {
       return Promise.reject(new ApolloError('Error while getting user.'));
+    }
+  }
+
+  async getAll(query?: InputMaybe<UserQueryParams>): Promise<UserListResult> {
+    try {
+      let users: User[] = [];
+
+      const scanRes = await this.database.scan({
+        TableName: this.tableName,
+        Limit: query?.limit ?? 20,
+        ...(query?.cursor ? { ExclusiveStartKey: { id: query.cursor } } : {}),
+        ...(query?.filter ? {
+          FilterExpression: 'contains(#name, :filter)',
+          ExpressionAttributeNames: { '#name': 'name' },
+          ExpressionAttributeValues: { ':filter': query?.filter },
+        } : {}),
+      }).promise();
+
+      if (scanRes.Items) {
+        users = scanRes.Items as User[];
+      }
+
+      return Promise.resolve({
+        users,
+        cursor: scanRes.LastEvaluatedKey?.id ?? undefined,
+      });
+    } catch (error) {
+      return Promise.reject(new ApolloError('Error while getting users.'));
     }
   }
 
