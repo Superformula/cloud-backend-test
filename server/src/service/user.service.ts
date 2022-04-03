@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server-lambda';
+import { ApolloError, UserInputError } from 'apollo-server-lambda';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { v4 as uuid } from 'uuid';
 import { User, UserInput } from '../graphql/types/types';
@@ -16,9 +16,15 @@ export class UserService {
 
   async createUser(data: UserInput): Promise<User> {
     try {
+      if (!data.dob || !data.description || !data.name) {
+        return Promise.reject(new UserInputError(
+          'You must include all mandatory fields.',
+        ));
+      }
+
       // Validate provided date
       if (!dateIsValid(data.dob)) {
-        return Promise.reject(new ApolloError('The provided date of birth is invalid.'));
+        return Promise.reject(new UserInputError('The provided date of birth is invalid.'));
       }
 
       const user: User = {

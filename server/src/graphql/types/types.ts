@@ -83,13 +83,13 @@ export type UserInput = {
   /** User's address (optional) */
   address?: InputMaybe<Scalars['String']>;
   /** User's description (required) */
-  description: Scalars['String'];
+  description?: InputMaybe<Scalars['String']>;
   /** User's bithdate (required) */
-  dob: Scalars['String'];
+  dob?: InputMaybe<Scalars['String']>;
   /** User's imageUrl (optional) */
   imageUrl?: InputMaybe<Scalars['String']>;
   /** User's name (required) */
-  name: Scalars['String'];
+  name?: InputMaybe<Scalars['String']>;
 };
 
 /** Result of users fetch all. */
