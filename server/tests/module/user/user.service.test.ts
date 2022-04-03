@@ -4,17 +4,21 @@ import aws from 'aws-sdk';
 import { GetItemInput } from 'aws-sdk/clients/dynamodb';
 import { UserService } from '../../../src/modules/user/user.service';
 import { User } from '../../../src/graphql/types/types';
+import * as utils from '../../../src/utils/date.util';
+
+jest.mock('uuid', () => ({ v4: () => '1234' }));
+jest.spyOn(utils, 'getCurrentDateStr').mockReturnValue('2022-04-03T00:05:42.004Z');
+
+beforeAll(() => {
+  AWSMock.setSDKInstance(aws);
+});
+
+afterEach(() => {
+  AWSMock.restore('DynamoDB.DocumentClient');
+});
 
 // Tests for get user by id service
 describe('Get user by Id service', () => {
-  beforeAll(() => {
-    AWSMock.setSDKInstance(aws);
-  });
-
-  afterEach(() => {
-    AWSMock.restore('DynamoDB.DocumentClient');
-  });
-
   it('should fetch a user correctly', async () => {
     const mockResult: User = {
       id: '123',
@@ -64,14 +68,6 @@ describe('Get user by Id service', () => {
 
 // Tests for get all users service
 describe('Get all users service', () => {
-  beforeAll(() => {
-    AWSMock.setSDKInstance(aws);
-  });
-
-  afterEach(() => {
-    AWSMock.restore('DynamoDB.DocumentClient');
-  });
-
   const userList: User[] = [
     {
       id: '1',
@@ -226,5 +222,82 @@ describe('Get all users service', () => {
 
     const res = await userService.getAll({ limit, filter: 'Rodrigo', cursor });
     expect(res).toStrictEqual(expected);
+  });
+});
+
+// User create services tests
+describe('Create user service', () => {
+  const correctInput = {
+    name: 'Rodrigo',
+    dob: '1999-07-18',
+    description: 'Random description',
+    address: 'Lima, Peru',
+  };
+
+  const missingFieldsInput = {
+    name: 'Rodrigo',
+    description: 'Random description',
+    address: 'Lima, Peru',
+  };
+
+  const wrongDateInput = {
+    name: 'Rodrigo',
+    dob: 'incorrect date',
+    description: 'Random description',
+  };
+
+  it('should create a user correctly', async () => {
+    const expected = {
+      id: '1234',
+      name: 'Rodrigo',
+      dob: '1999-07-18',
+      createdAt: '2022-04-03T00:05:42.004Z',
+      description: 'Random description',
+      address: 'Lima, Peru',
+      imageUrl: undefined,
+    };
+
+    AWSMock.mock('DynamoDB.DocumentClient', 'put', (params: GetItemInput, callback: Function) => {
+      callback(null, {});
+    });
+
+    const dynamoDB = new aws.DynamoDB.DocumentClient();
+    const userService = new UserService(dynamoDB, '');
+
+    const res = await userService.createUser(correctInput);
+    expect(res).toEqual(expected);
+  });
+
+  it('should return error on missing mandatory attributes', async () => {
+    AWSMock.mock('DynamoDB.DocumentClient', 'put', (params: GetItemInput, callback: Function) => {
+      callback(null, {});
+    });
+
+    const dynamoDB = new aws.DynamoDB.DocumentClient();
+    const userService = new UserService(dynamoDB, '');
+
+    await expect(userService.createUser(missingFieldsInput)).rejects.toThrow('You must include all mandatory fields.');
+  });
+
+  it('should return error invalid dob provided', async () => {
+    AWSMock.mock('DynamoDB.DocumentClient', 'put', (params: GetItemInput, callback: Function) => {
+      callback(null, {});
+    });
+
+    const dynamoDB = new aws.DynamoDB.DocumentClient();
+    const userService = new UserService(dynamoDB, '');
+
+    await expect(userService.createUser(wrongDateInput)).rejects.toThrow('The provided date of birth is invalid.');
+  });
+
+  it('should return error on database error', async () => {
+    AWSMock.mock('DynamoDB.DocumentClient', 'put', (params: GetItemInput, callback: Function) => {
+      callback({ message: 'Database error' }, null);
+    });
+
+    const dynamoDB = new aws.DynamoDB.DocumentClient();
+    const userService = new UserService(dynamoDB, '');
+
+    await expect(userService.createUser(correctInput)).rejects.toThrow('Error while creating user.');
   });
 });
