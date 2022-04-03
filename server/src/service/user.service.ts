@@ -13,6 +13,10 @@ export class UserService {
 
   private tableName: string;
 
+  /**
+   * @param {DocumentClient} db DynamoDb document client
+   * @param {string} tableName DynamoDB user's table name
+   */
   constructor(db: DocumentClient, tableName: string) {
     this.database = db;
     this.tableName = tableName;
