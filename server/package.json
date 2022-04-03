@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.13.3",
+    "apollo-server-core": "^3.6.7",
     "apollo-server-lambda": "^3.6.7",
     "aws-sdk": "^2.1106.0",
     "dotenv": "^16.0.0",

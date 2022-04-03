@@ -1,4 +1,5 @@
 import Geocoding, { GeocodeService } from '@mapbox/mapbox-sdk/services/geocoding';
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core/dist/plugin/landingPage/graphqlPlayground';
 import { ApolloServer } from 'apollo-server-lambda';
 import { DocumentClient } from 'aws-sdk/clients/dynamodb';
 import { config } from 'dotenv';
@@ -15,12 +16,18 @@ config();
 // Read types from .graphql schema
 const typeDefs = readFileSync('./graphql/schema/schema.graphql', 'utf8');
 
+// Get current environment
+const currentEnv = process.env.ENVIRONMENT ?? 'dev';
+
 const server = new ApolloServer({
   typeDefs,
   resolvers: {
     Mutation,
     Query,
   },
+  plugins: [ApolloServerPluginLandingPageGraphQLPlayground({
+    endpoint: `${currentEnv}/graphql`,
+  })],
   context: (): AppContext => {
     // Create instance of DynamoDB document client
     const dynamo = new DocumentClient();
