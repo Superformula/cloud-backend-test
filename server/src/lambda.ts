@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 import { readFileSync } from 'fs';
 import { Mutation } from './graphql/resolvers/mutation';
 import { Query } from './graphql/resolvers/query';
-import { UserService } from './service/user.service';
+import { UserService } from './modules/user/user.service';
 import { AppContext } from './types/types';
 
 // Setup dotenv to read env vars
@@ -24,7 +24,7 @@ const server = new ApolloServer({
     const dynamo = new DocumentClient();
     // Get table name from env vars
     const tableName = process.env.USER_TABLE_NAME ?? '';
-
+    // Create instance of user service
     const userService = new UserService(dynamo, tableName);
 
     return { userService };

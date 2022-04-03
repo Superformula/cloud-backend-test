@@ -1,4 +1,4 @@
-import { UserService } from '../service/user.service';
+import { UserService } from '../modules/user/user.service';
 
 export type AppContext = {
   userService: UserService

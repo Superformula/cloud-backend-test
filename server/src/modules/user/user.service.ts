@@ -7,9 +7,9 @@ import {
   UserInput,
   UserListResult,
   UserQueryParams,
-} from '../graphql/types/types';
-import { mapAttributeToUser } from '../mappers/user.mapper';
-import { dateIsValid, formatDateOnly, getCurrentDateStr } from '../utils/date.util';
+} from '../../graphql/types/types';
+import { mapAttributeToUser } from './user.mapper';
+import { dateIsValid, formatDateOnly, getCurrentDateStr } from '../../utils/date.util';
 
 /**
  * Service used to execute crud operations for users

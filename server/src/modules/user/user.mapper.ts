@@ -1,5 +1,5 @@
 import { AttributeMap } from 'aws-sdk/clients/dynamodb';
-import { User } from '../graphql/types/types';
+import { User } from '../../graphql/types/types';
 
 /**
  * This mapper would convert an AttributeMap to a User type object
