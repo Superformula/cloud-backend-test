@@ -425,7 +425,7 @@ describe('Update user service', () => {
 
 // Delete user
 describe('Delete user service', () => {
-  it('should return delete user correctly', async () => {
+  it('should delete user correctly', async () => {
     AWSMock.mock('DynamoDB.DocumentClient', 'delete', (params: GetItemInput, callback: Function) => {
       callback(null, {});
     });
