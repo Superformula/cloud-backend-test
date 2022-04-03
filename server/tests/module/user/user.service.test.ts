@@ -301,3 +301,149 @@ describe('Create user service', () => {
     await expect(userService.createUser(correctInput)).rejects.toThrow('Error while creating user.');
   });
 });
+
+// User update services tests
+describe('Update user service', () => {
+  const existingUser = {
+    id: '1234',
+    name: 'Jennifer',
+    dob: '1998-12-10',
+    imageUrl: '',
+    address: '',
+    description: 'Random description',
+    createdAt: '2022-04-03T00:05:42.004Z',
+    updatedAt: '2022-04-03T02:05:16.958Z',
+  };
+
+  it('should update user correctly', async () => {
+    const userId = '1234';
+    const updatedData = {
+      description: 'Random description updated',
+    };
+    const expected = {
+      id: '1234',
+      name: 'Jennifer',
+      address: '',
+      description: 'Random description updated',
+      dob: '1998-12-10',
+      imageUrl: '',
+      createdAt: '2022-04-03T00:05:42.004Z',
+      updatedAt: '2022-04-03T00:05:42.004Z',
+    };
+
+    AWSMock.mock('DynamoDB.DocumentClient', 'get', (params: GetItemInput, callback: Function) => {
+      callback(null, { Item: existingUser });
+    });
+
+    AWSMock.mock('DynamoDB.DocumentClient', 'put', (params: GetItemInput, callback: Function) => {
+      callback(null, {});
+    });
+
+    const dynamoDB = new aws.DynamoDB.DocumentClient();
+    const userService = new UserService(dynamoDB, '');
+
+    const res = await userService.updateUser(userId, updatedData);
+    expect(res).toEqual(expected);
+  });
+
+  it('should return error if user does no exist', async () => {
+    const userId = '123456';
+    const updatedData = {
+      description: 'Random description updated',
+    };
+
+    AWSMock.mock('DynamoDB.DocumentClient', 'get', (params: GetItemInput, callback: Function) => {
+      callback(null, {});
+    });
+
+    AWSMock.mock('DynamoDB.DocumentClient', 'put', (params: GetItemInput, callback: Function) => {
+      callback(null, {});
+    });
+
+    const dynamoDB = new aws.DynamoDB.DocumentClient();
+    const userService = new UserService(dynamoDB, '');
+
+    await expect(userService.updateUser(userId, updatedData)).rejects.toThrow('The user does not exist');
+  });
+
+  it('should return error on invalid dob provided', async () => {
+    const userId = '1234';
+    const updatedData = {
+      dob: 'Incorrect date',
+    };
+
+    AWSMock.mock('DynamoDB.DocumentClient', 'get', (params: GetItemInput, callback: Function) => {
+      callback(null, { Item: existingUser });
+    });
+
+    AWSMock.mock('DynamoDB.DocumentClient', 'put', (params: GetItemInput, callback: Function) => {
+      callback(null, {});
+    });
+
+    const dynamoDB = new aws.DynamoDB.DocumentClient();
+    const userService = new UserService(dynamoDB, '');
+
+    await expect(userService.updateUser(userId, updatedData)).rejects.toThrow('The provided date of birth is invalid.');
+  });
+
+  it('should return error on get database error', async () => {
+    const userId = '1234';
+    const updatedData = {
+      description: 'Random description updated',
+    };
+
+    AWSMock.mock('DynamoDB.DocumentClient', 'get', (params: GetItemInput, callback: Function) => {
+      callback({ message: 'Database error' }, null);
+    });
+
+    const dynamoDB = new aws.DynamoDB.DocumentClient();
+    const userService = new UserService(dynamoDB, '');
+
+    await expect(userService.updateUser(userId, updatedData)).rejects.toThrow('Error while getting user.');
+  });
+
+  it('should return error on put database error', async () => {
+    const userId = '1234';
+    const updatedData = {
+      description: 'Random description updated',
+    };
+
+    AWSMock.mock('DynamoDB.DocumentClient', 'get', (params: GetItemInput, callback: Function) => {
+      callback(null, { Item: existingUser });
+    });
+
+    AWSMock.mock('DynamoDB.DocumentClient', 'put', (params: GetItemInput, callback: Function) => {
+      callback({ message: 'Database error' }, null);
+    });
+
+    const dynamoDB = new aws.DynamoDB.DocumentClient();
+    const userService = new UserService(dynamoDB, '');
+
+    await expect(userService.updateUser(userId, updatedData)).rejects.toThrow('Error while updating user.');
+  });
+});
+
+// Delete user
+describe('Delete user service', () => {
+  it('should return delete user correctly', async () => {
+    AWSMock.mock('DynamoDB.DocumentClient', 'delete', (params: GetItemInput, callback: Function) => {
+      callback(null, {});
+    });
+
+    const dynamoDB = new aws.DynamoDB.DocumentClient();
+    const userService = new UserService(dynamoDB, '');
+
+    expect(await userService.deleteUser('1234')).toBe(true);
+  });
+
+  it('should return error on database error', async () => {
+    AWSMock.mock('DynamoDB.DocumentClient', 'delete', (params: GetItemInput, callback: Function) => {
+      callback({ message: 'Database error' }, null);
+    });
+
+    const dynamoDB = new aws.DynamoDB.DocumentClient();
+    const userService = new UserService(dynamoDB, '');
+
+    await expect(userService.deleteUser('1234')).rejects.toThrow('Error while deleting user.');
+  });
+});
