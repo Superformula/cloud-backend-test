@@ -14,7 +14,7 @@ export function mapAttributeToUser(attrs: AttributeMap): User {
     address: attrs.address as string,
     description: attrs.description as string,
     createdAt: attrs.createdAt as string,
-    updatedAt: attrs.createdAt as string,
+    updatedAt: attrs.updatedAt as string,
     imageUrl: attrs.imageUrl as string,
   };
 }
