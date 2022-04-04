@@ -1,137 +1,130 @@
-# Superformula Cloud Backend Test
+# Superformula Cloud Backend Test - Rodrigo Guadalupe
 
-Be sure to read **all** of this document carefully, and follow the guidelines within.
+## Tech Stack
+- Typescript
+- Terraform
+- AWS Lambda + API Gateway
+- DynamoDB
+- Mapbox Geocoding API
 
-### Summary
+## Architecture
+The following diagram shows an overview of the solutions architechture on a AWS environment: 
 
-Please build an GraphQL API that manages Users and respects the following data model:
+![Solution's Architecture](./res/diagram.jpeg)
 
+Here we have a labmda function running a GraphQL server using [Apollo Server Lambda](https://www.npmjs.com/package/apollo-server-lambda). This lambda function provides the required queries and mutations for CRUD operations of Users. To achieve that, the lambda function access an amazon DynamoDB database to read/write users.
+
+The lambda function also access an external API service to fetch geolocation information with address queries. This solution uses [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding/) with the [@mapbox/mapbox-sdk
+](https://www.npmjs.com/package/@mapbox/mapbox-sdk) package. 
+
+Finally, client apps can execute GraphQL requests through the Amazon API Gateway.
+## Project Structure
+The project structure is organized in the following directories: 
 ```
-{
-  "id": "xxx",                  // user ID (must be unique)
-  "name": "backend test",       // user name
-  "dob": "",                    // date of birth
-  "address": "",                // user address
-  "description": "",            // user description
-  "createdAt": "",              // user created date
-  "updatedAt": "",              // user updated date
-  "imageUrl": ""                // user avatar image url
-}
+.
+├── terraform     # Terraform configuration files for deployment
+├── server        # Users lambda function
+    ├── src       # Source files of the solution
+    └── test      # Tests for solution services
+├── .gitignore
+└── README.md
 ```
 
-### Requirements
+## Environment Variables
+The project has 3 main environment variables: 
+```
+USER_TABLE_NAME  # Name of the users table on dynamoDB (default: 'Users')
+ENVIRONMENT      # Environment of the deployment (default: 'dev')
+MAPBOX_API_KEY   # Api key to access Mapbox API
+```
 
-#### Functionality
+## Execution
+Here we could find guides to test, build and deploy the users lambda solution.
+### Run tests
+In order to run the project unit tests, we first need to go to `server` directory.
+```sh
+cd server
+```
+Then, we need to install the project's dependencies.
+```sh
+yarn install 
+# or
+npm install
+```
+Finally, to execute the unit test we run:
+```sh
+yarn test
+# or
+npm test
+```
+### Build package
+In order to generate a deployment ready package, we first need to go to `server` directory.
+```sh
+cd server
+```
+Then, we need to install the project's dependencies.
+```sh
+yarn install 
+# or
+npm install
+```
+Finally, to create the package run the following command:
+```sh
+yarn build-pack
+# or
+npm build-pack
+```
+This will first execute the following steps: 
+ - Run project's tests
+ - Create a Typescript build
+ - Copy the GraphQL schema file to `dist` folder using [copyfiles](https://www.npmjs.com/package/copyfiles) package
+ - Create a zip package using [trace-pkg](https://www.npmjs.com/package/trace-pkg) packager into a `packages` folder on root.  
+## Deployment
+Before starting the deployment process: 
+ - Make sure that you have already generated a deployment package ([see package building guide](#build-package)).
+ - You need a configured AWS account ([guide with AWS cli](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)).
+ - You need a Mapbox API key ([create mapbox account](https://docs.mapbox.com/api/overview/))
 
-1. This should be a GraphQL API that can `create`, `read`, `update`, and `delete` a given user
-1. The API should follow typical GraphQL API design patterns
-1. Please store data from all write operations to a persistence database
-1. Proper error handling should be used
-1. Paginating and filtering (by name) users list
-1. The API should have a Query to fetch geolocation information based off an address
+For deployment, we will use [Terraform](https://www.terraform.io/) to create all services inside AWS.
 
-#### Tech Stack
-  - Use of **Typescript** is required 
-  - **Please use Infrastructure-as-code tooling** that can be used to deploy all resources to AWS. 
-    - Terraform (preferred)
-    - CloudFormation / SAM
-    - Serverless Framework
-    - AWS CDK
-  - Use AWS Lambda + API Gateway or AWS AppSync is recommended
-  - Use any AWS Database-as-a-Service persistence store
-  - Location query must use [NASA](https://api.nasa.gov/) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs to resolve the coordinate based on the address; use AWS Lambda.
+First, we need to go to `terraform` directory.
+```sh
+cd terraform
+```
+There, we need to run the following command to init terraform: 
+```sh
+terraform init
+```
+This solution uses 4 terraform variables declared inside [variables.tf](./terraform/variables.tf)
+```
+aws_region        # The region to use on AWS services (default: 'us-east-1')
+environment       # The environment of the deployment (default: 'dev')
+user_table_name   # The name of the table to be created on DynamoDB (default: 'Users')
+mapbox_api_key    # The api key for Mapbox API.
+```
+To set the mapbox_api_key variable and modify any of the variables we can: 
+ 
+ - Create a `terraform.tfvars` inside `terraform` folder including the variables: 
 
-#### Developer Experience 
-- Write unit tests for business logic
-- Write concise and clear commit messages
-- Document and diagram the architecture of your solution
-- Write clear documentation:
-    - Repository structure
-    - Environment variables and any defaults.
-    - How to build/run/test the solution
-    - Deployment guide
+    ```
+    mapbox_api_key = "pk.secret"
+    environment    = "dev"
+    ```
 
-### Bonus
+- Set the variables using `-var="mapbox_api_key = pk.secret"` option on `apply` command.
 
-These may be used for further challenges. You can freely skip these; feel free to try out if you feel up to it.
+Finally, to deploy run:
+```
+terraform apply
+```
+After the execution, the `base_url` will be shown on CLI as an output: 
+```sh
+Outputs:
 
-#### Developer Experience (in order)
+base_url = "https://tv6lwcwj2e.execute-api.us-east-1.amazonaws.com/dev"
+```
+## API Consumer Experience 
 
-1. E2E Testing
-1. Integration testing
-1. Code-coverage report generation
-1. Describe your strategy for Lambda error handling, retries, and DLQs
-1. Describe your cloud-native logging, monitoring, and alarming strategy across all queries/mutations
-1. Online interactive demo with a publicly accessible link to your API
-1. Brief description of the frameworks/tools used in the solution
-1. Optimized lambda build.
-1. Commit linting
-1. Semantic release
+A ready-to-use playground of the solution can be found [here](https://tv6lwcwj2e.execute-api.us-east-1.amazonaws.com/dev).
 
-
-#### API Consumer Experience (in order)
-
-1. Document how consumers can quickly prototype against your APIs
-    - GraphQL Playground setup
-    - Insomnia/Postman setup
-    - Feel free to use any other tool/client you might know that enable consumers to prototype against your API
-1. GraphQL Documentation Generation
-1. Client API/SDK generation
-
-
-## Frontend Wireframes/Mockups (Do not implement those screens)
-
-Assume the GraphQL API you are developing will be used by a hypothetical front-end team to build the following screens:
-
-![Superformula-front-end-test-mockup](./mockup1.png)
-
-![Superformula-front-end-test-mockup-2](./mockup2.png)
-
-> [Source Figma file](https://www.figma.com/file/hd7EgdTxJs2fpTzzSKlNxo/Superformula-full-stack-test)
-
-- Client will be performing real-time search against this API
-- List of users should be updated automatically after single user is updated
-
-## What We Care About
-
-Use any libraries that you would normally use if this were a real production App. Please note: we're interested in your code & the way you solve the problem, not how well you can use a particular library or feature.
-
-_We're interested in your method and how you approach the problem just as much as we're interested in the end result._
-
-Here's what you should strive for:
-
-- Good use of current Typescript, Node.js, GraphQL & performance best practices.
-- Solid testing approach.
-- Extensible code and architecture.
-- Delightful experience for other backend engineers working in this repository
-- Delightful experience for engineers consuming your APIs
-
-## Q&A
-
-> How should I start this code challenge?
-
-Fork this repo to your own account and make git commits to add your code as you would on any other project.
-
-> Where should I send back the result when I'm done?
-
-Send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
-
-> What if I have a question?
-
-Create a new issue [in this repo](https://github.com/Superformula/cloud-backend-test/issues) and we will respond and get back to you quickly.
-
-> Should I validate inputs?
-
-Please assume a hard requirement has not been set by the product owner. We welcome any input validations and your reasoning for why they add value.
-
-> What is the location format?
-
-Examples:
-- Seattle, Washington
-- Digital Nomad
-- New Jersey
-- Northern Bergen County, NJ
-
-> I almost finished, but I don't have time to create everything what is required
-
-Please provide a plan for the rest of the things that you would do.
+Documentation of schema, queries and mutations can also be found inside the playground.
