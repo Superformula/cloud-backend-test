@@ -57,6 +57,7 @@ yarn test
 # or
 npm test
 ```
+Tests run will be shown on CLI and a jest `coverage` report will be displayed and saved on a `coverage` directory.
 ### Build package
 In order to generate a deployment ready package, we first need to go to `server` directory.
 ```sh
