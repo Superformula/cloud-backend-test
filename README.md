@@ -1,5 +1,5 @@
 # Superformula Cloud Backend Test - Rodrigo Guadalupe
-
+This repository includes the implementation of `Superformula Cloud Backend Test` ([instructions here](./old.md)), that consists on a GraphQL API that manages Users with `CRUD` operations and a location queries to get geolocation with a provided address. 
 ## Tech Stack
 - Typescript
 - Terraform
