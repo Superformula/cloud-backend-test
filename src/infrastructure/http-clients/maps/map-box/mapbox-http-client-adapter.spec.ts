@@ -1,7 +1,11 @@
+import { BadRequestError } from '@domain/errors/http-errors'
 import { Coordinate } from '@domain/models'
 import { faker } from '@faker-js/faker'
 import { httpMapClientsConstants } from '@infrastructure/http-clients/settings'
-import { mockForwardGeoCodingResponse } from '@infrastructure/http-clients/test'
+import {
+  mockForwardGeoCodingResponse,
+  mockForwardGeoCodingResponseUnSuccessful
+} from '@infrastructure/http-clients/test'
 import { MapBoxHttpClientAdapter } from './mapbox-http-client-adapter'
 
 const unmockedFetch = global.fetch
@@ -40,7 +44,7 @@ describe('MapBoxHttpClientAdapter', () => {
     expect(fetchSpy).toHaveBeenCalledWith(input, options)
   })
 
-  test('Should return latitude and longitude if feature list is not empty for given address', async () => {
+  test('Should return latitude and longitude if given address is correct', async () => {
     const sut = new MapBoxHttpClientAdapter()
 
     const address = faker.address.city()
@@ -55,18 +59,19 @@ describe('MapBoxHttpClientAdapter', () => {
     })
   })
 
-  test('Should return latitude and longitude if feature list is not empty for given address', async () => {
+  test('Should return BadRequest error if given address is incorrect', async () => {
     const sut = new MapBoxHttpClientAdapter()
 
     const address = faker.address.city()
 
-    const response = mockForwardGeoCodingResponse()
+    jest
+      .spyOn(global, 'fetch')
+      .mockImplementationOnce((): any => Promise.resolve({
+        json: async () => await Promise.resolve(mockForwardGeoCodingResponseUnSuccessful())
+      }))
 
-    const coordinates = await sut.retrieveCoordinates(address)
+    const promise = sut.retrieveCoordinates(address)
 
-    expect(coordinates).toEqual<Coordinate>({
-      latitude: response.features[0].center[0],
-      longitude: response.features[0].center[1]
-    })
+    expect(promise).rejects.toThrow(new BadRequestError('No coordinates for the given address.'))
   })
 })
