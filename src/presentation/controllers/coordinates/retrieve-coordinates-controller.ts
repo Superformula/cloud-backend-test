@@ -1,4 +1,5 @@
 import { RetrieveCoordinates } from '@domain/usecases'
+import { ok } from '@presentation/helpers'
 import { Controller, HttpResponse } from '@presentation/protocols'
 
 export class RetrieveCoordinatesController implements Controller {
@@ -6,7 +7,8 @@ export class RetrieveCoordinatesController implements Controller {
 
   async handle (request: any): Promise<HttpResponse> {
     const { address } = request.body
-    this.retrieveCoordinates.retrieveCoordinates(address)
-    return null
+
+    const coordinates = await this.retrieveCoordinates.retrieveCoordinates(address)
+    return ok(coordinates)
   }
 }
