@@ -44,4 +44,11 @@ describe('DbRetrieveCoordinates', () => {
     const coordinates = await sut.retrieveCoordinates(faker.address.city())
     expect(coordinates).toEqual(retrieveCoordinatesRepositorySpy.result)
   })
+
+  test('Should throw if RetrieveCoordinatesRepository throws', async () => {
+    const { retrieveCoordinatesRepositorySpy, sut } = makeSut()
+    jest.spyOn(retrieveCoordinatesRepositorySpy, 'retrieveCoordinates').mockImplementationOnce((): never => { throw new Error() })
+    const promise = sut.retrieveCoordinates(faker.address.city())
+    await expect(promise).rejects.toThrow()
+  })
 })
