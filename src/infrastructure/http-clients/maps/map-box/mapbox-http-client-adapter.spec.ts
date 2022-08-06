@@ -70,8 +70,8 @@ describe('MapBoxHttpClientAdapter', () => {
         json: async () => await Promise.resolve(mockForwardGeoCodingResponseUnSuccessful())
       }))
 
-    const promise = sut.retrieveCoordinates(address)
+    const response = await sut.retrieveCoordinates(address)
 
-    expect(promise).rejects.toThrow(new BadRequestError('No coordinates for the given address.'))
+    expect(response).toBe(null)
   })
 })

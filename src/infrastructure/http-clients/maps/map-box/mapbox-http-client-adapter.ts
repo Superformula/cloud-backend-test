@@ -1,5 +1,4 @@
 import { RetrieveCoordinatesHttpClient } from '@data/protocols/http-clients/maps'
-import { BadRequestError } from '@domain/errors/http-errors'
 import { httpMapClientsConstants } from '@infrastructure/http-clients/settings'
 import { IForwardGeoCodingResponse } from './interfaces'
 
@@ -27,8 +26,8 @@ export class MapBoxHttpClientAdapter implements RetrieveCoordinatesHttpClient {
         latitude,
         longitude
       }
-    } else {
-      throw new BadRequestError('No coordinates for the given address.')
     }
+
+    return null
   }
 }
