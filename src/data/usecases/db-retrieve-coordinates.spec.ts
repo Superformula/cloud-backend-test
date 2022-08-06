@@ -3,21 +3,34 @@ import { mockCoordinateModel } from '@domain/test/mock-coordinates'
 import { faker } from '@faker-js/faker'
 import { DbRetrieveCoordinates } from './db-retrieve-coordinates'
 
-describe('SomeClassToTest', () => {
+class RetrieveCoordinatesRepositorySpy implements RetrieveCoordinatesRepository {
+  address: string
+  result = mockCoordinateModel()
+
+  async retrieveCoordinates (address: string): Promise<RetrieveCoordinatesRepository.Result> {
+    this.address = address
+    return this.result
+  }
+}
+
+interface SutTypes {
+  sut: DbRetrieveCoordinates
+  retrieveCoordinatesRepositorySpy: RetrieveCoordinatesRepositorySpy
+}
+
+const makeSut = (): SutTypes => {
+  const retrieveCoordinatesRepositorySpy = new RetrieveCoordinatesRepositorySpy()
+  const sut = new DbRetrieveCoordinates(retrieveCoordinatesRepositorySpy)
+
+  return {
+    sut,
+    retrieveCoordinatesRepositorySpy
+  }
+}
+
+describe('DbRetrieveCoordinates', () => {
   test('Should call RetrieveCoordinatesRepository with correct address', async () => {
-    class RetrieveCoordinatesRepositorySpy implements RetrieveCoordinatesRepository {
-      address: string
-      result = mockCoordinateModel()
-
-      async retrieveCoordinates (address: string): Promise<RetrieveCoordinatesRepository.Result> {
-        this.address = address
-        return this.result
-      }
-    }
-
-    const retrieveCoordinatesRepositorySpy = new RetrieveCoordinatesRepositorySpy()
-
-    const sut = new DbRetrieveCoordinates(retrieveCoordinatesRepositorySpy)
+    const { retrieveCoordinatesRepositorySpy, sut } = makeSut()
 
     const address = faker.address.city()
 
