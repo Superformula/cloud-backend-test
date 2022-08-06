@@ -1,4 +1,4 @@
-import { RetrieveCoordinatesRepository } from '@data/protocols/http-clients/retrieve-coordinates-repository'
+import { RetrieveCoordinatesRepository } from '@data/protocols/http-clients/maps'
 import { mockCoordinateModel } from '@domain/test'
 
 export class RetrieveCoordinatesRepositorySpy implements RetrieveCoordinatesRepository {

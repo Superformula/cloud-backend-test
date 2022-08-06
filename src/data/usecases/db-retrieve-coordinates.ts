@@ -1,4 +1,4 @@
-import { RetrieveCoordinatesRepository } from '@data/protocols/http-clients'
+import { RetrieveCoordinatesRepository } from '@data/protocols/http-clients/maps'
 import { RetrieveCoordinates } from '@domain/usecases'
 
 export class DbRetrieveCoordinates implements RetrieveCoordinates {
