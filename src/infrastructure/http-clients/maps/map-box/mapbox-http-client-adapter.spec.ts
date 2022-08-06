@@ -1,4 +1,3 @@
-import { BadRequestError } from '@domain/errors/http-errors'
 import { Coordinate } from '@domain/models'
 import { faker } from '@faker-js/faker'
 import { httpMapClientsConstants } from '@infrastructure/http-clients/settings'
@@ -59,19 +58,33 @@ describe('MapBoxHttpClientAdapter', () => {
     })
   })
 
-  test('Should return BadRequest error if given address is incorrect', async () => {
+  test('Should return null error if given address is incorrect', async () => {
     const sut = new MapBoxHttpClientAdapter()
 
     const address = faker.address.city()
 
-    jest
-      .spyOn(global, 'fetch')
-      .mockImplementationOnce((): any => Promise.resolve({
+    jest.spyOn(global, 'fetch').mockImplementationOnce((): any =>
+      Promise.resolve({
         json: async () => await Promise.resolve(mockForwardGeoCodingResponseUnSuccessful())
-      }))
+      })
+    )
 
     const response = await sut.retrieveCoordinates(address)
 
     expect(response).toBe(null)
+  })
+
+  test('Should throw if fetch api throws', async () => {
+    const sut = new MapBoxHttpClientAdapter()
+
+    const address = faker.address.city()
+
+    jest.spyOn(global, 'fetch').mockImplementationOnce((): never => {
+      throw new Error()
+    })
+
+    const promise = sut.retrieveCoordinates(address)
+
+    await expect(promise).rejects.toThrow()
   })
 })
