@@ -4,7 +4,7 @@
   "description": "Be sure to read **all** of this document carefully, and follow the guidelines within.",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:staged": "npm test --findRelatedTests",
     "prepare": "husky install"
   },
