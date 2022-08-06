@@ -1,5 +1,4 @@
 import { RetrieveCoordinatesRepositorySpy } from '@data/test'
-import { throwError } from '@domain/test'
 import { faker } from '@faker-js/faker'
 import { DbRetrieveCoordinates } from './db-retrieve-coordinates'
 
@@ -37,7 +36,9 @@ describe('DbRetrieveCoordinates', () => {
 
   test('Should throw if RetrieveCoordinatesRepository throws', async () => {
     const { retrieveCoordinatesRepositorySpy, sut } = makeSut()
-    jest.spyOn(retrieveCoordinatesRepositorySpy, 'retrieveCoordinates').mockImplementationOnce(throwError)
+    jest.spyOn(retrieveCoordinatesRepositorySpy, 'retrieveCoordinates').mockImplementationOnce((): never => {
+      throw new Error()
+    })
     const promise = sut.retrieveCoordinates(faker.address.city())
     await expect(promise).rejects.toThrow()
   })
