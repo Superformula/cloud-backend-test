@@ -1,4 +1,4 @@
-import { IForwardGeoCodingResponse } from '../maps/map-box/interfaces/Imap-box-http-client'
+import { IForwardGeoCodingResponse } from '../maps/map-box/interfaces'
 
 export const mockForwardGeoCodingResponse = (): IForwardGeoCodingResponse => ({
   type: 'FeatureCollection',
