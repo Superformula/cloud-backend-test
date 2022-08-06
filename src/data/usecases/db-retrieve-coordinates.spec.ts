@@ -1,17 +1,6 @@
-import { RetrieveCoordinatesRepository } from '@data/protocols/http-clients/retrieve-coordinates-repository'
-import { mockCoordinateModel } from '@domain/test/mock-coordinates'
+import { RetrieveCoordinatesRepositorySpy } from '@data/test'
 import { faker } from '@faker-js/faker'
 import { DbRetrieveCoordinates } from './db-retrieve-coordinates'
-
-class RetrieveCoordinatesRepositorySpy implements RetrieveCoordinatesRepository {
-  address: string
-  result = mockCoordinateModel()
-
-  async retrieveCoordinates (address: string): Promise<RetrieveCoordinatesRepository.Result> {
-    this.address = address
-    return this.result
-  }
-}
 
 interface SutTypes {
   sut: DbRetrieveCoordinates
