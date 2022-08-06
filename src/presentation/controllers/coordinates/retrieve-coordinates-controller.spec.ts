@@ -1,4 +1,4 @@
-import { ok } from '@presentation/helpers'
+import { catchError, ok } from '@presentation/helpers'
 import { mockRetrieveCoordinatesRequest, RetrieveCoordinatesSpy } from '@presentation/test'
 import { RetrieveCoordinatesController } from './retrieve-coordinates-controller'
 
@@ -28,5 +28,15 @@ describe('RetrieveCoordinatesController', () => {
     const { retrieveCoordinatesSpy, sut } = makeSut()
     const httpResponse = await sut.handle(mockRetrieveCoordinatesRequest)
     expect(httpResponse).toEqual(ok(retrieveCoordinatesSpy.coordinates))
+  })
+
+  test('Should return catchError if RetrieveCoordinates throws', async () => {
+    const { retrieveCoordinatesSpy, sut } = makeSut()
+    jest.spyOn(retrieveCoordinatesSpy, 'retrieveCoordinates').mockImplementationOnce((): never => {
+      throw new Error()
+    })
+
+    const httpResponse = await sut.handle(mockRetrieveCoordinatesRequest)
+    expect(httpResponse).toEqual(catchError(new Error()))
   })
 })
