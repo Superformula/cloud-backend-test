@@ -1,1 +1,1 @@
-export * from './mock-geocoding'
+export * from './mock-mapbox'
