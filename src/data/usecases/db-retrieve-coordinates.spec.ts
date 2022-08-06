@@ -38,4 +38,10 @@ describe('DbRetrieveCoordinates', () => {
 
     expect(retrieveCoordinatesRepositorySpy.address).toBe(address)
   })
+
+  test('Should return latitude and longitude coordinates on success', async () => {
+    const { retrieveCoordinatesRepositorySpy, sut } = makeSut()
+    const coordinates = await sut.retrieveCoordinates(faker.address.city())
+    expect(coordinates).toEqual(retrieveCoordinatesRepositorySpy.result)
+  })
 })
