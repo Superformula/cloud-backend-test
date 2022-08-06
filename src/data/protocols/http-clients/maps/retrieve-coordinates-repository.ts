@@ -1,9 +1,9 @@
 import { Coordinate } from '@domain/models'
 
-export interface RetrieveCoordinatesRepository {
-  retrieveCoordinates: (address: string) => Promise<RetrieveCoordinatesRepository.Result>
+export interface RetrieveCoordinatesHttpClient {
+  retrieveCoordinates: (address: string) => Promise<RetrieveCoordinatesHttpClient.Result>
 }
 
-export namespace RetrieveCoordinatesRepository {
+export namespace RetrieveCoordinatesHttpClient {
   export type Result = Coordinate
 }
