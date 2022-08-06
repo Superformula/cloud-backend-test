@@ -1,3 +1,4 @@
+import { ok } from '@presentation/helpers'
 import { mockRetrieveCoordinatesRequest, RetrieveCoordinatesSpy } from '@presentation/test'
 import { RetrieveCoordinatesController } from './retrieve-coordinates-controller'
 
@@ -21,5 +22,11 @@ describe('RetrieveCoordinatesController', () => {
     const { retrieveCoordinatesSpy, sut } = makeSut()
     await sut.handle(mockRetrieveCoordinatesRequest)
     expect(retrieveCoordinatesSpy.address).toBe(mockRetrieveCoordinatesRequest.body.address)
+  })
+
+  test('Should return coordinates on success', async () => {
+    const { retrieveCoordinatesSpy, sut } = makeSut()
+    const httpResponse = await sut.handle(mockRetrieveCoordinatesRequest)
+    expect(httpResponse).toEqual(ok(retrieveCoordinatesSpy.coordinates))
   })
 })
