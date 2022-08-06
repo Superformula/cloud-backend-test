@@ -1,7 +1,7 @@
 import { RetrieveCoordinatesHttpClient } from '@data/protocols/http-clients/maps'
 import { mockCoordinateModel } from '@domain/test'
 
-export class RetrieveCoordinatesRepositorySpy implements RetrieveCoordinatesHttpClient {
+export class RetrieveCoordinatesHttpClientSpy implements RetrieveCoordinatesHttpClient {
   address: string
   result = mockCoordinateModel()
 
