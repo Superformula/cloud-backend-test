@@ -9,6 +9,7 @@
       "paths": {
         "@data/*": ["data/*"],
         "@domain/*": ["domain/*"],
+        "@infrastructure/*": ["infrastructure/*"],
       }
     }
   }
