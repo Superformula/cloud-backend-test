@@ -22,10 +22,10 @@ export class MapBoxHttpClientAdapter implements RetrieveCoordinatesHttpClient {
     const data = await response.json() as IForwardGeoCodingResponse
 
     if (data.features.length) {
-      const [latitude, longitude] = data.features[0].center
+      const [longitude, latitude] = data.features[0].center
       return {
-        latitude,
-        longitude
+        longitude,
+        latitude
       }
     }
 
