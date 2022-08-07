@@ -1,4 +1,3 @@
-import { Coordinate } from '@domain/models'
 import { faker } from '@faker-js/faker'
 import { httpMapClientsConstants } from '@infrastructure/http-clients/settings'
 import {
@@ -6,21 +5,15 @@ import {
   mockForwardGeoCodingResponseUnSuccessful
 } from '@infrastructure/http-clients/test'
 import { MapBoxHttpClientAdapter } from './mapbox-http-client-adapter'
+import { Coordinate } from '@domain/models'
 
-const unmockedFetch = global.fetch
+jest.mock('node-fetch')
+
+const fetch = require('node-fetch')
+
+const { Response } = jest.requireActual('node-fetch')
 
 describe('MapBoxHttpClientAdapter', () => {
-  beforeAll(() => {
-    global.fetch = (): any =>
-      Promise.resolve({
-        json: async () => await Promise.resolve(mockForwardGeoCodingResponse())
-      })
-  })
-
-  afterAll(() => {
-    global.fetch = unmockedFetch
-  })
-
   test('Should call fetch method with correct values', async () => {
     const sut = new MapBoxHttpClientAdapter()
 
@@ -37,10 +30,10 @@ describe('MapBoxHttpClientAdapter', () => {
 
     const input = `${mapboxConfig.GEOCODING_BASE_URL}${mapboxConfig.GEOCODING_ENDPOINT_PLACES}${address}.json?access_token=${mapboxConfig.ACCESS_TOKEN}`
 
-    const fetchSpy = jest.spyOn(global, 'fetch')
+    fetch.mockResolvedValueOnce(new Response(JSON.stringify(mockForwardGeoCodingResponse())))
 
     await sut.retrieveCoordinates(address)
-    expect(fetchSpy).toHaveBeenCalledWith(input, options)
+    expect(fetch).toHaveBeenCalledWith(input, options)
   })
 
   test('Should return latitude and longitude if given address is correct', async () => {
@@ -50,11 +43,13 @@ describe('MapBoxHttpClientAdapter', () => {
 
     const response = mockForwardGeoCodingResponse()
 
+    fetch.mockResolvedValueOnce(new Response(JSON.stringify(response)))
+
     const coordinates = await sut.retrieveCoordinates(address)
 
     expect(coordinates).toEqual<Coordinate>({
-      latitude: response.features[0].center[0],
-      longitude: response.features[0].center[1]
+      latitude: response.features[0].center[1],
+      longitude: response.features[0].center[0]
     })
   })
 
@@ -63,11 +58,7 @@ describe('MapBoxHttpClientAdapter', () => {
 
     const address = faker.address.city()
 
-    jest.spyOn(global, 'fetch').mockImplementationOnce((): any =>
-      Promise.resolve({
-        json: async () => await Promise.resolve(mockForwardGeoCodingResponseUnSuccessful())
-      })
-    )
+    fetch.mockResolvedValueOnce(new Response(JSON.stringify(mockForwardGeoCodingResponseUnSuccessful())))
 
     const response = await sut.retrieveCoordinates(address)
 
@@ -79,7 +70,7 @@ describe('MapBoxHttpClientAdapter', () => {
 
     const address = faker.address.city()
 
-    jest.spyOn(global, 'fetch').mockImplementationOnce((): never => {
+    fetch.mockImplementationOnce((): never => {
       throw new Error()
     })
 
