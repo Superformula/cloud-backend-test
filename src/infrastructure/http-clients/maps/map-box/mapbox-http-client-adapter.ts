@@ -1,3 +1,4 @@
+import fetch, { RequestInit, Response } from 'node-fetch'
 import { RetrieveCoordinatesHttpClient } from '@data/protocols/http-clients/maps'
 import { httpMapClientsConstants } from '@infrastructure/http-clients/settings'
 import { IForwardGeoCodingResponse } from './interfaces'
@@ -18,7 +19,7 @@ export class MapBoxHttpClientAdapter implements RetrieveCoordinatesHttpClient {
       options
     )
 
-    const data: IForwardGeoCodingResponse = await response.json()
+    const data = await response.json() as IForwardGeoCodingResponse
 
     if (data.features.length) {
       const [latitude, longitude] = data.features[0].center
