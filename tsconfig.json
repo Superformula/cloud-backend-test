@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+      "experimentalDecorators": true,
       "outDir": "./dist",
       "module": "commonjs",
       "target": "es2019",
@@ -11,6 +12,7 @@
         "@domain/*": ["domain/*"],
         "@infrastructure/*": ["infrastructure/*"],
         "@presentation/*": ["presentation/*"],
+        "@main/*": ["main/*"]
       }
     }
   }
