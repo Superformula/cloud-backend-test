@@ -5,6 +5,6 @@ export const setupApp = async (): Promise<Express> => {
   const app = express()
   const server = await setupApolloServer()
   await server.start()
-  server.applyMiddleware({ app, cors: false })
+  server.applyMiddleware({ app, cors: true })
   return app
 }

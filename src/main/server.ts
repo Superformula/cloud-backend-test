@@ -1,5 +1,9 @@
 import 'dotenv/config'
+import 'reflect-metadata'
 import { env } from './config/env'
 
-const app = require('./config/app').default
-app.listen(env.port, () => console.log(`Server running at http://localhost:${env.port}`))
+(async () => {
+  const { setupApp } = await import('./config/app')
+  const app = await setupApp()
+  app.listen(env.port, () => console.log(`Server running at http://localhost:${env.port}`))
+})()
