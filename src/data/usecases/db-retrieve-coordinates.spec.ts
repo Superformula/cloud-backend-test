@@ -21,11 +21,8 @@ const makeSut = (): SutTypes => {
 describe('DbRetrieveCoordinates', () => {
   test('Should call RetrieveCoordinatesRepository with correct address', async () => {
     const { retrieveCoordinatesHttpClientSpy, sut } = makeSut()
-
     const address = faker.address.city()
-
     await sut.retrieveCoordinates(address)
-
     expect(retrieveCoordinatesHttpClientSpy.address).toBe(address)
   })
 
