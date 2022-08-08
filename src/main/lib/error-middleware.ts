@@ -1,4 +1,3 @@
-import { Response } from 'express'
 import { GraphQLError } from 'graphql'
 
 export abstract class ErrorMiddleware {
@@ -27,7 +26,12 @@ export abstract class ErrorMiddleware {
     }
   }
 
-  public sendErrorProd (error: GraphQLError): Response<any> {
+  public sendErrorDev (error: GraphQLError): any {
+    // errors for dev environment
+    return this.developerError(error)
+  }
+
+  public sendErrorProd (error: GraphQLError): any {
     // Programming error: log the error
     if (error.extensions.code === 'INTERNAL_SERVER_ERROR') {
       console.error('ERROR ', this.developerError(error))
