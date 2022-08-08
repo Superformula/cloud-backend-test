@@ -7,6 +7,7 @@ module.exports = {
     '@presentation/(.*)$': '<rootDir>/src/presentation/$1',
     '@main/(.*)$': '<rootDir>/src/main/$1'
   },
+  setupFiles: ['<rootDir>/jest-env-vars.js'],
   transform: {
     '.+\\.ts$': 'ts-jest'
   }
