@@ -1,4 +1,5 @@
 import { Controller } from '@presentation/protocols'
+import { ApolloError, UserInputError } from 'apollo-server-express'
 import { Request } from 'express'
 
 export const adaptResolver = async (controller: Controller, req: Request, args: object): Promise<any> => {
@@ -7,5 +8,9 @@ export const adaptResolver = async (controller: Controller, req: Request, args: 
   }
 
   const httpResponse = await controller.handle(req)
-  return httpResponse.body
+
+  switch (httpResponse.statusCode) {
+    case 200: return httpResponse.body
+    case 400: throw new UserInputError(httpResponse.body.message)
+  }
 }
