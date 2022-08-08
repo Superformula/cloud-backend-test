@@ -14,5 +14,11 @@ export const mockGraphQLError = (): any => ({
   },
   originalError: {
     stack: faker.datatype.string()
+  },
+  name: faker.random.word(),
+  error: {
+    originalError: {
+      name: faker.random.word()
+    }
   }
 })
