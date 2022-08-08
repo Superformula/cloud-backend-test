@@ -15,4 +15,12 @@ describe('ErrorHandlerMiddleware', () => {
     makeCall()
     expect(sendErroDevSpy).toHaveBeenCalled()
   })
+
+  test('Should call sendErrorProd when in production environment', async () => {
+    jest.resetModules()
+    process.env.NODE_ENV = 'production'
+    const sendErroProdSpy = jest.spyOn(ErrorHandlerMiddleware.prototype, 'sendErrorProd')
+    makeCall()
+    expect(sendErroProdSpy).toHaveBeenCalled()
+  })
 })
