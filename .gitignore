@@ -2,3 +2,5 @@ node_modules
 .env*
 launch.json
 jest-env-vars.js
+coverage
+dist

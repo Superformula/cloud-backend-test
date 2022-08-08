@@ -13,6 +13,9 @@
         "@infrastructure/*": ["infrastructure/*"],
         "@presentation/*": ["presentation/*"],
         "@main/*": ["main/*"]
-      }
-    }
+      },
+      "sourceMap": true,
+      "rootDir": "src"
+    },
+    "include": ["src"]
   }
