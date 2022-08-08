@@ -1,3 +1,4 @@
+import { ErrorHandlerMiddleware } from '@main/middlewares'
 import { ApolloServer } from 'apollo-server-express'
 import { GraphQLError } from 'graphql'
 import { buildSchema } from 'type-graphql'
@@ -30,5 +31,8 @@ export const setupApolloServer = async (): Promise<ApolloServer> =>
       resolvers: [CoordinateResolver]
     }),
     context: ({ req, res }) => ({ req, res }),
-    plugins: [setHttpPlugin as any]
+    plugins: [setHttpPlugin as any],
+    formatError: (error: GraphQLError) => {
+      return ErrorHandlerMiddleware.handleError(error)
+    }
   })
