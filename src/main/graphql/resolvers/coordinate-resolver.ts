@@ -7,7 +7,7 @@ import { MyContext } from '../my-context'
 @Resolver()
 export class CoordinateResolver {
   @Query(() => Coordinate, { nullable: true })
-  async coordinate (@Arg('address', type => String) address: string, @Ctx() context: MyContext): Promise<Coordinate> {
-    return await adaptResolver(makeRetrieveCoordinatesController(), context, { address })
+  async coordinate (@Arg('address', type => String) address: string, @Ctx() { req }: MyContext): Promise<Coordinate> {
+    return await adaptResolver(makeRetrieveCoordinatesController(), req, { address })
   }
 }
