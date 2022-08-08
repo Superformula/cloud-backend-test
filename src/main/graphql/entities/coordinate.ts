@@ -1,8 +1,8 @@
-import { Coordinate } from '@domain/models'
+import { Coordinate as CoordinateModel } from '@domain/models'
 import { Field, ObjectType } from 'type-graphql'
 
 @ObjectType()
-export class CoordinateType implements Coordinate {
+export class Coordinate implements CoordinateModel {
   @Field(() => Number, { nullable: false })
     latitude: number
 
