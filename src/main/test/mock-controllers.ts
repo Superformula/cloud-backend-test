@@ -3,7 +3,7 @@ import { Controller, HttpResponse } from '@presentation/protocols'
 
 const mockHttpResponse = {
   body: faker.datatype.json(),
-  statusCode: faker.helpers.arrayElement([200, 201])
+  statusCode: 200
 }
 
 export class ControllerMock implements Controller {

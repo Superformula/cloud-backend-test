@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
-import { ControllerMock, ControllerSpy } from '@main/test'
-import { UserInputError } from 'apollo-server-express'
+import { ControllerSpy } from '@main/test'
+import { ApolloError, UserInputError } from 'apollo-server-express'
 import { adaptResolver } from './apollo-server-resolver-adapter'
 
 interface SutTypes {
@@ -48,6 +48,16 @@ describe('ApolloServerResolverAdapter', () => {
     controllerSpy.httpResponse.statusCode = 400
     const promise = adaptResolver(controllerSpy, req, null)
 
-    await expect(promise).rejects.toThrow(new UserInputError(controllerSpy.httpResponse.body.message))
+    await expect(promise).rejects.toThrow(UserInputError)
+  })
+
+  test('Should throw ApolloError on 500 error', async () => {
+    const controllerSpy = new ControllerSpy()
+    const req = jest.fn() as any
+    req.body = {}
+    controllerSpy.httpResponse.statusCode = 500
+    const promise = adaptResolver(controllerSpy, req, null)
+
+    await expect(promise).rejects.toThrow(ApolloError)
   })
 })
