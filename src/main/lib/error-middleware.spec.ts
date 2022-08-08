@@ -23,4 +23,15 @@ describe('ErrorMiddleware', () => {
       message: 'We are sorry, we have detected an error. Our team is working to solve it as soon as possible.'
     })
   })
+
+  test('Should return userError with error message in production environment when no INTERNAL_SERVER_ERROR', async () => {
+    const graphQLError = mockGraphQLError()
+    graphQLError.extensions.code = 'BAD_USER_INPUT'
+    const response = ErrorMiddleware.prototype.sendErrorProd(graphQLError)
+    expect(response).toEqual({
+      code: graphQLError.extensions.code,
+      path: graphQLError.path,
+      message: graphQLError.message
+    })
+  })
 })
