@@ -1,7 +1,14 @@
 import { mockGraphQLError } from '@main/test'
 import { ErrorMiddleware } from './error-middleware'
+import { IDevError, IUserError } from './interfaces'
 
-const makeSut = (errorCode?: string) => {
+interface SutTypes {
+  graphQLError: any
+  responseProd: IUserError
+  responseDev: IDevError
+}
+
+const makeSut = (errorCode?: string): SutTypes => {
   const graphQLError = mockGraphQLError()
   errorCode && (graphQLError.extensions.code = errorCode)
   const responseProd = ErrorMiddleware.prototype.sendErrorProd(graphQLError)

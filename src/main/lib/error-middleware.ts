@@ -1,4 +1,5 @@
 import { GraphQLError } from 'graphql'
+import { IDevError, IUserError } from './interfaces'
 
 export abstract class ErrorMiddleware {
   constructor () {
@@ -7,7 +8,7 @@ export abstract class ErrorMiddleware {
 
   abstract execute (error: GraphQLError): void
 
-  private developerError (error: GraphQLError): any {
+  private developerError (error: GraphQLError): IDevError {
     return {
       path: error.path,
       code: error.extensions.code,
@@ -16,7 +17,7 @@ export abstract class ErrorMiddleware {
     }
   }
 
-  private userError (error: GraphQLError): any {
+  private userError (error: GraphQLError): IUserError {
     return {
       code: error.extensions.code,
       path: error.path,
@@ -26,12 +27,12 @@ export abstract class ErrorMiddleware {
     }
   }
 
-  public sendErrorDev (error: GraphQLError): any {
+  public sendErrorDev (error: GraphQLError): IDevError {
     // errors for dev environment
     return this.developerError(error)
   }
 
-  public sendErrorProd (error: GraphQLError): any {
+  public sendErrorProd (error: GraphQLError): IUserError {
     // Programming error: log the error
     if (error.extensions.code === 'INTERNAL_SERVER_ERROR') {
       console.error('ERROR ', this.developerError(error))
