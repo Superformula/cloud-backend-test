@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import { setupApp } from '@main/config/app'
 import { Express } from 'express'
 import request from 'supertest'
+import { httpMapClientsConstants } from '@infrastructure/http-clients/settings'
 
 let app: Express
 let query: string
@@ -46,6 +47,17 @@ describe('CoordinateResolver', () => {
       expect(res.status).toBe(400)
       expect(res.body.data).toBeFalsy()
       expect(res.body.errors[0].message).toBe('No information found for the given address.')
+    })
+
+    test('Should return ApolloError on 500 error', async () => {
+      httpMapClientsConstants.mapbox.ACCESS_TOKEN = 'fake_token'
+
+      const res = await request(app)
+        .post('/graphql')
+        .send({ query })
+
+      expect(res.status).toBe(500)
+      expect(res.body.data).toBeFalsy()
     })
   })
 })
