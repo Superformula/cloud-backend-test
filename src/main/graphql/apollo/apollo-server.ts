@@ -4,7 +4,7 @@ import { GraphQLError } from 'graphql'
 import { buildSchema } from 'type-graphql'
 import { CoordinateResolver } from '../resolvers'
 
-const checkErrorExists = (error: GraphQLError, errorName: string): boolean => {
+export const checkErrorExists = (error: GraphQLError, errorName: string): boolean => {
   return [error.name, error.originalError?.name].some(name => name === errorName)
 }
 
