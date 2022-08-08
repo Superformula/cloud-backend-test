@@ -20,4 +20,11 @@ describe('ApolloServerResolverAdapter', () => {
     await adaptResolver(controllerSpy, req, args)
     expect(controllerSpy.request).toEqual(req)
   })
+
+  test('Should return Controller\'s response', async () => {
+    const controllerSpy = new ControllerSpy()
+    const req = jest.fn() as any
+    const result = await adaptResolver(controllerSpy, req, null)
+    expect(result).toEqual(controllerSpy.httpResponse.body)
+  })
 })
