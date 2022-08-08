@@ -11,4 +11,13 @@ describe('ApolloServerResolverAdapter', () => {
     await adaptResolver(controllerMock, req, args)
     expect(req.body).toEqual(args)
   })
+
+  test('Should call Controller with correct arguments', async () => {
+    const controllerSpy = new ControllerSpy()
+    const req = jest.fn() as any
+    req.body = {}
+    const args = { [faker.datatype.string()]: faker.random.word() }
+    await adaptResolver(controllerSpy, req, args)
+    expect(controllerSpy.request).toEqual(req)
+  })
 })
