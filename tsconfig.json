@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
       "experimentalDecorators": true,
-      "outDir": "./dist",
+      "outDir": ".build",
       "module": "commonjs",
       "target": "es2019",
       "esModuleInterop": true,
@@ -15,7 +15,6 @@
         "@main/*": ["main/*"]
       },
       "sourceMap": true,
-      "rootDir": "src"
+      "rootDir": "./"
     },
-    "include": ["src"]
   }
