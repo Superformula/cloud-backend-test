@@ -13,12 +13,8 @@ export const mockGraphQLError = (): any => ({
     code: 'INTERNAL_SERVER_ERROR'
   },
   originalError: {
-    stack: faker.datatype.string()
+    stack: faker.datatype.string(),
+    name: faker.random.word()
   },
-  name: faker.random.word(),
-  error: {
-    originalError: {
-      name: faker.random.word()
-    }
-  }
+  name: faker.random.word()
 })
