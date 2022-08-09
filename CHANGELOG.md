@@ -1,4 +1,27 @@
-# 0.1.0 (2022-08-08)
+# [0.2.0](https://github.com/DiegoSalas27/cloud-backend-test/compare/v0.1.0...v0.2.0) (2022-08-09)
+
+
+### Features
+
+* add formatError pipeline to handle errors gracefully ([8a08ae0](https://github.com/DiegoSalas27/cloud-backend-test/commit/8a08ae03a76025f95768ec9ab9746536c9c18c97))
+* add status code on thrown exepcetions ([6773890](https://github.com/DiegoSalas27/cloud-backend-test/commit/67738902702fc0fe6e74ccb4a772b081b1ed08b3))
+* ensure ApolloServer returns checkErrorExists false on non matching error name ([c6d84a1](https://github.com/DiegoSalas27/cloud-backend-test/commit/c6d84a1c11fefdc34c93a24db29946a1d8466143))
+* ensure ApolloServerResolverAdapter adds agrs to request body ([b768c4d](https://github.com/DiegoSalas27/cloud-backend-test/commit/b768c4d6f132220ba6f96d847d293dd18015fc1a))
+* ensure ApolloServerResolverAdapter throws ApolloError on 500 error ([4c99f0b](https://github.com/DiegoSalas27/cloud-backend-test/commit/4c99f0b4f89ba196e1382762a409a90128fc8d46))
+* ensure ApolloServerResolverAdapter throws UserInputError on 400 error ([2082509](https://github.com/DiegoSalas27/cloud-backend-test/commit/20825093f1e12cd5b6b6a61444318882d2864910))
+* ensure DbRetrieveCoordinatesFactory returns DbRetrieveCoordinates instance ([c41d73d](https://github.com/DiegoSalas27/cloud-backend-test/commit/c41d73d3583315c11ce9f1ae0ee6c83ee1a22b42))
+* ensure ErrorHandlerMiddleware calls sendErrorDev when in development environment ([83b0fb6](https://github.com/DiegoSalas27/cloud-backend-test/commit/83b0fb687adb889a5b4b2a1403af425263dd15e3))
+* ensure ErrorMiddleware logs error on production environemnt ([64f5acb](https://github.com/DiegoSalas27/cloud-backend-test/commit/64f5acb702c429d1299325430f36903774673bf8))
+* ensure ErrorMiddleware returns developerError on development environment ([b30f4d4](https://github.com/DiegoSalas27/cloud-backend-test/commit/b30f4d4b1e1d160ef1a6a580a6ba962b90bcd826))
+* ensure ErrorMiddleware returns userError with default error message on INTERNAL_SERVER_ERROR ([c95235f](https://github.com/DiegoSalas27/cloud-backend-test/commit/c95235f836ca8e5c9b2141949874c1b680b1d86e))
+* ensure LogControllerDecorator calls controller handle with correct arguments ([bea1d56](https://github.com/DiegoSalas27/cloud-backend-test/commit/bea1d5671a10f9aac45547751127f5da46d18e5f))
+* ensure LogControllerDecorator returns httpResponse from controller ([531c3cc](https://github.com/DiegoSalas27/cloud-backend-test/commit/531c3cc58eb0a0ad4be04279f070393f24f3e8cf))
+* ensure LogControllerDecoratorFactory returns a LogControllerDecorator instance ([3feaeb8](https://github.com/DiegoSalas27/cloud-backend-test/commit/3feaeb8c0bf3e2c50cb5d1d81e2bc4bbf8a6c6e7))
+* ensure RetrieveCoordinateControllerFactory returns a LogControllerDecorator instance ([b6de2b0](https://github.com/DiegoSalas27/cloud-backend-test/commit/b6de2b0afab32f9a33804f27770bd76d9edf0425))
+
+
+
+# [0.1.0](https://github.com/DiegoSalas27/cloud-backend-test/compare/7b0ba1c0b2bfedc36703c745ed341ba2b7794acb...v0.1.0) (2022-08-08)
 
 
 ### Bug Fixes
