@@ -2,10 +2,6 @@ import { GraphQLError } from 'graphql'
 import { IDevError, IUserError } from './interfaces'
 
 export abstract class ErrorMiddleware {
-  constructor () {
-    this.execute = this.execute?.bind(this)
-  }
-
   abstract execute (error: GraphQLError): void
 
   private developerError (error: GraphQLError): IDevError {
