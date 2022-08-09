@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start:prod": "NODE_ENV=production node dist/main/server.js",
-    "start": "NODE_ENV=development ts-node --transpile-only -r tsconfig-paths/register src/main/server.ts",
+    "start:dev": "NODE_ENV=development ts-node --transpile-only -r tsconfig-paths/register src/main/server.ts",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
     "postbuild": "copyfiles -y 1 .env dist/",
     "test": "jest --passWithNoTests",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
     "test:integration": "npm test -- --watch -c jest-integration-config.js",
     "test:staged": "npm test --findRelatedTests",
+    "test:ci": "npm test -- --coverage",
     "prepare": "husky install"
   },
   "repository": {

@@ -1,5 +1,17 @@
 module.exports = {
   roots: ['<rootDir>/src'],
+  collectCoverageFrom: [
+    '<rootDir>/src/**/*.ts',
+    '!<rootDir>/src/main/graphql/apollo/*.ts',
+    '!<rootDir>/src/**/**index.ts',
+    '!<rootDir>/src/main/server.ts',
+    '!<rootDir>/src/main/config/env.ts',
+    '!**/test/**',
+    '!**/helpers/*.ts'
+
+  ],
+  coverageDirectory: 'coverage',
+  coverageProvider: 'babel',
   moduleNameMapper: {
     '@domain/(.*)$': '<rootDir>/src/domain/$1',
     '@data/(.*)$': '<rootDir>/src/data/$1',
