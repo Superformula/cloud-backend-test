@@ -1,3 +1,12 @@
+# [1.1.0](https://github.com/DiegoSalas27/cloud-backend-test/compare/v0.2.0...v1.1.0) (2022-08-10)
+
+
+### Features
+
+* add apollo-server-lambda and handler function ([643fc4b](https://github.com/DiegoSalas27/cloud-backend-test/commit/643fc4bc8407dd3b545d1576182d0d4a1746a2fa))
+
+
+
 # [0.2.0](https://github.com/DiegoSalas27/cloud-backend-test/compare/v0.1.0...v0.2.0) (2022-08-09)
 
 

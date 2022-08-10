@@ -42,6 +42,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: List files in the repository
+        run: |
+            ls ${{ github.workspace }}
       - name: npm install and build
         run: |
           npm install
