@@ -42,9 +42,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: List files in the repository
+      - name: create enviroment variables for testing
         run: |
-            ls ${{ github.workspace }}
+          touch jest-env-vars.js
+          echo process.env.ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} >> jest-env-vars.js
       - name: npm install and build
         run: |
           npm install
