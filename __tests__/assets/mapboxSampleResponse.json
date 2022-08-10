@@ -1,0 +1,302 @@
+{
+	"type": "FeatureCollection",
+	"query": [
+		"denver",
+		"colorado",
+		"usa"
+	],
+	"features": [
+		{
+			"id": "place.4225231544046320",
+			"type": "Feature",
+			"place_type": [
+				"place"
+			],
+			"relevance": 1,
+			"properties": {
+				"wikidata": "Q16554"
+			},
+			"text": "Denver",
+			"place_name": "Denver, Colorado, United States",
+			"matching_place_name": "Denver, Colorado, USA",
+			"bbox": [
+				-105.116656,
+				39.617366,
+				-104.625596,
+				39.914178
+			],
+			"center": [
+				-104.984862,
+				39.739236
+			],
+			"geometry": {
+				"type": "Point",
+				"coordinates": [
+					-104.984862,
+					39.739236
+				]
+			},
+			"context": [
+				{
+					"id": "district.1022628670046320",
+					"wikidata": "Q16554",
+					"text": "Denver"
+				},
+				{
+					"id": "region.10002699958017490",
+					"short_code": "US-CO",
+					"wikidata": "Q1261",
+					"text": "Colorado"
+				},
+				{
+					"id": "country.14135384517372290",
+					"wikidata": "Q30",
+					"short_code": "us",
+					"text": "United States"
+				}
+			]
+		},
+		{
+			"id": "poi.635655181047",
+			"type": "Feature",
+			"place_type": [
+				"poi"
+			],
+			"relevance": 1,
+			"properties": {
+				"landmark": true,
+				"address": "1881 Curtis Street",
+				"category": "conference center meeting room, meeting room, conference center"
+			},
+			"text": "The Ritz-Carlton",
+			"place_name": "The Ritz-Carlton, 1881 Curtis Street, Denver, Colorado 80202, United States",
+			"matching_text": "Denver",
+			"matching_place_name": "Denver, 1881 Curtis Street, Denver, Colorado 80202, USA",
+			"center": [
+				-104.991858,
+				39.750135
+			],
+			"geometry": {
+				"coordinates": [
+					-104.991858,
+					39.750135
+				],
+				"type": "Point"
+			},
+			"context": [
+				{
+					"id": "neighborhood.4305412005206260",
+					"text": "Central Business District"
+				},
+				{
+					"id": "postcode.9804568075405750",
+					"text": "80202"
+				},
+				{
+					"id": "place.4225231544046320",
+					"wikidata": "Q16554",
+					"text": "Denver"
+				},
+				{
+					"id": "district.1022628670046320",
+					"wikidata": "Q16554",
+					"text": "Denver"
+				},
+				{
+					"id": "region.10002699958017490",
+					"short_code": "US-CO",
+					"wikidata": "Q1261",
+					"text": "Colorado"
+				},
+				{
+					"id": "country.14135384517372290",
+					"wikidata": "Q30",
+					"short_code": "us",
+					"text": "United States"
+				}
+			]
+		},
+		{
+			"id": "poi.326417560534",
+			"type": "Feature",
+			"place_type": [
+				"poi"
+			],
+			"relevance": 1,
+			"properties": {
+				"landmark": true,
+				"address": "3615 Martin Luther King Junior Blvd",
+				"category": "doctor, physician"
+			},
+			"text": "Children's Hospital Colorado",
+			"place_name": "Children's Hospital Colorado, 3615 Martin Luther King Junior Blvd, Aurora, Colorado 80045, United States",
+			"matching_text": "Denver",
+			"matching_place_name": "Denver, 3615 Martin Luther King Junior Blvd, Aurora, Colorado 80045, USA",
+			"center": [
+				-104.834529,
+				39.741719
+			],
+			"geometry": {
+				"coordinates": [
+					-104.834529,
+					39.741719
+				],
+				"type": "Point"
+			},
+			"context": [
+				{
+					"id": "neighborhood.12451200001896410",
+					"text": "Fitzsimons"
+				},
+				{
+					"id": "postcode.9101597632109470",
+					"text": "80045"
+				},
+				{
+					"id": "place.12538174515341650",
+					"wikidata": "Q49246",
+					"text": "Aurora"
+				},
+				{
+					"id": "district.5903439479265250",
+					"wikidata": "Q112807",
+					"text": "Adams County"
+				},
+				{
+					"id": "region.10002699958017490",
+					"short_code": "US-CO",
+					"wikidata": "Q1261",
+					"text": "Colorado"
+				},
+				{
+					"id": "country.14135384517372290",
+					"wikidata": "Q30",
+					"short_code": "us",
+					"text": "United States"
+				}
+			]
+		},
+		{
+			"id": "poi.798863961860",
+			"type": "Feature",
+			"place_type": [
+				"poi"
+			],
+			"relevance": 1,
+			"properties": {
+				"landmark": true,
+				"address": "55 Madison St Ste 280",
+				"category": "dentist, dentistry, dental hygienist",
+				"maki": "dentist"
+			},
+			"text": "Eberle Orthodontics",
+			"place_name": "Eberle Orthodontics, 55 Madison St Ste 280, Denver, Colorado 80209, United States",
+			"matching_text": "Denver",
+			"matching_place_name": "Denver, 55 Madison St Ste 280, Denver, Colorado 80209, USA",
+			"center": [
+				-104.94617,
+				39.715341
+			],
+			"geometry": {
+				"coordinates": [
+					-104.94617,
+					39.715341
+				],
+				"type": "Point"
+			},
+			"context": [
+				{
+					"id": "neighborhood.6966600001117420",
+					"text": "Burlington Capitol Hill"
+				},
+				{
+					"id": "postcode.3775889867930640",
+					"text": "80209"
+				},
+				{
+					"id": "place.4225231544046320",
+					"wikidata": "Q16554",
+					"text": "Denver"
+				},
+				{
+					"id": "district.1022628670046320",
+					"wikidata": "Q16554",
+					"text": "Denver"
+				},
+				{
+					"id": "region.10002699958017490",
+					"short_code": "US-CO",
+					"wikidata": "Q1261",
+					"text": "Colorado"
+				},
+				{
+					"id": "country.14135384517372290",
+					"wikidata": "Q30",
+					"short_code": "us",
+					"text": "United States"
+				}
+			]
+		},
+		{
+			"id": "poi.962072724118",
+			"type": "Feature",
+			"place_type": [
+				"poi"
+			],
+			"relevance": 1,
+			"properties": {
+				"landmark": true,
+				"address": "17th St",
+				"category": "italian restaurant, italian food, restaurant"
+			},
+			"text": "Panzono",
+			"place_name": "Panzono, 17th St, Denver, Colorado 80202, United States",
+			"matching_text": "Denver",
+			"matching_place_name": "Denver, 17th St, Denver, Colorado 80202, USA",
+			"center": [
+				-104.992872,
+				39.747814
+			],
+			"geometry": {
+				"coordinates": [
+					-104.992872,
+					39.747814
+				],
+				"type": "Point"
+			},
+			"context": [
+				{
+					"id": "neighborhood.4305412005206260",
+					"text": "Central Business District"
+				},
+				{
+					"id": "postcode.9804568075405750",
+					"text": "80202"
+				},
+				{
+					"id": "place.4225231544046320",
+					"wikidata": "Q16554",
+					"text": "Denver"
+				},
+				{
+					"id": "district.1022628670046320",
+					"wikidata": "Q16554",
+					"text": "Denver"
+				},
+				{
+					"id": "region.10002699958017490",
+					"short_code": "US-CO",
+					"wikidata": "Q1261",
+					"text": "Colorado"
+				},
+				{
+					"id": "country.14135384517372290",
+					"wikidata": "Q30",
+					"short_code": "us",
+					"text": "United States"
+				}
+			]
+		}
+	],
+	"attribution": "NOTICE: © 2022 Mapbox and its suppliers. All rights reserved. Use of this data is subject to the Mapbox Terms of Service (https://www.mapbox.com/about/maps/). This response and the information it contains may not be retained. POI(s) provided by Foursquare."
+}
