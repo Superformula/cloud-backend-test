@@ -4,9 +4,7 @@ import { RetrieveCoordinates } from '@domain/usecases'
 import { faker } from '@faker-js/faker'
 
 export const mockRetrieveCoordinatesRequest = {
-  body: {
-    address: faker.address.city()
-  }
+  address: faker.address.city()
 }
 
 export class RetrieveCoordinatesSpy implements RetrieveCoordinates {

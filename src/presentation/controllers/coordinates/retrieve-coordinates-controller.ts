@@ -7,7 +7,7 @@ export class RetrieveCoordinatesController implements Controller {
 
   async handle (request: any): Promise<HttpResponse> {
     try {
-      const { address } = request.body
+      const { address } = request
 
       const coordinates = await this.retrieveCoordinates.retrieveCoordinates(address)
       return ok(coordinates)

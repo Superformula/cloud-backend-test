@@ -21,7 +21,7 @@ describe('RetrieveCoordinatesController', () => {
   test('Should call RetrieveCoordinates with correct address', async () => {
     const { retrieveCoordinatesSpy, sut } = makeSut()
     await sut.handle(mockRetrieveCoordinatesRequest)
-    expect(retrieveCoordinatesSpy.address).toBe(mockRetrieveCoordinatesRequest.body.address)
+    expect(retrieveCoordinatesSpy.address).toBe(mockRetrieveCoordinatesRequest.address)
   })
 
   test('Should return coordinates on success', async () => {
