@@ -107,3 +107,31 @@ This command will automate the whole building and shipping process using the CLI
 it will build the assets, run all the test suites, generate a coverage report, create the zipped dist package,
 create/update the terraform plan and apply it to deploy it to aws. Upon successful deplpyment, you
 shoudl be seeing lambda url in CLI output.
+
+## API Reference
+
+#### Get location coordinates
+
+```http
+  POST /api/insurancePolicy
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `address` | `NonEmptyString` | **Required**. Arbitrary address to know the coordinates of |
+
+#### Response
+
+```http
+  {
+    latitute: value,
+    longitude: value
+  }
+
+  //in case of error
+
+  {
+    code: <errorCOde>
+    message: <errorMessage>
+  }
+```
