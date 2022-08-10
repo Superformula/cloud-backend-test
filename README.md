@@ -2,7 +2,7 @@
 
 ## Table of contents
 
-- [Technical stack](#tech-stack);
+- [Technical stack](#Technical stack);
 - [Architecture](#architecture);
 - [Project Structure](#repo-structure);
 - [Useful Environment Variables](#env-variables);
