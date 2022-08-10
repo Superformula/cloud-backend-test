@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.base",
+    "compilerOptions": {
+      "sourceMap": true
+    },
+    "rules": {
+      "no-floating-promises": true
+    }
+}
