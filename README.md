@@ -140,3 +140,19 @@ shoudl be seeing lambda url in CLI output.
     message: <errorMessage>
   }
 ```
+## Implementation Details
+
+- Most important aspect of implementation is that it isusing Graphql for API specification. Following are some details of how components are designed.
+- **Schema**
+    - Schema is defined in .graphql file turned into *typedefs* by reading the schema file on runtime.
+    - A union of type `Coordinates` and `Error` is implemented to have clean error handling in business layer.
+    - There's a custom type being implemented to have validation of non empty address on first level of request.
+    **Note**: We could have add validation in business layer as well instead of implementing custom type but given the
+    fact that app is serverless and cost would be based on compute time, its intutive if we reject the request on schema validation level rather
+    than let it to go to business layer and have further compute. 
+- **Resolvers**
+    - Resolvers are organized on the basis of schema structure. Currently, resolvers just get the request and wire it don to data sources layer. No business logic is exposed in this layer.
+- **Data Sources**
+    - This is a simple layer which uses dependency container to resolve the service component and make it available for resolver layer to call.
+- **Services**
+    - Servcice layer is where all the business logic is implemented. Dependency container from `typedi` is being incorporated in this layer to make services implementation injectable and resolvable without hassle of managing the lifecycle of objects. Dependencies of each service class is also injected in DI container at start of app to be available to consume with in service. This makes whole solution extensible as well as testable.
