@@ -44,8 +44,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: create enviroment variables for testing
         run: |
+          touch .env
+          echo process.env.ACCESS_TOKEN=${ENV_DEV} > .env
           touch jest-env-vars.js
-          echo process.env.ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} >> jest-env-vars.js
+          echo process.env.ACCESS_TOKEN=${ENV_JEST} > jest-env-vars.js
+        env: 
+          ENV_DEV: ${{ secrets.ENV_DEV }} 
+          ENV_JEST: ${{ secrets.ENV_JEST }} 
       - name: npm install and build
         run: |
           npm install
@@ -53,7 +58,11 @@ jobs:
           npm run build --if-present
         env:
           CI: true
-      - name: zip
+      - name: npm install prod
+        run: |
+          rm -r node_modules
+          npm install --production
+      - name: zip 
         uses: montudor/action-zip@v0.1.0
         with:
           args: zip -qq -r ./bundle.zip ./
