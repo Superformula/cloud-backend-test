@@ -1,0 +1,21 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+# dependencies
+/node_modules
+/.idea
+/dist
+/build
+/.terraform
+# misc
+.DS_Store
+.env*
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+build
+iac/deployment/test/terraform.tfstate
+.terraform.lock.hcl
+terraform.tfstate.backup
+terraform.tfstate
+
