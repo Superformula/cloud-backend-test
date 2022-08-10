@@ -5,7 +5,6 @@
 - [Technical stack](#tech-stack);
 - [Architecture](#architecture);
 - [Project Structure](#repo-structure);
-- [Structure of the folder "/src/server"](#structure-of-server-folder);
 - [Useful Environment Variables](#env-variables);
 - [Setting up your environment and building/running/testing the solution](#setting-up);
 - [GraphQL documentation and playground](#graphql-docs-and-playground);
@@ -58,3 +57,58 @@ Following is the directories arrangememnt in folder:
     └───unit                # Contains unit tests
         
 ```
+## Environment Variables
+Following are the important environment variables to be set to run the application. For the scope of this project
+I have added env files for dev, test and aws environments having variables set in it. (Although, env files shouldn't
+be part of git repo and deployments variable should be in terraform.)
+```
+NODE_ENV             # Environment of the app
+GOOGLE_MAPS_KEY      # Api key for maps api
+LOG_LEVEL            # Log level of the application
+
+```
+
+## Building and running(Locally)
+
+To manage the build and ship, some npm commands have been implemented in *package.json* file.
+#### Install required packages
+In order to install required packages, run following command in project root directory:
+```
+npm install
+```
+This will generate assets in *./build* folder.
+#### Build
+In order to build the project and generate assets for deployment, run:
+```
+npm run build
+```
+This will generate assets in *./build* folder.
+
+#### Run tests
+In order to run the test and generate coverage report:
+```
+npm test
+```
+This will generate CLI report as well as report assets in *./coverage* folder.
+
+#### Run tests
+In order to run the test and generate coverage report:
+```
+npm test
+```
+This will generate CLI report as well as report assets in *./coverage* folder.
+#### Run locally
+In order to run the app locally, hit:
+```
+npm start
+```
+This will host application locally on default 4000 port.
+#### Deploy to aws
+In order to run the app locally, hit:
+```
+npm run aws-deploy
+```
+This command will automate the whole building and shipping process using the CLI. On running this, 
+it will build the assets, run all the test suites, generate a coverage report, create the zipped dist package,
+create/update the terraform plan and apply it to deploy it to aws. Upon successful deplpyment, you
+shoudl be seeing lambda url in CLI output.
