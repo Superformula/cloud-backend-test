@@ -128,9 +128,9 @@ This will run the project in development mode
 
 Before deployment make sure to:
 -	Have a mapbox api access token 
--	Have configured AWS credentials locally with AWS CLI: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+-	Have configured AWS credentials locally with AWS CLI: (https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
--	Install the serverless framework globally: npm install -g serverless
+-	Install the serverless framework globally: npm install -g serverless (https://www.serverless.com/framework/docs/getting-started)
 -	Have in an .env file your environment variables 
 
 To deploy the application run the following command:
