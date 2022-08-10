@@ -48,7 +48,7 @@ describe('CoordinateResolver', () => {
     })
 
     test('Should return ApolloError on 500 error', async () => {
-      httpMapClientsConstants.mapbox.ACCESS_TOKEN = 'fake_token'
+      httpMapClientsConstants.mapbox.GEOCODING_BASE_URL = 'fake_url'
 
       const result = await app.executeOperation({ query })
 
