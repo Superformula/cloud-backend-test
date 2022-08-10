@@ -2,15 +2,13 @@
 
 ## Table of contents
 
-- [Technical stack](#Technical stack);
-- [Architecture](#architecture);
-- [Project Structure](#repo-structure);
-- [Useful Environment Variables](#env-variables);
-- [Setting up your environment and building/running/testing the solution](#setting-up);
-- [GraphQL documentation and playground](#graphql-docs-and-playground);
-- [Description of some of the frameworks/tools used in the solution](#frameworks-and-tools);
-- [Test bonuses](#bonuses)
-- [Further improvements](#further-improvements);
+- [Technical stack]
+- [Architecture]
+- [Project Structure]
+- [Environment Variables]
+- [Building and running]
+- [API Reference]
+- [Implementation Details]
 
 ## Technical stack
 
@@ -68,7 +66,7 @@ LOG_LEVEL            # Log level of the application
 
 ```
 
-## Building and running(Locally)
+## Building and running
 
 To manage the build and ship, some npm commands have been implemented in *package.json* file.
 #### Install required packages
