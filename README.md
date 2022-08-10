@@ -72,6 +72,17 @@ LOG_LEVEL            # Log level of the application
 <a name="build-run"></a>
 ## Building and running
 
+#### Pre-Reqs
+This project was developed on windows machine but a *package.linux.json* file is created for linux users. You just need to rename the file to *package.json* and delete or rename current one(which is for windows). Before building and running the project, you are supposed to install some 7zip cli tool and terraform. Use following commands to install 7zip:
+```
+sudo apt install p7zip-full
+```
+To install terraform use this [link](https://learn.hashicorp.com/tutorials/terraform/install-cli). After installing, initiate it using following command in project's root directory
+```
+terraform init
+```
+
+This will generate assets in *./build* folder.
 To manage the build and ship, some npm commands have been implemented in *package.json* file.
 #### Install required packages
 In order to install required packages, run following command in project root directory:
