@@ -1,3 +1,12 @@
+## [1.1.1](https://github.com/DiegoSalas27/cloud-backend-test/compare/v1.1.0...v1.1.1) (2022-08-10)
+
+
+### Bug Fixes
+
+* add extra validation for mapbox geocoding api ([cda8822](https://github.com/DiegoSalas27/cloud-backend-test/commit/cda882250b261b6e4b80f448f343a724ada67b33))
+
+
+
 # [1.1.0](https://github.com/DiegoSalas27/cloud-backend-test/compare/v0.2.0...v1.1.0) (2022-08-10)
 
 
