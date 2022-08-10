@@ -1,10 +1,9 @@
 import { faker } from '@faker-js/faker'
 import { ControllerSpy } from '@main/test'
-import { ApolloError, UserInputError } from 'apollo-server-express'
+import { ApolloError, UserInputError } from 'apollo-server-lambda'
 import { adaptResolver } from './apollo-server-resolver-adapter'
 
 interface SutTypes {
-  req: any
   controllerSpy: ControllerSpy
   args: object
   result: Promise<any>
@@ -12,13 +11,10 @@ interface SutTypes {
 
 const makeSut = async (): Promise<SutTypes> => {
   const controllerSpy = new ControllerSpy()
-  const req = jest.fn() as any
-  req.body = {}
   const args = { [faker.datatype.string()]: faker.random.word() }
-  const result = await adaptResolver(controllerSpy, req, args)
+  const result = await adaptResolver(controllerSpy, args)
 
   return {
-    req,
     controllerSpy,
     args,
     result
@@ -26,14 +22,15 @@ const makeSut = async (): Promise<SutTypes> => {
 }
 
 describe('ApolloServerResolverAdapter', () => {
-  test('Should add agrs to request body', async () => {
-    const { req, args } = await makeSut()
-    expect(req.body).toEqual(args)
+  test('Should call controller with empty object if no args are given', async () => {
+    const controllerSpy = new ControllerSpy()
+    await adaptResolver(controllerSpy)
+    expect(controllerSpy.request).toEqual({})
   })
 
   test('Should call Controller with correct arguments', async () => {
-    const { req, controllerSpy } = await makeSut()
-    expect(controllerSpy.request).toEqual(req)
+    const { controllerSpy, args } = await makeSut()
+    expect(controllerSpy.request).toEqual(args)
   })
 
   test('Should return Controller\'s response on success', async () => {
@@ -43,20 +40,16 @@ describe('ApolloServerResolverAdapter', () => {
 
   test('Should throw UserInputError on 400 error', async () => {
     const controllerSpy = new ControllerSpy()
-    const req = jest.fn() as any
-    req.body = {}
     controllerSpy.httpResponse.statusCode = 400
-    const promise = adaptResolver(controllerSpy, req, null)
+    const promise = adaptResolver(controllerSpy, {}, null)
 
     await expect(promise).rejects.toThrow(UserInputError)
   })
 
   test('Should throw ApolloError on 500 error', async () => {
     const controllerSpy = new ControllerSpy()
-    const req = jest.fn() as any
-    req.body = {}
     controllerSpy.httpResponse.statusCode = 500
-    const promise = adaptResolver(controllerSpy, req, null)
+    const promise = adaptResolver(controllerSpy, {}, null)
 
     await expect(promise).rejects.toThrow(ApolloError)
   })
