@@ -93,7 +93,6 @@ npm test
 ```
 This will generate CLI report as well as report assets in *./coverage* folder.
 
-This will generate CLI report as well as report assets in *./coverage* folder.
 #### Run locally
 In order to run the app locally, hit:
 ```
