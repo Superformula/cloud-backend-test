@@ -34,7 +34,7 @@ logs and traces being generated get saved in **AWS Cloudwatch service**.
 To get the coordinates against given address, **Google geocoding api** is being used. Lambda function directly communicates
 with this service to fetch the location data. 
 
-![solution-overall-architecture](./assets/overall_arch.png)
+![solution-overall-architecture](./proj-arch.svg)
 
 ## Project Structure
 Following is the directories arrangememnt in folder:
