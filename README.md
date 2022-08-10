@@ -91,11 +91,6 @@ npm test
 ```
 This will generate CLI report as well as report assets in *./coverage* folder.
 
-#### Run tests
-In order to run the test and generate coverage report:
-```
-npm test
-```
 This will generate CLI report as well as report assets in *./coverage* folder.
 #### Run locally
 In order to run the app locally, hit:
