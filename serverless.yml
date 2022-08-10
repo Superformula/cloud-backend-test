@@ -1,0 +1,33 @@
+service: apollo-coordinates-service
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-dotenv-plugin
+  - serverless-tscpaths
+
+useDotenv: true
+
+provider:
+  name: aws 
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  memorySize: 1024
+
+environment:
+  ACCESS_TOKEN: ${env:ACCESS_TOKEN}
+
+functions:
+  graphql:
+    handler: src/main/config/index.handler
+    events:
+      - http:
+          path: graphql
+          method: any
+          cors: true
+
+custom:
+  tscpaths:
+    buildPath: .build
+    tsconfigPath: tsconfig.json

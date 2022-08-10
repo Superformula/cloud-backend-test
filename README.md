@@ -1,86 +1,158 @@
-# Superformula Cloud Backend Test
-
-Be sure to read **all** of this document carefully, and follow the guidelines within.
+# Superformula Cloud Backend Test Solution
 
 ### Summary
 
-Build a GraphQL API for geographical data to receive an arbitrary address and return its coordinates (Latitude and Longitude).
+This repository contains the solution for Superformula Cloud Backend Test. It is a GraphQL API that retrieves coordinates for a given address. The solution has been designed to comply with the requirements of extensible code and architecture, followed by Logging and traceability as well as solid testing.
 
-Example response:
+## Solid Principles
+* Single responsibility principle:
+  * Controllers and services only handle one use case
+* Open closed principle:
+  * By using the decorator pattern (LogController) we can add functionality to a controller without modifying it.
+* Interface segregation principle:
+  * Every controller, service and repository implement in full their interfaces
+* Dependency Inversion principle:
+  * Controller’s dependencies and service’s dependencies are abstractions (interfaces) rather than implementations. Concrete implementation of a third-party library or a http client depends on the abstractions created and not the other way around (the dependency is inverted)
 
-```json
-{
-  "latitude": 37.821385,
-  "longitude": -122.478779,
-}
+## Design Patterns
+* Factory
+* Decorator
+* Adapter
+* Dependency Injection
+* Composition root
+
+## Methodologies
+* TDD
+* Clean architecture
+* Conventional Commits
+* Continuous integration
+* Object Oriented Design
+
+## Features
+* Error handling
+* Unit test
+* Integration test
+* Coverage test
+* Extensible code
+* Logging and traceability
+
+## Handling error strategy:
+* Operational errors: predictable run-time errors of correctly written programs that may happen at some point
+* Programming errors: bugs developers introduce to the code.
+
+Errors are handled differently in development and production environments for best utility purposes.
+
+Error in development environment with stack trace
+
+![Error in development](public/img/development%20error.png)
+
+Error in production environment with customized message for the user
+
+![Error in production](public/img/production%20error.png)
+
+## Tech Stack
+* Typescript
+* Serverles Framework
+* API Gateway + AWS Lambda
+* GraphQL
+
+## Architecture
+
+### Component diagram
+
+![Component diagram](public/img/Cloud%20Backed%20Test%20-%20Component%20Diagram.png)
+
+### AWS Cloud diagram
+
+![AWS Cloud diagram](public/img/Cloud%20Backed%20Test%20-%20AWS%20Cloud%20Diagram.png)
+
+## Testing
+
+Before testing make sure to:
+-	create a file in the root of the project called: jest-env-vars.js, and add the following content:
+```
+process.env.ACCESS_TOKEN='you mapbox api access token in quotes'
+```
+This will ensure that integration tests can run properly
+
+To run the tests you can choose from the following commands:
+
+```
+npm run test:unit
+```
+This will run all unit tests
+
+```
+npm run test:integration    
+```
+This will run all integration tests
+
+```
+npm run test:ci    
+```
+This will run a coverage test
+
+## Repository structure
+The solution is structured in the following directories
 ```
 
-### Requirements
+├── src                 # Source files of the solution
+    ├── data            # Handles all business logic of the solution
+    ├── domain          # Defines business logic protocols, models, and errors
+    ├── infrastructure  # Implements third-party libraries, http clients, access db
+    ├── main            # Performs composition root by creating a dependency graph
+    └── presentation    # Handles incoming requests
+```
 
-#### Functionality
+## Environment variables
+```
+ACCESS_TOKEN            # stores mapbox api access token
+NODE_ENV                # stores the application environemnt (development | production)
+```
 
-1. The API should follow typical GraphQL API design patterns
-1. Proper error handling should be used
+## Build
 
-#### Tech Stack
-  - Use of **TypeScript** is required 
-  - **Please use infrastructure-as-code tooling** that can be used to deploy all resources to AWS. 
-    - Terraform (preferred)
-    - CloudFormation / SAM
-    - Serverless Framework
-    - AWS CDK
-  - Use **AWS Lambda** + **AWS API Gateway**
-  - Location query must use [NASA](https://api.nasa.gov/), [Google Maps,](https://developers.google.com/maps) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs to resolve the coordinate based on the address
+To build the solution run the following command:
+```
+npm run build
+```
+This will create a build folder optimized for production
 
-#### Developer Experience 
-- Write unit tests for business logic
-- Write concise and clear commit messages
-- Developers must be able to run and test this service locally
-- Document and diagram the architecture of your solution
-- Write clear documentation:
-    - Repository structure
-    - Environment variables and any defaults
-    - How to build/run/test the solution
-    - Deployment guide
+## Run the solution
 
-### Bonus
+To run the solution, you can choose from these two options:
+```
+npm run start:prod
+```
+This will run the project simulating production environment
 
-These may be used for further challenges. You can freely skip these; feel free to try them out if you feel up to it.
+```
+npm run start:dev
+```
+This will run the project in development mode
 
-#### Developer Experience
+## Deployment guide
 
-1. Code-coverage report generation
-1. Online interactive demo with a publicly accessible link to your API
+Before deployment make sure to:
+-	Have a mapbox api access token 
+-	Have configured AWS credentials locally with AWS CLI: (https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
-## What We Care About
+-	Install the serverless framework globally: npm install -g serverless (https://www.serverless.com/framework/docs/getting-started)
+-	Have in an .env file your environment variables 
 
-Use any libraries that you would normally use if this were a real production App. Please note: we're interested in your code & the way you solve the problem, not how well you can use a particular library or feature.
+To deploy the application run the following command:
+```
+npm run deploy
+```
+This will build the project first, and then it will use the serverless framework to translate the serverless.yml file to a single CloudFormation template which is then shipped to AWS. 
 
-_We're interested in your method and how you approach the problem just as much as we're interested in the end result._
+## Developer Experience
 
-Here's what you should strive for:
+### Code-coverage report
 
-- Good use of current `TypeScript`, `Node.js`, `GraphQL` & performance best practices
-- Solid testing approach
-- Logging and traceability
-- Extensible code and architecture
-- A delightful experience for other backend engineers working in this repository
-- A delightful experience for engineers consuming your APIs
+![AWS Cloud diagram](public/img/coverage%20test.png)
 
-## Q&A
+## Online interactive demo
 
-> How should I start this code challenge?
+https://6z825phb1c.execute-api.us-east-1.amazonaws.com/dev/graphql
 
-Fork this repo to your own account and make git commits to add your code as you would on any other project.
-
-> Where should I send back the result when I'm done?
-
-Send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
-
-> What if I have a question?
-
-Create a new issue [in this repo](https://github.com/Superformula/cloud-backend-test/issues) and we will respond and get back to you quickly.
-
-> I am almost finished, but I don't have time to create everything that is required
-
-Please provide a plan for the rest of the things that you would do.

@@ -1,0 +1,78 @@
+# https://blog.jakoblind.no/aws-lambda-github-actions/
+
+name: pre-release
+on:
+  push:
+    branches:
+     - graphql-api-serverless
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: conventional Changelog Action
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3.7.1
+        with: 
+          github-token: ${{ secrets.CHANGELOG_RELEASE }}
+
+      - name: create release
+        uses: actions/create-release@v1
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.CHANGELOG_RELEASE }}
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          release_name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+          prerelease: true
+  
+  deploy_source:
+    name: build and deploy lambda
+    strategy:
+      matrix:
+        node-version: [12.x]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout source code
+        uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: create enviroment variables for testing
+        run: |
+          touch .env
+          echo process.env.ACCESS_TOKEN=${ENV_DEV} > .env
+          touch jest-env-vars.js
+          echo process.env.ACCESS_TOKEN=${ENV_JEST} > jest-env-vars.js
+        env: 
+          ENV_DEV: ${{ secrets.ENV_DEV }} 
+          ENV_JEST: ${{ secrets.ENV_JEST }} 
+      - name: npm install and build
+        run: |
+          npm install
+          npm run test:ci
+          npm run build --if-present
+        env:
+          CI: true
+      - name: npm install prod
+        run: |
+          rm -r node_modules
+          npm install --production
+      - name: zip 
+        uses: montudor/action-zip@v0.1.0
+        with:
+          args: zip -qq -r ./bundle.zip ./
+      - name: default deploy
+        uses: appleboy/lambda-action@master
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          function_name: apollo-coordinates-service-dev-graphql
+          zip_file: bundle.zip
+          environment: ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+
