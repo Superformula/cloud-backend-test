@@ -1,86 +1,70 @@
-# Superformula Cloud Backend Test
+# Geocoder GraphQL API
 
-Be sure to read **all** of this document carefully, and follow the guidelines within.
+This project is a simple GraphQL API for converting a physical address into geographic coordinates.  The project uses is a serverless architecture that is hosted on Amazon Web Services (AWS).
+The following AWS services are used in the project:
 
-### Summary
+* [Amazon API Gateway](https://aws.amazon.com/api-gateway/)
+* [AWS Lambda](https://aws.amazon.com/lambda/)
+* [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)
 
-Build a GraphQL API for geographical data to receive an arbitrary address and return its coordinates (Latitude and Longitude).
+The [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding/) is used to convert address text to geographic coordinates.
 
-Example response:
+## System Architecture
 
-```json
-{
-  "latitude": 37.821385,
-  "longitude": -122.478779,
-}
+Here is the overall view of the system architecture:
+
+![System Architecture](support/serverless_geocoder_with_a_graphql_api.png)
+
+## Prerequisites
+
+### AWS Account
+
+An AWS account is required to deploy this application.  The [AWS Command Line Interface (AWS CLI)](https://aws.amazon.com/cli/) is required to complete the developer setup steps. The AWS CLI must be configured and your credentials must have permissions to create infrastructure in the `us-east-1` region.
+
+See [Getting started with the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) if you need to install or configure the AWS CLI.
+
+### Mapbox API Access Token
+
+The [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding/) provides the geocoding capability for the application.  For unit testing, you do not need a working Mapbox API key.  However, to successfully run the integration tests, you will need an API key.  To get a Mapbox API key, you have to have a Mapbox account.  You can [create a free account](https://account.mapbox.com/auth/signup/).  
+
+#### Add the Mapbox API Key to the Local Environments File
+
+After creating an account you should add the key to a file named `.env.local` in the root of the project folder.  You can create the local file manually or run the following command:
+
+```bash
+cp support/example.env.local .env.local
 ```
 
-### Requirements
+Then add your API key to `.env.local`.  `.env.local` is for storing the operating system environment variables during local development.
 
-#### Functionality
+> the `.env.local` file should not be committed to the code repository.
 
-1. The API should follow typical GraphQL API design patterns
-1. Proper error handling should be used
+#### Add the Mapbox API Key to Secrets Manager
 
-#### Tech Stack
-  - Use of **TypeScript** is required 
-  - **Please use infrastructure-as-code tooling** that can be used to deploy all resources to AWS. 
-    - Terraform (preferred)
-    - CloudFormation / SAM
-    - Serverless Framework
-    - AWS CDK
-  - Use **AWS Lambda** + **AWS API Gateway**
-  - Location query must use [NASA](https://api.nasa.gov/), [Google Maps,](https://developers.google.com/maps) or [Mapbox](https://www.mapbox.com/api-documentation/) APIs to resolve the coordinate based on the address
+For the live AWS environments, the Mapbox API key should be stored in [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/).  Here is the command to store the API key in AWS Secrets Manager.
 
-#### Developer Experience 
-- Write unit tests for business logic
-- Write concise and clear commit messages
-- Developers must be able to run and test this service locally
-- Document and diagram the architecture of your solution
-- Write clear documentation:
-    - Repository structure
-    - Environment variables and any defaults
-    - How to build/run/test the solution
-    - Deployment guide
+```bash
+aws secretsmanager \
+  create-secret --name GeocoderApiKeys \
+  --secret-string '{"MAPBOX_API_KEY":"<replace with your Mapbox API key>"}' \
+  --region us-east-1
+```
 
-### Bonus
+All secrets stored in this service must have a unique name The default name for the secret used by the application is `GeocoderApiKeys`.
 
-These may be used for further challenges. You can freely skip these; feel free to try them out if you feel up to it.
+## Tech Stack
 
-#### Developer Experience
+The project uses the following technologies and tools.
 
-1. Code-coverage report generation
-1. Online interactive demo with a publicly accessible link to your API
-
-## What We Care About
-
-Use any libraries that you would normally use if this were a real production App. Please note: we're interested in your code & the way you solve the problem, not how well you can use a particular library or feature.
-
-_We're interested in your method and how you approach the problem just as much as we're interested in the end result._
-
-Here's what you should strive for:
-
-- Good use of current `TypeScript`, `Node.js`, `GraphQL` & performance best practices
-- Solid testing approach
-- Logging and traceability
-- Extensible code and architecture
-- A delightful experience for other backend engineers working in this repository
-- A delightful experience for engineers consuming your APIs
-
-## Q&A
-
-> How should I start this code challenge?
-
-Fork this repo to your own account and make git commits to add your code as you would on any other project.
-
-> Where should I send back the result when I'm done?
-
-Send us a pull request when you think you are done. There is no deadline for this task unless otherwise noted to you directly.
-
-> What if I have a question?
-
-Create a new issue [in this repo](https://github.com/Superformula/cloud-backend-test/issues) and we will respond and get back to you quickly.
-
-> I am almost finished, but I don't have time to create everything that is required
-
-Please provide a plan for the rest of the things that you would do.
+* Programming Languages: [TypeScript](https://www.typescriptlang.org/), [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript), [BASH](https://www.gnu.org/software/bash/) shell
+* Runtime: [NodeJS](https://nodejs.org/en/) v16
+* Libraries and Tools:
+  * [AWS CLI (aws)](https://aws.amazon.com/cli/) - The AWS Command Line Interface is a unified tool to manage your AWS services.
+  * [AWS CDK (cdk)](https://aws.amazon.com/cdk/) - The AWS CDK lets you build reliable, scalable, cost-effective applications in the cloud with the considerable expressive power of a programming language.
+  * [ESLint (eslint)](https://eslint.org) - ESLint is an open-source project that helps you find and fix problems with your JavaScript code.
+  * [Mock Service Worker](https://mswjs.io/) - Mock Service Worker is an API mocking library that uses Service Worker API to intercept actual requests.
+  * [pnpm](https://pnpm.io/) - Fast, disk space efficient package manager.
+  * [Pothos GraphQL](https://pothos-graphql.dev/) - Pothos is a plugin-based GraphQL schema builder for typescript.
+  * [AWS SAM CLI - sam](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) - AWS SAM provides you with a command line tool, the AWS SAM CLI, that makes it easy for you to create and manage serverless applications.
+  * [Serverless Framework (SST) - sst](https://docs.sst.dev/) - SST is a framework that makes it easy to build full-stack serverless apps.
+  * [Vitest](https://vitest.dev/) - Vitest is a blazing fast unit test framework powered by Vite.
