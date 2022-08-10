@@ -68,6 +68,13 @@ Error in production environment with customized message for the user
 
 ## Testing
 
+Before testing make sure to:
+-	create a file in the root of the project called: jest-env-vars.js, and add the following content:
+```
+process.env.ACCESS_TOKEN='you mapbox api access token in quotes'
+```
+This will ensure that integration tests can run properly
+
 To run the tests you can choose from the following commands:
 
 ```
@@ -147,5 +154,5 @@ This will build the project first, and then it will use the serverless framework
 
 ## Online interactive demo
 
-https://fopb62y911.execute-api.us-east-1.amazonaws.com/dev/graphql
+https://6z825phb1c.execute-api.us-east-1.amazonaws.com/dev/graphql
 
