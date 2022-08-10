@@ -112,8 +112,13 @@ shoudl be seeing lambda url in CLI output.
 
 #### Get location coordinates
 
-```http
-  POST /api/insurancePolicy
+``` Sample request
+  curl -X POST \
+  http://localhost:4000/ \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -H 'postman-token: 3e3c3fa8-b827-3b61-ced1-8e3a12f229ca' \
+  -d '{"query":"query                           {\n  getCoordinates(address: \"New York\"){\n    ... on Coordinates{\n      latitude\n      longitude\n    }\n    ... on Error{\n      code\n      message\n    }\n  }\n  \n    \n}\n\n\n","variables":{"address":null}}'
 ```
 
 | Parameter | Type     | Description                |
