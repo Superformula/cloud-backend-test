@@ -10,12 +10,12 @@ variable "graphql_api_path" {
 
 variable "aws_access_key" {
   description = "AWS access key"
-  default = "AKIAZ7VE4YMZ2ZMNXA33"
+  default = "AKIAZ4SUYHD4JA2JAX6P"
 }
 
 variable "aws_secret_key" {
   description = "AWS secret key"
-  default = "N08tzO+O27eYgyhtAAC96l1TrZnT57qDkesomE/A"
+  default = "hxe9e3qdMRlGURhVBQgCM4pKMcPA1GhZg3JDQiZA"
 }
 
 variable "aws_region" {

@@ -25,7 +25,7 @@ describe('getCoordinates Query e2e tests', () => {
         
         expect(response.data?.getCoordinates?.latitude).toStrictEqual(40.7127753);
         expect(response.data?.getCoordinates?.longitude).toStrictEqual(-74.0059728);
-      });
+      }, 59000);
       test('Should return error invalid address', async () => {
         
         const query = `
@@ -49,7 +49,7 @@ describe('getCoordinates Query e2e tests', () => {
         
         expect(response.data?.getCoordinates?.code).toStrictEqual("LOCATION_NOT_FOUND");
         
-      });
+      }, 59000);
       
     })
   })
