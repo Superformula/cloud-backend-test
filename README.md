@@ -2,14 +2,15 @@
 
 ## Table of contents
 
-- [Technical stack]
-- [Architecture]
-- [Project Structure]
-- [Environment Variables]
-- [Building and running]
-- [API Reference]
-- [Implementation Details]
+- [Technical stack](#tech-stack)
+- [Architecture](#arch)
+- [Project Structure](#proj-struct)
+- [Environment Variables](#env-vars)
+- [Building and running](#build-run)
+- [API Reference](#api-ref)
+- [Implementation Details](#impl-details)
 
+<a name="tech-stack"></a>
 ## Technical stack
 
 - [**Node.js**](https://nodejs.org/en/) as runtime
@@ -20,6 +21,7 @@
 - [**GraphQL**](https://graphql.org/) as specification to develop API using **Apollo Server**
 - [**Terraform**](https://www.terraform.io/) as IaC
 
+<a name="arch"></a>
 ## Architecture
 As the image shows, we have serverless architecture of this project built upon amazon web services.
 the first entry point for request is **Api Gateway** which redirects the request to corresponding lambda 
@@ -33,6 +35,7 @@ with this service to fetch the location data.
 
 ![solution-overall-architecture](./proj-arch.svg)
 
+<a name="proj-struct"></a>
 ## Project Structure
 Following is the directories arrangememnt in folder:
 ```
@@ -55,6 +58,7 @@ Following is the directories arrangememnt in folder:
     └───unit                # Contains unit tests
         
 ```
+<a name="env-vars"></a>
 ## Environment Variables
 Following are the important environment variables to be set to run the application. For the scope of this project
 I have added env files for dev, test and aws environments having variables set in it. (Although, env files shouldn't
@@ -65,7 +69,7 @@ GOOGLE_MAPS_KEY      # Api key for maps api
 LOG_LEVEL            # Log level of the application
 
 ```
-
+<a name="build-run"></a>
 ## Building and running
 
 To manage the build and ship, some npm commands have been implemented in *package.json* file.
@@ -106,6 +110,7 @@ it will build the assets, run all the test suites, generate a coverage report, c
 create/update the terraform plan and apply it to deploy it to aws. Upon successful deplpyment, you
 shoudl be seeing lambda url in CLI output.
 
+<a name="api-ref"></a>
 ## API Reference
 
 #### Get location coordinates
@@ -138,6 +143,7 @@ shoudl be seeing lambda url in CLI output.
     message: <errorMessage>
   }
 ```
+<a name="impl-details"></a>
 ## Implementation Details
 
 - Most important aspect of implementation is that it isusing Graphql for API specification. Following are some details of how components are designed.
