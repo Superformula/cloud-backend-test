@@ -12,8 +12,8 @@
     "test": "vitest run",
     "coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
-    "lint": "eslint -c .eslintrc.yml ../services/**/*/*.ts",
-    "lint:fix": "eslint --fix -c .eslintrc.yml ./services/**/*/*.ts"
+    "lint": "eslint -c .eslintrc.yml ./stacks/*.ts ./services/**/*/*.ts",
+    "lint:fix": "eslint --fix -c .eslintrc.yml ./stacks/*.ts ./services/**/*/*.ts"
   },
   "devDependencies": {
     "@graphql-yoga/node": "^2.13.6",

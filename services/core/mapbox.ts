@@ -11,7 +11,7 @@ export const errorMessages = new Map(
     ['401', 'Check the access token you used in the query.'],
     ['403', 'Forbidden, there may be an issue with your account.'],
     ['404', 'Check the endpoint you used in the query.'],
-    ['422', 'Invalid query.  Please check your query parameters.'],
+    ['422', 'Invalid query. Please check your query parameters.'],
     ['429', 'You have exceeded your set rate limit.'],
   ],
 );

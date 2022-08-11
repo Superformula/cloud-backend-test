@@ -75,7 +75,7 @@ describe('Mapbox Geocoder client', () => {
   );
 
   it(
-    'getCoordinatesByAddress without 401 HTTP status code.',
+    'getCoordinatesByAddress 401 HTTP status code.',
     async () => {
       const axiosGetSpy = vi.spyOn(axios, 'get');
       const address = '401';
@@ -90,6 +90,90 @@ describe('Mapbox Geocoder client', () => {
       expect(
         async () => mapBoxGeoCoder.getCoordinatesByAddress(address),
       ).rejects.toThrow('Check the access token you used in the query.');
+      expect(axiosGetSpy).toHaveBeenCalledTimes(1);
+      expect(axiosGetSpy).toHaveBeenCalledWith(url.toString());
+    },
+  );
+
+  it(
+    'getCoordinatesByAddress 403 HTTP status code.',
+    async () => {
+      const axiosGetSpy = vi.spyOn(axios, 'get');
+      const address = '403';
+      const url = new URL(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json`,
+      );
+      url.searchParams.append(
+        'access_token',
+        `${process.env.MAPBOX_API_KEY}`,
+      );
+      const mapBoxGeoCoder = new MapboxGeoCoder();
+      expect(
+        async () => mapBoxGeoCoder.getCoordinatesByAddress(address),
+      ).rejects.toThrow('Forbidden, there may be an issue with your account.');
+      expect(axiosGetSpy).toHaveBeenCalledTimes(1);
+      expect(axiosGetSpy).toHaveBeenCalledWith(url.toString());
+    },
+  );
+
+  it(
+    'getCoordinatesByAddress 404 HTTP status code.',
+    async () => {
+      const axiosGetSpy = vi.spyOn(axios, 'get');
+      const address = '404';
+      const url = new URL(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json`,
+      );
+      url.searchParams.append(
+        'access_token',
+        `${process.env.MAPBOX_API_KEY}`,
+      );
+      const mapBoxGeoCoder = new MapboxGeoCoder();
+      expect(
+        async () => mapBoxGeoCoder.getCoordinatesByAddress(address),
+      ).rejects.toThrow('Check the endpoint you used in the query.');
+      expect(axiosGetSpy).toHaveBeenCalledTimes(1);
+      expect(axiosGetSpy).toHaveBeenCalledWith(url.toString());
+    },
+  );
+
+  it(
+    'getCoordinatesByAddress 422 HTTP status code.',
+    async () => {
+      const axiosGetSpy = vi.spyOn(axios, 'get');
+      const address = '422';
+      const url = new URL(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json`,
+      );
+      url.searchParams.append(
+        'access_token',
+        `${process.env.MAPBOX_API_KEY}`,
+      );
+      const mapBoxGeoCoder = new MapboxGeoCoder();
+      expect(
+        async () => mapBoxGeoCoder.getCoordinatesByAddress(address),
+      ).rejects.toThrow('Invalid query. Please check your query parameters.');
+      expect(axiosGetSpy).toHaveBeenCalledTimes(1);
+      expect(axiosGetSpy).toHaveBeenCalledWith(url.toString());
+    },
+  );
+
+  it(
+    'getCoordinatesByAddress 429 HTTP status code.',
+    async () => {
+      const axiosGetSpy = vi.spyOn(axios, 'get');
+      const address = '429';
+      const url = new URL(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json`,
+      );
+      url.searchParams.append(
+        'access_token',
+        `${process.env.MAPBOX_API_KEY}`,
+      );
+      const mapBoxGeoCoder = new MapboxGeoCoder();
+      expect(
+        async () => mapBoxGeoCoder.getCoordinatesByAddress(address),
+      ).rejects.toThrow('You have exceeded your set rate limit.');
       expect(axiosGetSpy).toHaveBeenCalledTimes(1);
       expect(axiosGetSpy).toHaveBeenCalledWith(url.toString());
     },

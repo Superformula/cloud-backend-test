@@ -110,7 +110,7 @@ export function createGQLHandler<T>(
     if (shouldRenderGraphiQL(request)) {
       return {
         statusCode: 302,
-        headers: {  // eslint-disable-next-line max-len
+        headers: { // eslint-disable-next-line max-len
           Location: `https://studio.apollographql.com/sandbox/explorer?endpoint=https://${event.requestContext.domainName}`,
         },
       };
