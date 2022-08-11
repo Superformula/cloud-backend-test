@@ -40,7 +40,7 @@ fi
 
 read -r -e -p "Do you want to compile (build) the project? [y/N]: " response
 if [[ "$response" == [Yy]* ]]; then
-  if ! npm_alias run build -- --stage dev --region us-east-1; then
+  if ! npm_alias run build --stage dev --region us-east-1; then
     echo "project build failed."
     exit 1;
   fi
