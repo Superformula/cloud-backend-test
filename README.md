@@ -9,6 +9,7 @@
 - [Building and running](#build-run)
 - [API Reference](#api-ref)
 - [Implementation Details](#impl-details)
+- [Demo](#demo)
 
 <a name="tech-stack"></a>
 ## Technical stack
@@ -170,3 +171,9 @@ shoudl be seeing lambda url in CLI output.
     - This is a simple layer which uses dependency container to resolve the service component and make it available for resolver layer to call.
 - **Services**
     - Servcice layer is where all the business logic is implemented. Dependency container from `typedi` is being incorporated in this layer to make services implementation injectable and resolvable without hassle of managing the lifecycle of objects. Dependencies of each service class is also injected in DI container at start of app to be available to consume with in service. This makes whole solution extensible as well as testable.
+
+<a name="demo"></a>
+## Demo
+
+Link to the demo video: [Video Link](https://youtu.be/pToCMUI9dq8)
+Link to lambda function: [Lambda Link](https://5puw69eq20.execute-api.us-east-1.amazonaws.com/staging/graphql)
