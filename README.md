@@ -13,7 +13,7 @@ The [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding/) is use
 
 Here is the diagram for the system architecture:
 
-![System Architecture](support/serverless_geocoder_with_a_graphql_api.png)
+![System Architecture](support/serverless_geocoder_with_a_graphql_api_v1.png)
 
 ## Prerequisites
 
