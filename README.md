@@ -82,6 +82,11 @@ To install terraform use this [link](https://learn.hashicorp.com/tutorials/terra
 ```
 terraform init
 ```
+Set the following variable values in *./main.tf*
+```
+aws_access_key  #AWS access key
+aws_secret_key   #AWS secret sey
+```
 
 To manage the build and ship, some npm commands have been implemented in *package.json* file.
 #### Install required packages
