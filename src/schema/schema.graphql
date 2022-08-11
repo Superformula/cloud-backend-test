@@ -1,16 +1,24 @@
 
+
 scalar NonEmptyString
 
 type Query{
+    "Fetch address coordinates"
     getCoordinates(address: NonEmptyString): CoordinatesOrError
 }
 
 union CoordinatesOrError = Coordinates | Error
+"Location coordinates"
 type Coordinates {
+    "Latitutde of location"
     latitude: Float,
+    "Longitude of location"
     longitude: Float,
 }
+"Error type"
 type Error {
+    "Error code"
     code: String,
+    "Error message"
     message: String
 }
