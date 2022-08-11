@@ -1,4 +1,4 @@
-import { MapboxGeoCoder } from '@cloud-backend-test/core/mapbox';
+import { MapboxGeoCoder } from '../../core/mapbox';
 import {
   builder,
 } from './builder';

@@ -32,6 +32,6 @@
       "time": "10/Aug/1999:16:07:30 +0000",
       "timeEpoch": 1660147650000
   },
-  "body": "{\"query\": \"query { coordinate(address: \\\"Denver, Colorado, United States\\\") { \\n... on QueryCoordinateSuccess { \\n__typename \\ndata {\\nlatitude\\nlongitude\\n}\\n}\\n... on Error {\\n__typename\\nmessage\\n}\\n} }\"}",
+  "body": "{\"query\": \"query { coordinate(address: \\\"401\\\") { \\n... on QueryCoordinateSuccess { \\n__typename \\ndata {\\nlatitude\\nlongitude\\n}\\n}\\n... on Error {\\n__typename\\nmessage\\n}\\n} }\"}",
   "isBase64Encoded": false
 }
