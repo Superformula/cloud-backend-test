@@ -1,6 +1,6 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
-  "include": ["stacks", "./services"],
+  "include": ["./stacks", "./services"],
   "compilerOptions": {
     "paths": {
       "@cloud-backend-test/core/*": ["./services/core/*"]

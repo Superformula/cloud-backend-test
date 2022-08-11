@@ -1,0 +1,12 @@
+type Coordinate {
+  latitude: Float!
+  longitude: Float!
+}
+
+type Error {
+  message: String!
+}
+
+type Query {
+  coordinate(address: String!): Coordinate!
+}

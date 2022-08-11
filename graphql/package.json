@@ -1,0 +1,19 @@
+{
+  "name": "@cloud-backend-test/graphql",
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@genql/cli": "^2.10.0",
+    "graphql": "^16.5.0"
+  },
+  "overrides": {
+    "graphql": "16.5.0"
+  },
+  "resolutions": {
+    "graphql": "16.5.0"
+  },
+  "volta": {
+    "node": "16.16.0",
+    "npm": "8.15.0"
+  }
+}
