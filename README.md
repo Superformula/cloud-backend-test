@@ -345,7 +345,7 @@ type QueryCoordinateSuccess {
 }
 ```
 
-### Sample Clint Code for API Queries
+### Sample Client Code for GraphQL API Queries
 
 A ReactJS example.
 
@@ -408,7 +408,7 @@ Example error response:
 
 ## Monitoring and Tracing
 
-The Lamba functions use the Tracing plugin for Pothos to add tracing and logging resolver invocations.  There is also a [Pothos plugin](https://pothos-graphql.dev/docs/plugins/tracing#aws-xray) for AWS XRay.
+The Lamba functions use the Tracing plugin for Pothos to add tracing and logging for the resolver invocations.  There is also a [Pothos plugin](https://pothos-graphql.dev/docs/plugins/tracing#aws-xray) for AWS XRay.
 
 Some sample logs:
 
