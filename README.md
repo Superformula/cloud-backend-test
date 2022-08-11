@@ -83,7 +83,6 @@ To install terraform use this [link](https://learn.hashicorp.com/tutorials/terra
 terraform init
 ```
 
-This will generate assets in *./build* folder.
 To manage the build and ship, some npm commands have been implemented in *package.json* file.
 #### Install required packages
 In order to install required packages, run following command in project root directory:
