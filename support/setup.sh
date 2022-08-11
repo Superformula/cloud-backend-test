@@ -96,7 +96,7 @@ if command -v nc &> /dev/null && command -v sam &> /dev/null && command -v docke
         sleep 2
       done
     
-      if ! aws lambda invoke --function-name "apiLambdaPOSTgraphql9D0A1996" --payload file://__tests__/assets/event.json --endpoint-url "http://127.0.0.1:3001" --no-verify-ssl --no-verify-ssl /dev/null; then
+      if ! aws lambda invoke --function-name "apiLambdaPOSTgraphql9D0A1996" --payload file://__tests__/assets/event.json --endpoint-url "http://127.0.0.1:3001" --no-verify-ssl /dev/null; then
         echo "aws-cli start-lambda test failed."
         kill ${sam_pid}
         exit 1
