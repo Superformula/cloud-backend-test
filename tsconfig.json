@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+      "experimentalDecorators": true,
+      "outDir": ".build",
+      "module": "commonjs",
+      "target": "es2019",
+      "esModuleInterop": true,
+      "allowJs": true,
+      "baseUrl": "src",
+      "paths": {
+        "@data/*": ["data/*"],
+        "@domain/*": ["domain/*"],
+        "@infrastructure/*": ["infrastructure/*"],
+        "@presentation/*": ["presentation/*"],
+        "@main/*": ["main/*"]
+      },
+      "sourceMap": true,
+      "rootDir": "./"
+    },
+  }

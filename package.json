@@ -1,0 +1,71 @@
+{
+  "name": "cloud-backend-test",
+  "version": "1.1.1",
+  "description": "Be sure to read **all** of this document carefully, and follow the guidelines within.",
+  "main": "index.js",
+  "scripts": {
+    "start:prod": "NODE_ENV=production sls offline",
+    "start:dev": "NODE_ENV=development sls offline",
+    "debug": "SET SLS_DEBUG=* && node --inspect node_modules/serverless/bin/serverless offline -s dev",
+    "build": "rimraf .build && tsc -p tsconfig-build.json",
+    "deploy": "npm run build && serverless deploy",
+    "test": "jest --passWithNoTests",
+    "test:unit": "npm test -- --watch -c jest-unit-config.js",
+    "test:integration": "npm test -- --watch -c jest-integration-config.js",
+    "test:staged": "npm test --findRelatedTests",
+    "test:ci": "npm test -- --coverage",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DiegoSalas27/cloud-backend-test.git"
+  },
+  "keywords": [],
+  "author": "Diego Salas Noain <dominicsc2hs@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DiegoSalas27/cloud-backend-test/issues"
+  },
+  "homepage": "https://github.com/DiegoSalas27/cloud-backend-test#readme",
+  "devDependencies": {
+    "@faker-js/faker": "^7.3.0",
+    "@types/graphql": "^14.5.0",
+    "@types/jest": "^28.1.6",
+    "@types/module-alias": "^2.0.1",
+    "@types/node": "^18.6.4",
+    "@types/node-fetch": "^2.6.2",
+    "@types/supertest": "^2.0.12",
+    "@types/validator": "^13.7.5",
+    "class-validator": "^0.13.2",
+    "copyfiles": "^2.4.1",
+    "eslint-config-standard-with-typescript": "^22.0.0",
+    "husky": "^8.0.1",
+    "jest": "^28.1.3",
+    "lint-staged": "^13.0.3",
+    "rimraf": "^3.0.2",
+    "serverless-dotenv-plugin": "^4.0.1",
+    "serverless-offline": "^8.8.1",
+    "serverless-plugin-typescript": "^2.1.2",
+    "serverless-tscpaths": "^0.0.7",
+    "supertest": "^6.2.4",
+    "ts-jest": "^28.0.7",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "apollo-server-lambda": "^2.19.0",
+    "dotenv": "^16.0.1",
+    "graphql": "^15.8.0",
+    "module-alias": "^2.2.2",
+    "node-fetch": "^2.6.6",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^1.1.1"
+  },
+  "_moduleAliases": {
+    "@presentation": ".build/src/presentation",
+    "@domain": ".build/src/domain",
+    "@data": ".build/src/data",
+    "@infrastructure": ".build/src/infrastructure",
+    "@main": ".build/src/main"
+  }
+}
