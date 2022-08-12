@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { typeDefs } from './typedefs';
-import { resolvers } from './resolvers';
+import { resolvers } from './resolvers/coordiantes';
 import conf from './conf';
 import { ApolloServer } from 'apollo-server-lambda';
 import { loggingPlugin } from './loggingPlugin';
@@ -17,6 +17,7 @@ const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
+
 // schema = constraintDirective()(schema);
 
 const server = new ApolloServer({
