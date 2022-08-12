@@ -5,7 +5,7 @@ import express from 'express';
 import cors from 'cors';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { typeDefs } from './typedefs';
-import { resolvers } from './resolvers';
+import { resolvers } from './resolvers/coordiantes';
 import jwksRsa from 'jwks-rsa';
 import jwt from 'express-jwt';
 import conf from './conf';
