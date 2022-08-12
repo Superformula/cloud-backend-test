@@ -18,7 +18,7 @@ export const jwtCheck = jwt({
   algorithms: ['RS256'],
 });
 
-exports.handler = server.createHandler({
+export const handler = server.createHandler({
   expressAppFromMiddleware(middleware) {
     const app = express();
     // app.use(log);
