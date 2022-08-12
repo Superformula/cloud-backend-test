@@ -8,7 +8,6 @@ export interface JWTPayload {
 }
 
 const TEST_KEYID = 'VALID_TEST_KEY_BUT_NOT_REAL_KEY_EH';
-
 const jwk = JWK.generateSync('RSA', undefined, {
   use: 'sig',
   kid: TEST_KEYID,
