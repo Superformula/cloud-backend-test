@@ -1,6 +1,5 @@
 {
     "extends": "./tsconfig.base",
     "include": ["./src/**/*", "handler.ts", "schema.graphql"],
-    "exclude": ["./src/test"]
+    "exclude": ["./src/tests"]
 }
-  
