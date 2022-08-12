@@ -29,7 +29,6 @@ export class GraphqlLambdaStack extends cdk.Stack {
 
     // If you want, you can configure own VPC, subnets, SGs when creating
     // Lambda function.
-
     // const vpc = ec2.Vpc.fromLookup(this, 'Vpc', {
     //   vpcId: props.vpcId,
     // });
@@ -41,6 +40,7 @@ export class GraphqlLambdaStack extends cdk.Stack {
     //     mutable: false,
     //   }
     // );
+
     const graphqlLambda = new lambda.Function(this, 'MessageHandler', {
       functionName: 'GraphQLLambda',
       description: 'Process GraphQL requests',
@@ -65,9 +65,13 @@ export class GraphqlLambdaStack extends cdk.Stack {
       // securityGroups: [securityGroup]
     });
     tagIt(graphqlLambda);
-    const apiGatewayLambdaRestApi = new apiGateway.LambdaRestApi(this, 'graphqlEndpoint', {
-      handler: graphqlLambda,
-    });
+    const apiGatewayLambdaRestApi = new apiGateway.LambdaRestApi(
+      this,
+      'graphqlEndpoint',
+      {
+        handler: graphqlLambda,
+      }
+    );
     tagIt(apiGatewayLambdaRestApi);
   }
 }

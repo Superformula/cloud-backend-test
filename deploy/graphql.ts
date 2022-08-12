@@ -7,6 +7,7 @@ export enum Environment {
   Development = 'dev',
 }
 
+// StackProps interface
 export interface StackProps extends cdk.StackProps {
   apiKey: string;
   environment: Environment;

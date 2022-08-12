@@ -37,5 +37,6 @@ npm run zip:nodejs
 
 npm run cdk -- deploy --profile graphql-deploy -o cdk.out
 
+echo "## Cleaning up..."
 rm -r nodejs
 rm -r nodejs.zip
