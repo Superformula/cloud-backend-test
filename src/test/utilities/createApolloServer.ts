@@ -1,5 +1,5 @@
 import { ApolloServer, ServerInfo } from 'apollo-server';
-import { resolvers } from '../../resolvers';
+import { resolvers } from '../../resolvers/coordinates';
 import { typeDefs } from '../../typedefs';
 
 // This function will create a new server Apollo Server instance

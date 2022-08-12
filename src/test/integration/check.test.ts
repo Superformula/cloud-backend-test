@@ -10,7 +10,7 @@ import cors from 'cors';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import jwksRsa from 'jwks-rsa';
 import jwt from 'express-jwt';
-import { resolvers } from '../../resolvers';
+import { resolvers } from '../../resolvers/coordinates';
 import { typeDefs } from '../../typedefs';
 import { jwkPublicGood, makeJwtToken } from '../utilities/jwt';
 import JWTMocker from '../utilities/jwt.mocks';

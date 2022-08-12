@@ -1,4 +1,4 @@
-import { resolvers } from '../../resolvers';
+import { resolvers } from '../../resolvers/coordinates';
 import DATA from '../utilities/testData';
 import * as chai from 'chai';
 import chaiShallowDeepEqual from 'chai-shallow-deep-equal';

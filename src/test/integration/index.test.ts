@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import chaiShallowDeepEqual from 'chai-shallow-deep-equal';
 import { ApolloServer, ExpressContext } from 'apollo-server-express';
-import { resolvers } from '../../resolvers';
+import { resolvers } from '../../resolvers/coordinates';
 import { typeDefs } from '../../typedefs';
 import C from '../utilities/testData';
 
