@@ -3,7 +3,7 @@
 # your data.
 # A GraphQL schema defines what kind of object can be fetched from a service, and what fields it has. 
 # The schema can be defined using GraphQL Schema Definition Language. 
-
+# GraphQL Schema is a description of the data clients can     request from a GraphQL API
 # Here, the query contains a longitude and latitude attributes that returns a string value.
 
 type Query {
