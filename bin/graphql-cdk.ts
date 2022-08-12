@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import * as cdk from '@aws-cdk/core';
-
 import { GraphqlLambdaStack } from '../deploy/graphql-stack';
 import conf from '../src/conf';
 import { Environment } from '../src/conf/config';
