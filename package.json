@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "description": "GraphQL server",
     "prepare": "husky install",
     "pre-commit": "pretty-quick --staged && lint-staged",
     "commit-msg": "npx --no-install commitlint --edit \"$1\"",
@@ -53,7 +54,7 @@
       "ci/*",
       "dist/*",
       "src/conf/*",
-      "src/test/*",
+      "src/tests/*",
       "src/index.ts"
     ]
   },
@@ -112,6 +113,8 @@
     "pretty-quick": "^3.1.3"
   },
   "lint-staged": {
-    "*.graphql": ["graphql-schema-linter ./*.graphql"]
+    "*.graphql": [
+      "graphql-schema-linter ./*.graphql"
+    ]
   }
 }
