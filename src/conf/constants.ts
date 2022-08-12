@@ -6,3 +6,5 @@ export const ERROR_MESSAGES = Object.freeze({
 });
 export const INVALID_API_KEY_ERROR =
   'Error: Status is REQUEST_DENIED. The provided API key is invalid.';
+
+  
