@@ -100,3 +100,4 @@
 
   When making commits, any files that have been modified will undergo auto code formatting using [prettier](https://prettier.io/) as a pre-commit hook.
   
+

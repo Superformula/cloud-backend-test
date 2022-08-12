@@ -43,8 +43,8 @@
 
 ### Troubleshooting
 
-  1.verify cloudformation stack with right resources like lambda, api gaeway deployed in AWS
-  2. Clod watch logs are helpful to debug any issues
+  1. verify cloudformation stack with right resources like lambda, api gaeway deployed in AWS
+  2. Cloud watch logs are helpful to debug any issues
 
 ### Useful commands
 
@@ -57,10 +57,11 @@
 
   NOTE: To deploy, you will need to run `cdk bootstrap` which will set up a deployment environment on AWS you can use with your default AWS credentials.
 
-  - cdk deploy deploy this stack to your default AWS account/region, in graphql case, stack is going to be Lambda Function, Lambda Layer, IAM Role, Policy, API Gateway etc..
-  - cdk diff compare deployed stack with current state
-  - cdk synth emits the synthesized CloudFormation template to ./cdk.out
+  - cdk deploy - deploy this stack to your default AWS account/region, in graphql case, stack is going to be Lambda Function, Lambda Layer, IAM Role, Policy, API Gateway etc..
+  - cdk diff - compare deployed stack with current state
+  - cdk synth - emits the synthesized CloudFormation template to ./cdk.out
 
   [Layers](https://docs.aws.amazon.com/cdk/api/latest/docs/aws-lambda-readme.html#layers): using lambda layers to provision code to Lambda function which are node modules.
   Check [here](https://docs.aws.amazon.com/cdk/api/latest/docs/aws-lambda-readme.html#bundling-asset-code) for more details.<p>&nbsp;</p>
+
 

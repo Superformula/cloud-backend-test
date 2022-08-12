@@ -13,7 +13,7 @@
 
   > API_KEY - plug it in root level .env file
 
-  > From my past experience, I have provisioned API_KEY using GOCD env variables, GitHub hooks, AWS SSM. For this project, once lambda is deployed, feel free to set the value of API_KEY in lambda>configuration>environment variables. Plese check `buildRunTest.md` about how to generate your own API_KEY.
+  > From my past experience, I have provisioned API_KEY using GOCD env variables, GitHub hooks Environment Variables, AWS SSM. For this project, once lambda is deployed, feel free to set the value of API_KEY in lambda>configuration>environment variables. Plese check `buildRunTest.md` about how to generate your own API_KEY.
 
 #### Auth
 
