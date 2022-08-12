@@ -1,18 +1,18 @@
 import { ExpressContext } from 'apollo-server-express';
 
-export interface ExpressContextInterface {
-  event: any;
-  context: any;
-  express: ExpressContext;
-}
+// export interface ExpressContextInterface {
+//   event: any;
+//   context: any;
+//   express: ExpressContext;
+// }
 
-export interface ContextBuilder {
-  headers: any;
-  functionName: any;
-  event: any;
-  context: any;
-  expressRequest: any;
-}
+// export interface ContextBuilder {
+//   headers: any;
+//   functionName: any;
+//   event: any;
+//   context: any;
+//   expressRequest: any;
+// }
 
 // export const expressContextBuilder = ({
 //   event,
