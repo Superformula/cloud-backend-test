@@ -41,4 +41,3 @@ conf.env = (process.env.ENV_SHORT as Environment) ?? Environment.Development;
 conf.stackName = process.env.STACK_NAME ?? 'DevGraphQLStack';
 
 export default conf;
-

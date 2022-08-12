@@ -53,4 +53,3 @@ export const getCoordinates = async (
 //   const geocoder = NodeGeocoder(options as NodeGeocoder.Options);
 //   return await geocoder.geocode(address).catch(handleError);
 // };
-

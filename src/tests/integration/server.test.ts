@@ -44,4 +44,3 @@ describe('End-to-End tests for GraphQL operations', () => {
     });
   });
 });
-

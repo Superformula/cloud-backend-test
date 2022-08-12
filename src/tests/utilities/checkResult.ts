@@ -18,4 +18,3 @@ export default function checkResult(
   }
   expect(res.data).to.shallowDeepEqual(body);
 }
-

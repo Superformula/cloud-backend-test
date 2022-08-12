@@ -5,4 +5,3 @@ export default Object.freeze({
   INVALID_API_KEY: 'badKey',
   BAD_ADDRESS: 'junk',
 });
-

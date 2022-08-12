@@ -89,4 +89,3 @@ describe('Unit tests for getCoordinates', () => {
     }
   });
 });
-
