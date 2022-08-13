@@ -25,8 +25,11 @@ export const getCoordinates = async (
       throw new Error(ERROR_MESSAGES.INCOMPLETE_ADDRESS);
     }
     return fetchedAddr;
-  } catch (err: any) {
-    if (err?.toString().includes(INVALID_API_KEY_ERROR)) {
+  } catch (err) {
+    if (
+      err instanceof Error &&
+      err?.toString().includes(INVALID_API_KEY_ERROR)
+    ) {
       throw new Error(ERROR_MESSAGES.INVALID_API_KEY);
     }
     throw err;

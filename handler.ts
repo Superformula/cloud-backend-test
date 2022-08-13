@@ -4,7 +4,8 @@ import cors from 'cors';
 import jwksRsa from 'jwks-rsa';
 import jwt from 'express-jwt';
 import conf from './src/conf';
-// import { Handler } from '@aws-cdk/aws-lambda';
+import { Handler } from '@aws-cdk/aws-lambda';
+import { CreateHandlerOptions } from 'apollo-server-lambda';
 
 export const jwtCheck = jwt({
   secret: jwksRsa.expressJwtSecret({
@@ -18,7 +19,7 @@ export const jwtCheck = jwt({
   algorithms: ['RS256'],
 });
 
-exports.handler = server.createHandler({
+const handlerOptions: CreateHandlerOptions = {
   expressAppFromMiddleware(middleware) {
     const app = express();
     // app.use(log);
@@ -28,4 +29,5 @@ exports.handler = server.createHandler({
     return app;
   },
   expressGetMiddlewareOptions: { path: '/graphql' },
-});
+};
+export const handler = server.createHandler(handlerOptions);

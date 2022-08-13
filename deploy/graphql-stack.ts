@@ -65,9 +65,13 @@ export class GraphqlLambdaStack extends cdk.Stack {
       // securityGroups: [securityGroup]
     });
     tagIt(graphqlLambda);
-    const apiGatewayLambdaRestApi = new apiGateway.LambdaRestApi(this, 'graphqlEndpoint', {
-      handler: graphqlLambda,
-    });
+    const apiGatewayLambdaRestApi = new apiGateway.LambdaRestApi(
+      this,
+      'graphqlEndpoint',
+      {
+        handler: graphqlLambda,
+      }
+    );
     tagIt(apiGatewayLambdaRestApi);
   }
 }

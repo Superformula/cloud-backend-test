@@ -8,7 +8,7 @@ const expect = chai.expect;
 
 describe('Resolver tests', () => {
   it('should be able to return results', () => {
-    const res = resolvers.Query.address(null, { id: DATA.ADDRESS }, {}, null);
+    const res = resolvers.Query.address(null, { id: DATA.ADDRESS }, {});
     expect(res).to.shallowDeepEqual({
       id: '29 Main St Watertown, MA 02472',
     });

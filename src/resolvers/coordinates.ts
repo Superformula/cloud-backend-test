@@ -3,6 +3,7 @@
 import { Context } from 'apollo-server-core';
 import { getCoordinates } from '../calculateCoordinates';
 import conf from '../conf';
+import { GraphQLResolveInfo } from 'graphql';
 
 // Resolvers define the technique for fetching the types defined in the
 // schema.
@@ -14,10 +15,10 @@ import conf from '../conf';
 export const resolvers = {
   Query: {
     address: (
-      parent: any,
+      _parent: any,
       args: { id: string },
-      context: Context,
-      info: any
+      _context: Context,
+      _info?: GraphQLResolveInfo
     ) => ({
       id: args.id,
     }),
