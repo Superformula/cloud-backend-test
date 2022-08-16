@@ -4,8 +4,8 @@ import * as apiGateway from '@aws-cdk/aws-apigateway';
 import { Construct } from '@aws-cdk/core';
 import { Duration } from '@aws-cdk/core';
 import * as gql from './graphql';
-import _ from 'lodash';
-import * as ec2 from '@aws-cdk/aws-ec2';
+// import _ from 'lodash';
+// import * as ec2 from '@aws-cdk/aws-ec2';
 
 const createTagger =
   (tags: { [key: string]: string }) => (taggable: Construct) =>
