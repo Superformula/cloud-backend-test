@@ -1,10 +1,8 @@
 // import { log } from '.';
 // import { UserInputError } from 'apollo-server';
-import { Context } from 'apollo-server-core';
-import { getCoordinates } from '../calculateCoordinates';
-import conf from '../conf';
 import { GraphQLResolveInfo } from 'graphql';
 import log from 'lambda-log';
+import { Entry } from 'node-geocoder';
 
 // Resolvers define the technique for fetching the types defined in the
 // schema.
@@ -18,27 +16,28 @@ export const resolvers = {
     address: (
       _parent: any,
       args: { name: string },
-      _context: Context,
+      { dataSources }: any,
       _info?: GraphQLResolveInfo
-    ) => ({
-      name: args.name,
-    }),
+    ) => {
+      log.info(`args.name: ${args.name}`);
+      return dataSources.addressSource.getCoordinates(args.name);
+    },
   },
   Address: {
-    longitude: async ({ name }: { name: string }) => {
+    longitude: ({ address }: { address: Entry }) => {
       try {
-        const address = await getCoordinates(name, conf.apiKey);
-        const longitude = address[0].longitude;
+        const longitude = address?.longitude;
+        console.log('address in longitude resolver:', longitude);
         return longitude;
       } catch (err) {
         log.error(`Failed to get longitude from getCoordinates: ${err}`);
         throw err;
       }
     },
-    latitude: async ({ name }: { name: string }) => {
+    latitude: ({ address }: { address: Entry }) => {
       try {
-        const address = await getCoordinates(name, conf.apiKey);
-        const latitude = address[0].latitude;
+        const latitude = address?.latitude;
+        console.log('address in longitude resolver:', latitude);
         return latitude;
       } catch (err) {
         log.error(`Failed to get latitude from getCoordinates: ${err}`);

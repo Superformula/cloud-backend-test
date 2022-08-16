@@ -1,4 +1,5 @@
 import { ApolloServer, ServerInfo } from 'apollo-server';
+import { expressContextBuilder } from '../../expressContextBuilder';
 import { resolvers } from '../../resolvers/coordinates';
 import { typeDefs } from '../../typedefs';
 
@@ -7,6 +8,7 @@ export const createApolloServer = async (options = { port: 4000 }) => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    context: expressContextBuilder,
   });
 
   const serverInfo: ServerInfo = await server.listen(options);

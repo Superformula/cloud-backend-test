@@ -6,26 +6,14 @@ import cors from 'cors';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { typeDefs } from './typedefs';
 import { resolvers } from './resolvers/coordinates';
-import jwksRsa from 'jwks-rsa';
-import jwt from 'express-jwt';
 import conf from './conf';
 import { loggingPlugin } from './loggingPlugin';
+import { jwtCheck } from '../handler';
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 const app = express();
 app.use(cors());
-const jwtCheck = jwt({
-  secret: jwksRsa.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: `${conf.jwtTokens.authority}.well-known/jwks.json`,
-  }),
-  audience: conf.jwtTokens.audience,
-  issuer: conf.jwtTokens.authority,
-  algorithms: ['RS256'],
-});
 app.use(jwtCheck);
 
 const expressContextBuilder = (ctx: ExpressContext) => {

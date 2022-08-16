@@ -7,10 +7,10 @@ import {
   ERROR_MESSAGES,
   INVALID_API_KEY_ERROR,
   INVALID_REQUEST_ERROR,
-} from './conf/constants';
+} from '../conf/constants';
 dotenv.config();
 
-interface Error {
+export interface Error {
   name: string;
   message: string;
   stack?: string;
@@ -21,6 +21,7 @@ export enum ERROR_TYPE {
   INVALID_API_KEY_ERROR = 'INVALID_API_KEY_ERROR',
 }
 
+// I would write switch/case block for this instead of writing nested if
 export const handleAcceptedErrors = (err: any): any => {
   // console.log('err in handleAcceptedErrors:', err.toString());
   log.error(`Failed to get coordinates: ${err}`);

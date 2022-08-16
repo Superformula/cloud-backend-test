@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { AxiosResponse } from 'axios';
 import * as chai from 'chai';
 import chaiShallowDeepEqual from 'chai-shallow-deep-equal';

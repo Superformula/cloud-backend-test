@@ -4,6 +4,7 @@ import * as chai from 'chai';
 import chaiShallowDeepEqual from 'chai-shallow-deep-equal';
 import http from 'http';
 import checkResult from '../utilities/checkResult';
+import C from '../utilities/testData';
 chai.use(chaiShallowDeepEqual);
 
 describe('End-to-End tests for GraphQL operations', () => {
@@ -20,7 +21,7 @@ describe('End-to-End tests for GraphQL operations', () => {
   after(async () => {
     await server?.close();
   });
-  it('should be able to return results', async () => {
+  it('should be able to return coordinates results', async () => {
     const queryData = {
       query: `query Address($name: String!) {
           address(name: $name) {
@@ -28,7 +29,7 @@ describe('End-to-End tests for GraphQL operations', () => {
               latitude
           }
         }`,
-      variables: { name: '29 Main St Watertown, MA 02472' },
+      variables: { name: C.ADDRESS },
     };
     const request = Axios.create({
       baseURL: url,

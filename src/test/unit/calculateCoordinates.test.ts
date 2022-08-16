@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import chaiShallowDeepEqual from 'chai-shallow-deep-equal';
-import { getCoordinates } from '../../calculateCoordinates';
+import { getCoordinates } from '../../dataSources/calculateCoordinates';
 import conf from '../../conf';
 import { ERROR_MESSAGES } from '../../conf/constants';
 import DATA from '../utilities/testData';

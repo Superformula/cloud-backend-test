@@ -8,15 +8,14 @@ import { ApolloServer, ExpressContext } from 'apollo-server-express';
 import express from 'express';
 import cors from 'cors';
 import { makeExecutableSchema } from '@graphql-tools/schema';
-import jwksRsa from 'jwks-rsa';
-import jwt from 'express-jwt';
 import { resolvers } from '../../resolvers/coordinates';
 import { typeDefs } from '../../typedefs';
 import { jwkPublicGood, makeJwtToken } from '../utilities/jwt';
 import JWTMocker from '../utilities/jwt.mocks';
 import checkResult from '../utilities/checkResult';
 import C from '../utilities/testData';
-import conf from '../../conf';
+import { expressContextBuilder } from '../../expressContextBuilder';
+import { jwtCheck } from '../../../handler';
 
 const expect = chai.expect;
 
@@ -35,25 +34,8 @@ describe('End-to-End tests for GraphQL operations', () => {
     jwtMocker = new JWTMocker();
     const app = express();
     app.use(cors());
-    const jwtCheck = jwt({
-      secret: jwksRsa.expressJwtSecret({
-        cache: true,
-        rateLimit: true,
-        jwksRequestsPerMinute: 5,
-        jwksUri: `${conf.jwtTokens.authority}.well-known/jwks.json`,
-      }),
-      audience: conf.jwtTokens.audience,
-      issuer: conf.jwtTokens.authority,
-      algorithms: ['RS256'],
-    });
     app.use(jwtCheck);
 
-    const expressContextBuilder = (ctx: ExpressContext) => {
-      const token = ctx.req.headers.authorization || '';
-      const user = { token };
-      if (!user) throw new Error('you must be logged in');
-      return { user };
-    };
     const schema = makeExecutableSchema({
       typeDefs,
       resolvers,
@@ -103,9 +85,10 @@ describe('End-to-End tests for GraphQL operations', () => {
     const response = await request.post('/graphql', queryData, {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
+    console.log('response in test:', response.data);
     checkResult(response, 200, {
       data: {
-        address: { longitude: '-71.18494799999999', latitude: '42.366192' },
+        address: { longitude: -71.18494799999999, latitude: 42.366192 },
       },
     });
   });

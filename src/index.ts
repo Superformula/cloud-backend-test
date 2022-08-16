@@ -7,6 +7,8 @@ import conf from './conf';
 import { ApolloServer } from 'apollo-server-lambda';
 import { loggingPlugin } from './loggingPlugin';
 import { hiveApollo } from '@graphql-hive/client';
+import { expressContextBuilder } from './expressContextBuilder';
+import Coordinates from './dataSources/coordinatesDataSource';
 
 // I like constraints for types like Joi validators, but this module seems not working
 // import {
@@ -20,6 +22,11 @@ export const schema = makeExecutableSchema({
 });
 // schema = constraintDirective()(schema);
 
+export const dataSources = () => {
+  return {
+    addressSource: new Coordinates(),
+  };
+};
 const server = new ApolloServer({
   schema,
   csrfPrevention: true,
@@ -33,9 +40,11 @@ const server = new ApolloServer({
     }),
   ],
   debug: false,
+  context: expressContextBuilder,
   // nodeEnv: process.env.NODE_ENV, can be set to developement or prd
   // context: expressContextBuilder,
   // plugins: [useLogger({ logFn: () => logger })],
+  dataSources,
 });
 
 console.log(`Server ready at http://localhost:${conf.server.port}/graphql!`);
