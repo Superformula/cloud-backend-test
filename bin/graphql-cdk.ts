@@ -14,6 +14,7 @@ const authority = conf.jwtTokens.authority;
 const environment = conf.env as Environment;
 const serviceName = 'graphql';
 const apiKey = conf.apiKey as string;
+const hiveToken = conf.hiveToken as string;
 
 class GraphQLCDKApp extends cdk.App {
   constructor() {
@@ -29,6 +30,7 @@ class GraphQLCDKApp extends cdk.App {
       authority,
       serviceName,
       apiKey,
+      hiveToken,
     });
   }
 }

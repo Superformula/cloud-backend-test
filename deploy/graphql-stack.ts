@@ -54,6 +54,7 @@ export class GraphqlLambdaStack extends cdk.Stack {
       environment: {
         AUTHORITY: props.authority,
         API_KEY: props.apiKey,
+        HIVE_TOKEN: props.hiveToken,
       },
       layers: [layer],
       // vpc: vpc,

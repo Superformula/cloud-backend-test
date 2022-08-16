@@ -9,6 +9,7 @@ export enum Environment {
 
 export interface StackProps extends cdk.StackProps {
   apiKey: string;
+  hiveToken: string;
   environment: Environment;
   imageTag?: string;
   hostedZone: string;

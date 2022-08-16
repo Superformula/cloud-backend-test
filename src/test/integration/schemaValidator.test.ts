@@ -14,7 +14,6 @@ describe('Validates Queries', () => {
             }
           }`;
     const err = validationErrors(query);
-    console.log('err:', err);
     expect(err).to.be.empty;
   });
 
@@ -26,7 +25,6 @@ describe('Validates Queries', () => {
               }
             }`;
     const err = validationErrors(query);
-    console.log('err:', err.toString());
     expect(err.toString()).to.includes(
       'Cannot query field "longit" on type "Address". Did you mean "longitude"?'
     );

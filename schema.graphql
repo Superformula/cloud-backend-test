@@ -7,9 +7,9 @@
 # Here, the query contains a longitude and latitude attributes that returns a string value.
 
 type Query {
-  address(id: ID!): Address
+  address(name: String!): Address
 }
 type Address {
-  longitude: String # @constraint(maxLength: 50, minLength: 15)
-  latitude: String
+  longitude: Float # @constraint(maxLength: 50, minLength: 15)
+  latitude: Float
 }

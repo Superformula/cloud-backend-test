@@ -10,6 +10,38 @@ import {
 } from './conf/constants';
 dotenv.config();
 
+interface Error {
+  name: string;
+  message: string;
+  stack?: string;
+}
+
+export enum ERROR_TYPE {
+  INVALID_REQUEST_ERROR = 'INVALID_REQUEST_ERROR',
+  INVALID_API_KEY_ERROR = 'INVALID_API_KEY_ERROR',
+}
+
+export const handleAcceptedErrors = (err: any): any => {
+  // console.log('err in handleAcceptedErrors:', err.toString());
+  log.error(`Failed to get coordinates: ${err}`);
+
+  if (err?.toString().includes(INVALID_REQUEST_ERROR)) {
+    return new Error(ERROR_MESSAGES.INVALID_ADDRESS);
+  } else if (err?.toString().includes(INVALID_API_KEY_ERROR)) {
+    return new Error(ERROR_MESSAGES.INVALID_API_KEY);
+  } else if (err?.toString().includes(ERROR_MESSAGES.INVALID_ADDRESS)) {
+    throw new Error(ERROR_MESSAGES.INVALID_ADDRESS);
+  } else if (err?.toString().includes(ERROR_MESSAGES.INCOMPLETE_ADDRESS)) {
+    throw new Error(ERROR_MESSAGES.INCOMPLETE_ADDRESS);
+  }
+  return new Error(`Internal Server Error with Tracking Id = ${uuid.v4()}`, {
+    cause: {
+      name: 'InternalServerError',
+      message: 'Please check all required constraints are met!',
+    },
+  });
+};
+
 export const getCoordinates = async (
   address: string,
   apiKey: string
@@ -32,20 +64,8 @@ export const getCoordinates = async (
     }
     return fetchedAddr;
   } catch (err: any) {
-    log.error(`Failed to get coordinates: ${err}`);
-    if (err?.toString().includes(INVALID_REQUEST_ERROR)) {
-      throw new Error(ERROR_MESSAGES.INVALID_ADDRESS);
-    }
-    if (err?.toString().includes(INVALID_API_KEY_ERROR)) {
-      throw new Error(ERROR_MESSAGES.INVALID_API_KEY);
-    }
-
-    throw new Error(`Internal Server Error with Tracking Id = ${uuid.v4()}`, {
-      cause: {
-        name: 'InternalServerError',
-        message: 'Please check all required constraints are met!',
-      },
-    });
+    const handledErr = handleAcceptedErrors(err);
+    throw handledErr;
   }
 };
 

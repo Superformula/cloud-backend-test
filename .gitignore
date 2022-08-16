@@ -18,3 +18,4 @@ nodejs
 nodejs.zip
 .DS_Store
 conf/.env
+hive.json
