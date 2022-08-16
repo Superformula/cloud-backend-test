@@ -6,7 +6,6 @@ import { expect } from 'chai';
 chai.use(chaiShallowDeepEqual);
 
 const jwtToken = makeJwtToken({});
-
 const event = {
   resource: '/{proxy+}',
   path: '/graphql',

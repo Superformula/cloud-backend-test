@@ -88,4 +88,15 @@ describe('Unit tests for getCoordinates', () => {
       );
     }
   });
+
+  it('should be able to handle error when address is wrong', async () => {
+    try {
+      await getCoordinates('', conf.apiKey);
+    } catch (err) {
+      expect(err).to.exist;
+      expect(err).to.shallowDeepEqual(
+        `Error: ${ERROR_MESSAGES.INVALID_ADDRESS}`
+      );
+    }
+  });
 });

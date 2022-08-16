@@ -67,7 +67,7 @@
 
 ### GraphQL Hive
 
-  For monitoring, https://docs.graphql-hive.com
+  For monitoring, [Hive](https://docs.graphql-hive.com)
 
 ### Validatios
 

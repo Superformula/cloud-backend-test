@@ -7,4 +7,4 @@
 
 ### GraphQL Endpoint
 
-  For example, you can hit `https://6holtoh5t4.execute-api.us-east-1.amazonaws.com/prod/graphql` and make queries with the right JWT token.
+  For example, you can hit `https://dqe0uhf4s5.execute-api.us-east-1.amazonaws.com/prod/graphql` and make queries with the right JWT token. Please check `documentation/8_HowToGenerateJWT.md` for more details about how to generate jwt token.
