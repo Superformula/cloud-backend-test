@@ -6,6 +6,7 @@ import { resolvers } from './resolvers/coordinates';
 import conf from './conf';
 import { ApolloServer } from 'apollo-server-lambda';
 import { loggingPlugin } from './loggingPlugin';
+import { hiveApollo } from '@graphql-hive/client';
 
 // I like constraints for types like Joi validators, but this module seems not working
 // import {
@@ -13,7 +14,7 @@ import { loggingPlugin } from './loggingPlugin';
 //   constraintDirectiveTypeDefs,
 // } from 'graphql-constraint-directive';
 
-const schema = makeExecutableSchema({
+export const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
@@ -22,7 +23,15 @@ const schema = makeExecutableSchema({
 const server = new ApolloServer({
   schema,
   csrfPrevention: true,
-  plugins: [loggingPlugin],
+  plugins: [
+    loggingPlugin,
+    hiveApollo({
+      enabled: true,
+      debug: true, // or false
+      token: conf.hiveToken,
+      usage: true, // or { ... usage options }
+    }),
+  ],
   debug: false,
   // nodeEnv: process.env.NODE_ENV, can be set to developement or prd
   // context: expressContextBuilder,

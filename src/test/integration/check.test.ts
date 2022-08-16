@@ -89,13 +89,13 @@ describe('End-to-End tests for GraphQL operations', () => {
 
   it('should be able to return results', async () => {
     const queryData = {
-      query: `query Address($addressId: ID!) {
-            address(id: $addressId) {
+      query: `query Address($name: String!) {
+            address(name: $name) {
                 longitude
                 latitude
             }
           }`,
-      variables: { addressId: C.ADDRESS },
+      variables: { name: C.ADDRESS },
     };
 
     jwtMocker.getJWKS(200, jwkPublicGood);
@@ -112,13 +112,13 @@ describe('End-to-End tests for GraphQL operations', () => {
 
   it('should be able to handle error for bad address', async () => {
     const queryData = {
-      query: `query Address($addressId: ID!) {
-            address(id: $addressId) {
+      query: `query Address($name: String!) {
+            address(name: $name) {
                 longitude
                 latitude
             }
           }`,
-      variables: { addressId: '213' },
+      variables: { name: '213' },
     };
 
     jwtMocker.getJWKS(200, jwkPublicGood);
@@ -138,13 +138,13 @@ describe('End-to-End tests for GraphQL operations', () => {
 
   it('should be able to handle error for numeric address', async () => {
     const queryData = {
-      query: `query Address($addressId: ID!) {
-            address(id: $addressId) {
+      query: `query Address($name: String!) {
+            address(name: $name) {
                 longitude
                 latitude
             }
           }`,
-      variables: { addressId: 213 },
+      variables: { name: 213 },
     };
 
     jwtMocker.getJWKS(200, jwkPublicGood);
@@ -152,20 +152,23 @@ describe('End-to-End tests for GraphQL operations', () => {
     const response = await request.post('/graphql', queryData, {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
-    expect(response.data.errors[0].message).to.equal(
-      'Please provide valid address!'
-    );
-    checkResult(response, 200, {
-      data: {
-        address: { longitude: null, latitude: null },
-      },
+    // expect(response.data.errors[0].message).to.equal(
+    //   'Please provide valid address!'
+    // );
+    // checkResult(response, 200, {
+    //   data: {
+    //     address: { longitude: null, latitude: null },
+    //   },
+    // });
+    expect(response.data.errors?.[0].extensions).to.shallowDeepEqual({
+      code: 'BAD_USER_INPUT',
     });
   });
 
   it('should be able to handle error with out address', async () => {
     const queryData = {
-      query: `query Address($addressId: ID!) {
-            address(id: $addressId) {
+      query: `query Address($name: String!) {
+            address(name: $name) {
                 longitude
                 latitude
             }
@@ -179,20 +182,20 @@ describe('End-to-End tests for GraphQL operations', () => {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
     expect(response.data.errors[0].message).to.equal(
-      'Variable "$addressId" of required type "ID!" was not provided.'
+      'Variable "$name" of required type "String!" was not provided.'
     );
   });
 
   // Skipped because I couldn't find better way to convert UnauthorizedError to user friendly error
   it.skip('should not be able to return results for a bad token', async () => {
     const queryData = {
-      query: `query Address($addressId: ID!) {
-            address(id: $addressId) {
+      query: `query Address($name: String!) {
+            address(name: $name) {
                 longitude
                 latitude
             }
           }`,
-      variables: { addressId: C.ADDRESS },
+      variables: { name: C.ADDRESS },
     };
 
     jwtMocker.getJWKS(200, jwkPublicGood);

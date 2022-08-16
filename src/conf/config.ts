@@ -8,6 +8,7 @@ export enum Environment {
 dotenv.config({ path: `${__dirname}/.env` });
 const conf = {} as Config;
 export interface Config {
+  hiveToken: string;
   stackName: string;
   env: string;
   deployAccount: string;
@@ -34,6 +35,8 @@ conf.jwtTokens = {
 };
 
 conf.apiKey = process.env.API_KEY ?? 'your-api-key';
+
+conf.hiveToken = process.env.HIVE_TOKEN ?? 'your-hive-token';
 
 conf.deployRegion = process.env.DEPLOY_REGION ?? 'us-east-1';
 

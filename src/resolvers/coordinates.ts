@@ -4,6 +4,7 @@ import { Context } from 'apollo-server-core';
 import { getCoordinates } from '../calculateCoordinates';
 import conf from '../conf';
 import { GraphQLResolveInfo } from 'graphql';
+import log from 'lambda-log';
 
 // Resolvers define the technique for fetching the types defined in the
 // schema.
@@ -16,37 +17,31 @@ export const resolvers = {
   Query: {
     address: (
       _parent: any,
-      args: { id: string },
+      args: { name: string },
       _context: Context,
       _info?: GraphQLResolveInfo
     ) => ({
-      id: args.id,
+      name: args.name,
     }),
   },
   Address: {
-    longitude: async ({ id }: { id: string }) => {
+    longitude: async ({ name }: { name: string }) => {
       try {
-        const address = await getCoordinates(id, conf.apiKey);
+        const address = await getCoordinates(name, conf.apiKey);
         const longitude = address[0].longitude;
         return longitude;
       } catch (err) {
-        // log.logger.error({
-        //   message: 'Failed to get longitude from getCoordinates',
-        //   err,
-        // });
+        log.error(`Failed to get longitude from getCoordinates: ${err}`);
         throw err;
       }
     },
-    latitude: async ({ id }: { id: string }) => {
+    latitude: async ({ name }: { name: string }) => {
       try {
-        const address = await getCoordinates(id, conf.apiKey);
+        const address = await getCoordinates(name, conf.apiKey);
         const latitude = address[0].latitude;
         return latitude;
       } catch (err) {
-        // log.logger.error({
-        //   message: 'Failed to get latitude from getCoordinates',
-        //   err,
-        // });
+        log.error(`Failed to get latitude from getCoordinates: ${err}`);
         throw err;
       }
     },

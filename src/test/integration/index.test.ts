@@ -22,13 +22,13 @@ describe('Integration tests for GraphQL operations', () => {
   });
   it('should be able to return results', async () => {
     const result = await testServer.executeOperation({
-      query: `query Address($addressId: ID!) {
-        address(id: $addressId) {
+      query: `query Address($name: String!) {
+        address(name: $name) {
             longitude
             latitude
         }
         }`,
-      variables: { addressId: C.ADDRESS },
+      variables: { name: C.ADDRESS },
     });
     expect(result.errors).to.not.exist;
     expect(result.data?.address).to.shallowDeepEqual({
@@ -39,13 +39,13 @@ describe('Integration tests for GraphQL operations', () => {
 
   it('should throw error for null address', async () => {
     const result = await testServer.executeOperation({
-      query: `query Address($addressId: ID!) {
-        address(id: $addressId) {
+      query: `query Address($name: String!) {
+        address(name: $name) {
             longitude
             latitude
         }
         }`,
-      variables: { addressId: null },
+      variables: { name: null },
     });
     expect(result.errors).to.exist;
     expect(result.errors?.[0].extensions).to.shallowDeepEqual({

@@ -15,7 +15,7 @@ const event = {
     'Accept-Encoding': 'gzip, deflate, br',
     Authorization: `Bearer ${jwtToken}`,
     body:
-      '{"query":"query Address($addressId: ID!) {\\n    address(id: $addressId) {\\n        longitude\\n        latitude\\n    }\\n}","variables":{\n' +
+      '{"query":"query Address($name: String!) {\\n    address(name: $name) {\\n        longitude\\n        latitude\\n    }\\n}","variables":{\n' +
       '  "address": "368 lincoln st, waltham, ma 02451"\n' +
       '}}',
   },

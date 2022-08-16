@@ -22,13 +22,13 @@ describe('End-to-End tests for GraphQL operations', () => {
   });
   it('should be able to return results', async () => {
     const queryData = {
-      query: `query Address($addressId: ID!) {
-          address(id: $addressId) {
+      query: `query Address($name: String!) {
+          address(name: $name) {
               longitude
               latitude
           }
         }`,
-      variables: { addressId: '29 Main St Watertown, MA 02472' },
+      variables: { name: '29 Main St Watertown, MA 02472' },
     };
     const request = Axios.create({
       baseURL: url,

@@ -1,6 +1,8 @@
 import NodeGeocoder from 'node-geocoder';
 import * as dotenv from 'dotenv';
 // import { log } from '.';
+import log from 'lambda-log';
+import * as uuid from 'uuid';
 import {
   ERROR_MESSAGES,
   INVALID_API_KEY_ERROR,
@@ -30,13 +32,20 @@ export const getCoordinates = async (
     }
     return fetchedAddr;
   } catch (err: any) {
+    log.error(`Failed to get coordinates: ${err}`);
     if (err?.toString().includes(INVALID_REQUEST_ERROR)) {
       throw new Error(ERROR_MESSAGES.INVALID_ADDRESS);
     }
     if (err?.toString().includes(INVALID_API_KEY_ERROR)) {
       throw new Error(ERROR_MESSAGES.INVALID_API_KEY);
     }
-    throw err;
+
+    throw new Error(`Internal Server Error with Tracking Id = ${uuid.v4()}`, {
+      cause: {
+        name: 'InternalServerError',
+        message: 'Please check all required constraints are met!',
+      },
+    });
   }
 };
 
