@@ -1,13 +1,4 @@
-# Other Information
-
-#### Repository structure
-
-  * deploy folder have deploy cdk and bash scripts
-  * src folder where all the code lives, GraphQL API, typedefs, resolvers, config, tests 
-    - conf - reusable config needed for code and tests like serviceName, port, audience, authority etc.
-    - test - where all tests like unit and integration tests reside, utilities - is for utils needed for tests
-    - All other files like resolvers.ts, typedefs.ts for Graphql, loggingPlugin - for logging etc
-  * Other configuration files like tsconfig.json - configuration of the TS complier, mocharc.json for mocha, prettierrc.json for prettier etc
+## Other Information
 
 #### Environment variables and any defaults
 
