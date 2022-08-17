@@ -4,6 +4,7 @@ node_modules
 # sst
 .sst
 .build
+out.mjs
 
 # misc
 .DS_Store
