@@ -1,0 +1,13 @@
+{
+    "diff": true,
+    "extension": ["ts"],
+    "opts": false,
+    "sort": true,
+    "color": true,
+    "slow": 75,
+    "timeout": 99999,
+    "ui": "bdd",
+    "spec": "src/test/**/*.test.ts",
+    "require": "ts-node/register",
+    "reporter": "spec"
+}

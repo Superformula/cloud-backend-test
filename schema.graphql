@@ -1,0 +1,15 @@
+# A schema is a collection of type definitions (hence "typeDefs")
+# that together define the "shape" of queries that are executed against
+# your data.
+# A GraphQL schema defines what kind of object can be fetched from a service, and what fields it has. 
+# The schema can be defined using GraphQL Schema Definition Language. 
+
+# Here, the query contains a longitude and latitude attributes that returns a string value.
+
+type Query {
+  address(name: String!): Address
+}
+type Address {
+  longitude: Float # @constraint(maxLength: 50, minLength: 15)
+  latitude: Float
+}

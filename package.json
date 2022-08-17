@@ -1,0 +1,124 @@
+{
+  "scripts": {
+    "prepare": "husky install",
+    "pre-commit": "pretty-quick --staged && lint-staged",
+    "commit-msg": "npx --no-install commitlint --edit \"$1\"",
+    "pre-push": "npm run lint",
+    "commit": "commit",
+    "build": "tsc",
+    "watch:build": "tsc -w",
+    "start": "node --require './dist/src/tracing.js' dist/src/startServer.js",
+    "generate": "node dist/src/schema.js",
+    "start:concurrent": "nodemon 'dist/src/startServer.js' --exec 'ts-node' dist/src/startServer.js -e ts,graphql",
+    "lint": "eslint --config .eslintrc.js src/ --ext .js,.jsx.,.ts,.tsx",
+    "lint:ts": "eslint --config .eslintrc.js src/ --ext .ts,.tsx",
+    "lint:fix": "eslint --config .eslintrc.js src/ --ext .js,.jsx.,.ts,.tsx --fix",
+    "test": "mocha --exit",
+    "test:dist": "mocha --no-config $(find ./dist/test -name \"*.test.js\") --exit -R spec",
+    "pretty-quick": "pretty-quick",
+    "cover": "nyc npm test",
+    "cover:report": "nyc --reporter=html npm test",
+    "cover:check": "nyc --check-coverage --lines 75 --functions 75 --branches 75 --reporter=html --reporter=lcov npm test",
+    "cdk": "npx cdk",
+    "zip:nodejs": "npx bestzip nodejs.zip nodejs"
+  },
+  "config": {
+    "commitlint": {
+      "types": [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "build",
+        "ci",
+        "chore",
+        "revert"
+      ],
+      "scope": {
+        "required": false,
+        "allowed": [
+          "*"
+        ],
+        "validate": false,
+        "multiple": false
+      },
+      "autoFix": true
+    }
+  },
+  "nyc": {
+    "exclude": [
+      "ci/*",
+      "dist/*",
+      "src/conf/*",
+      "src/test/*",
+      "src/index.ts"
+    ]
+  },
+  "dependencies": {
+    "@aws-cdk/aws-apigateway": "^1.167.0",
+    "@aws-cdk/aws-lambda": "^1.167.0",
+    "@aws-cdk/core": "^1.167.0",
+    "@graphql-hive/client": "^0.18.2",
+    "@graphql-tools/schema": "^8.5.1",
+    "@types/express": "^4.17.13",
+    "@types/express-jwt": "^6.0.4",
+    "@types/lambda-log": "^2.2.1",
+    "@types/node": "^18.6.5",
+    "@types/node-geocoder": "^3.24.5",
+    "@types/uuid": "^8.3.4",
+    "apollo-server": "^3.10.0",
+    "apollo-server-lambda": "^3.10.0",
+    "aws-cdk": "^2.35.0",
+    "bestzip": "^2.2.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-jwt": "^6.0.0",
+    "graphql": "^16.5.0",
+    "graphql-tools": "^8.3.1",
+    "husky": "^8.0.1",
+    "jwks-rsa": "^2.1.4",
+    "lambda-log": "^3.1.0",
+    "node-geocoder": "^4.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
+    "@commitlint/prompt-cli": "^17.0.3",
+    "@graphql-hive/cli": "^0.18.2",
+    "@types/chai": "^4.2.14",
+    "@types/chai-as-promised": "^7.1.3",
+    "@types/lodash": "^4.14.183",
+    "@types/mocha": "^9.1.1",
+    "@types/mocha-each": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/parser": "^5.32.0",
+    "apollo-server-express": "^3.10.1",
+    "axios": "^0.27.2",
+    "chai": "^4.2.0",
+    "chai-shallow-deep-equal": "^1.4.6",
+    "eslint": "^8.21.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "graphql-schema-linter": "^3.0.1",
+    "lint-staged": "^13.0.3",
+    "lodash": "^4.17.21",
+    "mocha": "^10.0.0",
+    "mocha-each": "^2.0.1",
+    "nock": "^13.2.9",
+    "nodemon": "^2.0.19",
+    "nyc": "^15.1.0",
+    "prettier": "^2.7.1",
+    "pretty-quick": "^3.1.3"
+  },
+  "lint-staged": {
+    "*.graphql": [
+      "graphql-schema-linter ./*.graphql"
+    ]
+  }
+}

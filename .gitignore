@@ -1,0 +1,21 @@
+node_modules
+.env
+dist/
+
+coverage/*
+.nyc_output/*
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+cdk.context.json
+
+
+# Parcel build directories
+.cache
+.build
+nodejs
+nodejs.zip
+.DS_Store
+conf/.env
+hive.json
