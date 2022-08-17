@@ -34,13 +34,4 @@ export const expressContextBuilder = ({ event, context, express }: any) => {
   log.debug(`event: ${event}`);
   log.debug(`event: ${context}`);
   log.info(`express req body: ${express?.req.body}`);
-  const token = express?.req?.headers?.authorization || '';
-  const user = { token };
-  if (!user) throw new Error('you must be logged in');
-  // const address = await getCoordinates(
-  //   express?.req.body?.variables.name,
-  //   conf.apiKey
-  // );
-  // console.log('address in resolver:', address);
-  // return { address: address[0] };
 };

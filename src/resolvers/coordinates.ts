@@ -25,24 +25,12 @@ export const resolvers = {
   },
   Address: {
     longitude: ({ address }: { address: Entry }) => {
-      try {
-        const longitude = address?.longitude;
-        console.log('address in longitude resolver:', longitude);
-        return longitude;
-      } catch (err) {
-        log.error(`Failed to get longitude from getCoordinates: ${err}`);
-        throw err;
-      }
+      const longitude = address?.longitude;
+      return longitude;
     },
     latitude: ({ address }: { address: Entry }) => {
-      try {
-        const latitude = address?.latitude;
-        console.log('address in longitude resolver:', latitude);
-        return latitude;
-      } catch (err) {
-        log.error(`Failed to get latitude from getCoordinates: ${err}`);
-        throw err;
-      }
+      const latitude = address?.latitude;
+      return latitude;
     },
   },
 };

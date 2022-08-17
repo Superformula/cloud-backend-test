@@ -9,6 +9,7 @@ import { resolvers } from './resolvers/coordinates';
 import conf from './conf';
 import { loggingPlugin } from './loggingPlugin';
 import { jwtCheck } from '../handler';
+import log from 'lambda-log';
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
@@ -35,7 +36,7 @@ const port = conf.server.port;
 app.listen({ port }, async () => {
   await server.start();
   server.applyMiddleware({ app, path: '/graphql' });
-  console.log(`Server ready at http://localhost:${conf.server.port}/graphql!`);
+  log.info(`Server ready at http://localhost:${conf.server.port}/graphql!`);
 });
 
 export default server;

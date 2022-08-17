@@ -23,17 +23,15 @@ export enum ERROR_TYPE {
 
 // I would write switch/case block for this instead of writing nested if
 export const handleAcceptedErrors = (err: any): any => {
-  // console.log('err in handleAcceptedErrors:', err.toString());
   log.error(`Failed to get coordinates: ${err}`);
-
   if (err?.toString().includes(INVALID_REQUEST_ERROR)) {
     return new Error(ERROR_MESSAGES.INVALID_ADDRESS);
   } else if (err?.toString().includes(INVALID_API_KEY_ERROR)) {
     return new Error(ERROR_MESSAGES.INVALID_API_KEY);
   } else if (err?.toString().includes(ERROR_MESSAGES.INVALID_ADDRESS)) {
-    throw new Error(ERROR_MESSAGES.INVALID_ADDRESS);
+    return new Error(ERROR_MESSAGES.INVALID_ADDRESS);
   } else if (err?.toString().includes(ERROR_MESSAGES.INCOMPLETE_ADDRESS)) {
-    throw new Error(ERROR_MESSAGES.INCOMPLETE_ADDRESS);
+    return new Error(ERROR_MESSAGES.INCOMPLETE_ADDRESS);
   }
   return new Error(`Internal Server Error with Tracking Id = ${uuid.v4()}`, {
     cause: {

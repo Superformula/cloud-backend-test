@@ -2,12 +2,13 @@ import { GraphQLRequestContext } from 'apollo-server-core';
 // import cuid from 'cuid';
 import { GraphQLError } from 'graphql';
 // import pino from 'pino';
+import log from 'lambda-log';
 
 export const loggingPlugin = {
   // Fires whenever a GraphQL request is received from a client.
   // eslint-disable-next-line require-await
   async requestDidStart(requestContext: GraphQLRequestContext) {
-    console.log('Request started! Query:\n' + requestContext.request.query);
+    log.info('Request started! Query:\n' + requestContext.request.query);
     // requestContext.logger = pino().child({ requestId: cuid() });
     // requestContext.logger.info({
     //   operationName: requestContext.request.operationName,
@@ -19,7 +20,7 @@ export const loggingPlugin = {
       // request to create its associated document AST.
       // eslint-disable-next-line require-await
       async parsingDidStart(requestContext: GraphQLRequestContext) {
-        console.log(
+        log.info(
           'Parsing started! variables:\n',
           requestContext.request.variables
         );
@@ -29,7 +30,7 @@ export const loggingPlugin = {
       // request's document AST against your GraphQL schema.
       // eslint-disable-next-line require-await
       async validationDidStart(requestContext: GraphQLRequestContext) {
-        console.log('Validation started! context:\n', requestContext.context);
+        log.info('Validation started! context:\n', requestContext.context);
       },
 
       // The didEncounterErrors event fires when Apollo Server encounters errors

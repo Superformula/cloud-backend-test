@@ -7,4 +7,30 @@ export default Object.freeze({
   GRAPHQL_ERRORS: {
     BAD_USER_INPUT: 'BAD_USER_INPUT',
   },
+  ENTRY: {
+    formattedAddress: '79 Saco St, Newton, MA 02464, USA',
+    latitude: 42.3074919,
+    longitude: -71.22178149999999,
+    extra: {
+      googlePlaceId: 'ChIJPRA7NCGC44kRWXs31NcYhF8',
+      confidence: 1,
+      premise: null,
+      subpremise: null,
+      neighborhood: 'Newton',
+      establishment: null,
+    },
+    administrativeLevels: {
+      level2long: 'Middlesex County',
+      level2short: 'Middlesex County',
+      level1long: 'Massachusetts',
+      level1short: 'MA',
+    },
+    streetNumber: '79',
+    streetName: 'Saco Street',
+    city: 'Newton',
+    country: 'United States',
+    countryCode: 'US',
+    zipcode: '02464',
+    provider: 'google',
+  },
 });
