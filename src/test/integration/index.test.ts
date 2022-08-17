@@ -4,6 +4,8 @@ import { ApolloServer, ExpressContext } from 'apollo-server-express';
 import { resolvers } from '../../resolvers/coordinates';
 import { typeDefs } from '../../typedefs';
 import C from '../utilities/testData';
+import { expressContextBuilder } from '../../expressContextBuilder';
+import { dataSources } from '../..';
 
 chai.use(chaiShallowDeepEqual);
 
@@ -15,6 +17,8 @@ describe('Integration tests for GraphQL operations', () => {
     testServer = new ApolloServer({
       typeDefs,
       resolvers,
+      context: expressContextBuilder,
+      dataSources: dataSources,
     });
   });
   after(async () => {
@@ -49,7 +53,7 @@ describe('Integration tests for GraphQL operations', () => {
     });
     expect(result.errors).to.exist;
     expect(result.errors?.[0].extensions).to.shallowDeepEqual({
-      code: 'BAD_USER_INPUT',
+      code: C.GRAPHQL_ERRORS.BAD_USER_INPUT,
     });
   });
   it('should not return results for not supported operation', async () => {

@@ -4,4 +4,7 @@ export default Object.freeze({
   UK_ADDRESS: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
   INVALID_API_KEY: 'badKey',
   BAD_ADDRESS: 'junk',
+  GRAPHQL_ERRORS: {
+    BAD_USER_INPUT: 'BAD_USER_INPUT',
+  },
 });

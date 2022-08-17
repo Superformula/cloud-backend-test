@@ -6,6 +6,7 @@ import jwt from 'express-jwt';
 import conf from './src/conf';
 import { Handler } from '@aws-cdk/aws-lambda';
 import { CreateHandlerOptions } from 'apollo-server-lambda';
+import log from 'lambda-log';
 
 export const jwtCheck = jwt({
   secret: jwksRsa.expressJwtSecret({
@@ -26,6 +27,14 @@ const handlerOptions: CreateHandlerOptions = {
     app.use(cors());
     app.use(jwtCheck);
     app.use(middleware);
+    app.use(function (err: any, req: any, res: any, next: any) {
+      log.error(`err in express middleware: ${err}`);
+      if (err.name === 'UnauthorizedError') {
+        res.status(err.status).send({ message: err.message });
+        return;
+      }
+      next();
+    });
     return app;
   },
   expressGetMiddlewareOptions: { path: '/graphql' },

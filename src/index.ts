@@ -9,6 +9,7 @@ import { loggingPlugin } from './loggingPlugin';
 import { hiveApollo } from '@graphql-hive/client';
 import { expressContextBuilder } from './expressContextBuilder';
 import Coordinates from './dataSources/coordinatesDataSource';
+import log from 'lambda-log';
 
 // I like constraints for types like Joi validators, but this module seems not working
 // import {
@@ -39,6 +40,16 @@ const server = new ApolloServer({
       usage: true, // or { ... usage options }
     }),
   ],
+  // formatError: (err) => {
+  //   // Don't give the specific errors to the client.
+  //   log.error(`err in formatError: ${err}`);
+  //   if (err.message.startsWith('Database Error: ')) {
+  //     return new Error('Internal server error');
+  //   }
+  //   // Otherwise return the original error. The error can also
+  //   // be manipulated in other ways, as long as it's returned.
+  //   return err;
+  // },
   debug: false,
   context: expressContextBuilder,
   // nodeEnv: process.env.NODE_ENV, can be set to developement or prd
@@ -47,5 +58,5 @@ const server = new ApolloServer({
   dataSources,
 });
 
-console.log(`Server ready at http://localhost:${conf.server.port}/graphql!`);
+log.info(`Server ready at http://localhost:${conf.server.port}/graphql!`);
 export default server;

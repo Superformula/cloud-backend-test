@@ -53,11 +53,14 @@ const context = {
 };
 describe('Tests for Lambda handler', () => {
   it('should be able to return 401 error if authorization header is missing', async () => {
-    const response = await handler(
-      event,
-      context,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      () => {}
+    const response = await handler(event, context, () =>
+      Promise.resolve({
+        req: {
+          headers: {
+            authorization: `Bearer ${jwtToken}`,
+          },
+        },
+      })
     );
     expect(response.statusCode).to.equal(401);
   });

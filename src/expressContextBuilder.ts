@@ -2,11 +2,12 @@
 import { getCoordinates } from './dataSources/calculateCoordinates';
 import conf from './conf';
 import log from 'lambda-log';
+import { ExpressContext } from 'apollo-server-express';
 
 export interface ExpressContextInterface {
   event: any;
   context: any;
-  express: any;
+  express: ExpressContext;
 }
 
 // export interface ContextBuilder {
@@ -30,11 +31,9 @@ export interface ExpressContextInterface {
 // // });
 
 export const expressContextBuilder = ({ event, context, express }: any) => {
-  console.log('event:', event);
-  console.log('context:', context);
-  console.log('express req headers:', express?.req?.headers);
-  console.log('express req body:', express?.req.body?.variables.name);
-  log.info(`express req ${express?.req}`);
+  log.debug(`event: ${event}`);
+  log.debug(`event: ${context}`);
+  log.info(`express req body: ${express?.req.body}`);
   const token = express?.req?.headers?.authorization || '';
   const user = { token };
   if (!user) throw new Error('you must be logged in');

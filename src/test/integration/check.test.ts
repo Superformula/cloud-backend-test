@@ -16,6 +16,7 @@ import checkResult from '../utilities/checkResult';
 import C from '../utilities/testData';
 import { expressContextBuilder } from '../../expressContextBuilder';
 import { jwtCheck } from '../../../handler';
+import { dataSources } from '../..';
 
 const expect = chai.expect;
 
@@ -35,7 +36,13 @@ describe('End-to-End tests for GraphQL operations', () => {
     const app = express();
     app.use(cors());
     app.use(jwtCheck);
-
+    app.use(function (err: any, req: any, res: any, next: any) {
+      if (err.name === 'UnauthorizedError') {
+        res.status(err.status).send({ message: err.message });
+        return;
+      }
+      next();
+    });
     const schema = makeExecutableSchema({
       typeDefs,
       resolvers,
@@ -44,16 +51,7 @@ describe('End-to-End tests for GraphQL operations', () => {
     server = new ApolloServer({
       schema,
       context: expressContextBuilder,
-      // formatError: (err) => {
-      //       // Don't give the specific errors to the client.
-      //       console.log('err in test:', err)
-      //       if (err.message.startsWith('UnauthorizedError: ')) {
-      //         return new Error('Internal server error');
-      //       }
-      //       // Otherwise return the original error. The error can also
-      //       // be manipulated in other ways, as long as it's returned.
-      //       return err;
-      // },
+      dataSources: dataSources,
     });
 
     app.listen({ port }, async () => {
@@ -85,7 +83,6 @@ describe('End-to-End tests for GraphQL operations', () => {
     const response = await request.post('/graphql', queryData, {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
-    console.log('response in test:', response.data);
     checkResult(response, 200, {
       data: {
         address: { longitude: -71.18494799999999, latitude: 42.366192 },
@@ -112,11 +109,6 @@ describe('End-to-End tests for GraphQL operations', () => {
     expect(response.data.errors[0].message).to.equal(
       'Please provide valid address!'
     );
-    checkResult(response, 200, {
-      data: {
-        address: { longitude: null, latitude: null },
-      },
-    });
   });
 
   it('should be able to handle error for numeric address', async () => {
@@ -135,16 +127,8 @@ describe('End-to-End tests for GraphQL operations', () => {
     const response = await request.post('/graphql', queryData, {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
-    // expect(response.data.errors[0].message).to.equal(
-    //   'Please provide valid address!'
-    // );
-    // checkResult(response, 200, {
-    //   data: {
-    //     address: { longitude: null, latitude: null },
-    //   },
-    // });
     expect(response.data.errors?.[0].extensions).to.shallowDeepEqual({
-      code: 'BAD_USER_INPUT',
+      code: C.GRAPHQL_ERRORS.BAD_USER_INPUT,
     });
   });
 
@@ -169,8 +153,7 @@ describe('End-to-End tests for GraphQL operations', () => {
     );
   });
 
-  // Skipped because I couldn't find better way to convert UnauthorizedError to user friendly error
-  it.skip('should not be able to return results for a bad token', async () => {
+  it('should not be able to return results for a bad token', async () => {
     const queryData = {
       query: `query Address($name: String!) {
             address(name: $name) {
@@ -188,8 +171,30 @@ describe('End-to-End tests for GraphQL operations', () => {
       headers: { Authorization: `Bearer ${jwtToken}` },
     });
     expect(response.status).to.equal(401);
-    expect(response.data).to.contain(
-      'UnauthorizedError: Format is Authorization: Bearer [token]'
+    expect(response.data.message).to.equal(
+      'Format is Authorization: Bearer [token]'
+    );
+  });
+
+  it('should not be able to return results for no token', async () => {
+    const queryData = {
+      query: `query Address($name: String!) {
+            address(name: $name) {
+                longitude
+                latitude
+            }
+          }`,
+      variables: { name: C.ADDRESS },
+    };
+
+    jwtMocker.getJWKS(200, jwkPublicGood);
+
+    const response = await request.post('/graphql', queryData, {
+      headers: { },
+    });
+    expect(response.status).to.equal(401);
+    expect(response.data.message).to.equal(
+      'No authorization token was found'
     );
   });
 });
