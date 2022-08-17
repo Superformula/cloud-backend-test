@@ -1,0 +1,37 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /graphql",
+  "rawPath": "/graphql",
+  "rawQueryString": "",
+  "headers": {
+      "accept": "*/*",
+      "content-length": "204",
+      "content-type": "text/plain",
+      "host": "test.execute-api.us-east-1.amazonaws.com",
+      "user-agent": "insomnia/2022.2.1",
+      "x-amzn-trace-id": "Root=1-123456789012",
+      "x-forwarded-for": "127.0.0.1",
+      "x-forwarded-port": "443",
+      "x-forwarded-proto": "https"
+  },
+  "requestContext": {
+      "accountId": "123456789012",
+      "apiId": "test",
+      "domainName": "test.execute-api.us-east-1.amazonaws.com",
+      "domainPrefix": "test",
+      "http": {
+          "method": "POST",
+          "path": "/graphql",
+          "protocol": "HTTP/1.1",
+          "sourceIp": "127.0.0.1",
+          "userAgent": "insomnia/2022.2.1"
+      },
+      "requestId": "WURA4jqHoAMESLA=",
+      "routeKey": "POST /graphql",
+      "stage": "$default",
+      "time": "10/Aug/1999:16:07:30 +0000",
+      "timeEpoch": 1660147650000
+  },
+  "body": "{\"query\": \"query { coordinate(address: \\\"401\\\") { \\n... on QueryCoordinateSuccess { \\n__typename \\ndata {\\nlatitude\\nlongitude\\n}\\n}\\n... on Error {\\n__typename\\nmessage\\n}\\n} }\"}",
+  "isBase64Encoded": false
+}

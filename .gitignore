@@ -1,0 +1,18 @@
+# dependencies
+node_modules
+
+# sst
+.sst
+.build
+out.mjs
+
+# misc
+.DS_Store
+
+# local env files
+.env*.local
+
+# project files
+log
+cdk.out
+coverage

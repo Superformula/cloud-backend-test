@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["./functions", "./core"],
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "target": "es2017",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@cloud-backend-test/core/*": ["./core/*"]
+    }
+  }
+}

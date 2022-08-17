@@ -1,0 +1,13 @@
+{
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "include": ["./stacks", "./services"],
+  "compilerOptions": {
+    "paths": {
+      "@cloud-backend-test/core/*": ["./services/core/*"]
+    },
+    "types": [
+      "vitest/globals",
+      "vitest/importMeta"
+    ]
+  }
+}

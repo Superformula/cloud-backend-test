@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["."],
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es2017",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@cloud-backend-test/core/*": ["../services/core/*"]
+    },
+    "types": [
+      "vitest/globals",
+      "vitest/importMeta"
+    ]
+  }
+}
